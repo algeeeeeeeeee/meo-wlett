@@ -19,7 +19,7 @@ export default function TabReport({ ctx }) {
     budgets,
     overallBudget,
     showExportMenu, setShowExportMenu,
-    exportCSV, exportPDFReport
+    exportCSV, exportPDFReport,
     CSN, TP, currentMonth, getCategory, showToast,
   } = ctx;
 

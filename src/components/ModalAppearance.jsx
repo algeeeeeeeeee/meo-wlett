@@ -13,7 +13,7 @@ export default function ModalAppearance({ ctx }) {
     followSystem, setFollowSystem,
     setDarkOverride,
     setShowAppearanceModal,
-    triggerThemeChange
+    triggerThemeChange,
     THEME_LABELS, TP, settingsToggleRef, toggleDark,
   } = ctx;
 
