@@ -1396,6 +1396,7 @@ export default function App() {
   // Props bundle passed to all tab components
   const ctx = {
     T, dark, lang, L,
+    balanceCardRef,
     tab, tabAnim, loaded, headerHeight,
     themeAccent, themePrimary, THEME_PRESETS,
     income, totalExpense, balance, savePct, monthlySave,
