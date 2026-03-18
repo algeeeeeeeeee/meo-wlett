@@ -1404,7 +1404,7 @@ export default function App() {
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
     streak, weeklyInsight,
     savingsGoals, setSavingsGoals,
-    overallBudget, budgets, setBudgets, setBudgetsDisplay,
+    overallBudget, budgetEntries, budgets, setBudgets, setBudgetsDisplay,
     quickAddGoalId, setQuickAddGoalId,
     quickAddAmtDisplay, setQuickAddAmtDisplay, setQuickAddAmt,
     setEditingGoal, setGoalForm,
@@ -1413,7 +1413,7 @@ export default function App() {
     setLang,
     setTempIncome, setTempIncomeDisplay,
     setIncomeAdj, setIncomeAdjDisplay, setEditIncome,
-    changeTab,
+    changeTab, showToast,
     // modal vars
     kbHeight,
     showCalc, setShowCalc,

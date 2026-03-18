@@ -73,5 +73,8 @@ export default function ModalNotif({ ctx }) {
               </div>
             </div>
           </div>
+        )}
+
+        {/* ── OVERALL BUDGET MODAL ── */}
   );
 }

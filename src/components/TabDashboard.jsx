@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertCircle, AlertTriangle, ArrowRight, Flame, PiggyBank, Plus, Pencil, Save, TrendingUp, Wallet, Zap, CheckCircle, X, BarChart2 } from "../icons.jsx";
 import { formatRp, dateLabel, getCatLabel, getMonth, haptic, parseRpInput, today } from "../utils/helpers.js";
 import { darken } from "../utils/theme.js";
@@ -16,7 +15,7 @@ export default function TabDashboard({ ctx }) {
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
     streak, weeklyInsight,
     savingsGoals, setSavingsGoals,
-    overallBudget,
+    overallBudget, budgetEntries,
     quickAddGoalId, setQuickAddGoalId,
     quickAddAmtDisplay, setQuickAddAmtDisplay, setQuickAddAmt,
     setShowOverallBudgetModal,
@@ -146,7 +145,7 @@ export default function TabDashboard({ ctx }) {
                 {weeklyInsight.thisTotal === 0 ? (
                   <p style={{ fontSize:12, color:T.textSub }}>{lang==="en"?"No spending this week yet.":"Belum ada transaksi minggu ini."}</p>
                 ) : (
-                  <React.Fragment>
+                  <>
                     <p style={{ fontSize:18, fontWeight:900, color:T.text, lineHeight:1, marginBottom:3 }}><AnimatedNumber value={weeklyInsight.thisTotal} format={formatRp}/></p>
                     {weeklyInsight.hasBoth && weeklyInsight.diff !== 0 && (
                       <p style={{ fontSize:11, color: weeklyInsight.diff > 0 ? "#f87171" : "#4ade80", fontWeight:700, marginBottom:3 }}>
@@ -189,7 +188,7 @@ export default function TabDashboard({ ctx }) {
                         </div>
                       );
                     })()}
-                  </React.Fragment>
+                  </>
                 )}
               </div>
             </div>

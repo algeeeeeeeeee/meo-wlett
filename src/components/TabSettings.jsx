@@ -16,7 +16,7 @@ export default function TabSettings({ ctx }) {
     editCatKey, setEditCatKey,
     showCatManager, setShowCatManager,
     showBudgetLimit, setShowBudgetLimit,
-    budgets, setBudgets,
+    budgets, setBudgets, budgetEntries,
     overallBudget, setOverallBudget,
     income, setIncome,
     transactions, setTransactions,
@@ -137,6 +137,7 @@ export default function TabSettings({ ctx }) {
 
           </div>
         </div>
+        )}
 
         {/* BUDGET LIMIT MODAL */}
         {showBudgetLimit && (
@@ -184,6 +185,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
 
         {/* CATEGORY MANAGER MODAL */}
         {showCatManager && (
@@ -248,6 +250,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
 
         {/* DATA MODAL */}
         {showDataModal && (

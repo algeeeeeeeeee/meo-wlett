@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronDown, Pencil, Plus, Repeat, Save, Search, Trash2, Wallet, X } from "../icons.jsx";
 import { formatRp, dateLabel, getCatLabel, groupByDate, haptic, parseRpInput, today } from "../utils/helpers.js";
 import { CatIcon, SwipeRow } from "./ui.jsx";
@@ -68,7 +67,7 @@ export default function TabTransactions({ ctx }) {
             {filtered.length === 0 ? (
               <div className="card" style={{ padding:"48px 20px 40px",textAlign:"center",background:T.card,border:`1px solid ${T.cardBorder}` }}>
                 {searchQuery ? (
-                  <React.Fragment>
+                  <>
                     <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
                       <div style={{ width:80, height:80, borderRadius:"50%", background:`linear-gradient(135deg,${themeAccent}18,${themePrimary}14)`, border:`1.5px solid ${themeAccent}25`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <Search size={34} color={T.accentText} strokeWidth={1.5}/>
@@ -76,9 +75,9 @@ export default function TabTransactions({ ctx }) {
                     </div>
                     <p style={{ fontSize:16,fontWeight:900,color:T.text,marginBottom:6 }}>{L.noTxFound}</p>
                     <p style={{ fontSize:13,color:T.textSub,lineHeight:1.5 }}>{L.noTxFoundDesc} "{searchQuery}"</p>
-                  </React.Fragment>
+                  </>
                 ) : (
-                  <React.Fragment>
+                  <>
                     <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
                       <div className="empty-float" style={{ width:88, height:88, borderRadius:26, background:`${themeAccent}14`, border:`1.5px solid ${themeAccent}30`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <Wallet size={38} color={themeAccent} strokeWidth={1.5}/>
@@ -90,7 +89,7 @@ export default function TabTransactions({ ctx }) {
                       onClick={() => { haptic(); setShowForm(true); setEditItem(null); }}>
                       <Plus size={16} strokeWidth={2.5}/> {lang==="en"?"Add first transaction":"Catat transaksi pertama"}
                     </button>
-                  </React.Fragment>
+                  </>
                 )}
               </div>
             ) : (
