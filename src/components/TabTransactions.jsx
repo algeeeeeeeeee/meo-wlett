@@ -24,6 +24,7 @@ export default function TabTransactions({ ctx }) {
     editRecurId, setEditRecurId,
     showToast,
     CS, CSN, currentMonth, getCategory, activeCardId, setActiveCardId,
+    setTransactions,
   } = ctx;
 
   return (

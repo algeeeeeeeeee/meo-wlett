@@ -13,6 +13,7 @@ export default function ModalAddTransaction({ ctx }) {
     setShowCalc,
     submitForm,
     kbHeight,
+    quickAddGoalId, editingGoal, changeTab,
   } = ctx;
 
   return (
