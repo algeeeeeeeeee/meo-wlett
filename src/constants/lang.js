@@ -17,7 +17,7 @@ export const LANG = {
     data:"DATA", exportData:"Ekspor Data", exportCSV:"Ekspor CSV",
     exportReport:"Ekspor Laporan", dangerZone:"ZONA BAHAYA", resetData:"Reset Semua Data",
     resetConfirm:"Yakin ingin menghapus semua data? Tidak bisa dibatalkan.",
-    income:"Pemasukan", editIncome:"Edit Pemasukan", monthlyIncome:"Pemasukan Bulanan (Rp)", incomePlaceholder:"Contoh: 5000000",
+    income:"Pemasukan", incomeLabel:"PEMASUKAN", editIncome:"Edit Pemasukan", monthlyIncome:"Pemasukan Bulanan (Rp)", incomePlaceholder:"Contoh: 5000000",
     txAdded:"Transaksi ditambahkan", txUpdated:"Transaksi diperbarui", txDeleted:"Transaksi dihapus", txUndo:"Batal",
     nameSaved:"Nama disimpan", incomeSaved:"Pemasukan diperbarui",
     safe:"Aman", warning:"Perhatian", critical:"Kritis",
@@ -143,7 +143,7 @@ export const LANG = {
     exportReport:"Export Report", dangerZone:"DANGER ZONE", resetData:"Reset All Data",
     resetConfirm:"Are you sure you want to delete all data? This cannot be undone.",
     // Income
-    income:"Income", editIncome:"Edit Income", monthlyIncome:"Monthly Income (Rp)",
+    income:"Income", incomeLabel:"INCOME", editIncome:"Edit Income", monthlyIncome:"Monthly Income (Rp)",
     incomePlaceholder:"e.g. 5000000",
     // Toast
     txAdded:"Transaction added", txUpdated:"Transaction updated", txDeleted:"Transaction deleted", txUndo:"Undo",

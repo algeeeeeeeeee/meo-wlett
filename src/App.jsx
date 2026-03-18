@@ -419,7 +419,7 @@ function CicilanModal({ show, onClose, cicilan, setCicilan, lang, L, T, themeAcc
                 </div>
               </div>
               <div style={{padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,fontWeight:600,marginBottom:8}}><span>Progress</span><span>{getPct(detail)}%</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,fontWeight:600,marginBottom:8}}><span>{lang==="en"?"Progress":"Progress cicilan"}</span><span>{getPct(detail)}%</span></div>
                 <div style={{height:8,borderRadius:99,background:T.card2,overflow:"hidden"}}><div style={{height:"100%",width:`${getPct(detail)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99,transition:"width 0.6s ease"}}/></div>
                 <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:11,color:T.textSub}}><span>{lang==="en"?"Paid:":"Sudah:"} {formatRp(getPaid(detail)*detail.monthly)}</span><span>{lang==="en"?"Left:":"Sisa:"} {formatRp((detail.duration-getPaid(detail))*detail.monthly)}</span></div>
               </div>
@@ -428,7 +428,7 @@ function CicilanModal({ show, onClose, cicilan, setCicilan, lang, L, T, themeAcc
                 <button onClick={()=>openEdit(detail)} style={{width:42,height:42,borderRadius:12,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={15} color={T.text} strokeWidth={2}/></button>
                 <button onClick={()=>del(detail.id)} style={{width:42,height:42,borderRadius:12,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={15} color="#f87171" strokeWidth={2}/></button>
               </div>
-              <button onClick={()=>setView("list")} style={{display:"block",margin:"12px 20px",width:"calc(100% - 40px)",padding:"10px 0",borderRadius:12,background:T.card2,border:`1.5px solid ${T.cardBorder}`,color:T.textSub,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← {lang==="en"?"Back":"Kembali"}</button>
+              <button onClick={()=>setView("list")} style={{display:"block",margin:"12px 20px",width:"calc(100% - 40px)",padding:"10px 0",borderRadius:12,background:T.card2,border:`1.5px solid ${T.cardBorder}`,color:T.textSub,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← {lang==="en"?"← Back":"← Kembali"}</button>
             </div>
           )}
           {view==="list" && (
@@ -441,8 +441,8 @@ function CicilanModal({ show, onClose, cicilan, setCicilan, lang, L, T, themeAcc
                   {cicilan.map((ci,i)=>(
                     <div key={ci.id} onClick={()=>{setDetail(ci);setView("detail");}} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:i<cicilan.length-1?`1px solid ${T.cardBorder}`:"none",cursor:"pointer"}}>
                       <div style={{width:44,height:44,borderRadius:14,background:themeAccent+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CreditCard size={20} color={themeAccent} strokeWidth={1.5}/></div>
-                      <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>{ci.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{lang==="en"?"Inst.":"Cicilan"} {getPaid(ci)}/{ci.duration} · tgl {ci.dueDay}</p><div style={{height:3,borderRadius:99,background:T.card2,overflow:"hidden",marginTop:5,maxWidth:100}}><div style={{height:"100%",width:`${getPct(ci)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99}}/></div></div>
-                      <div style={{textAlign:"right",flexShrink:0}}><p style={{fontSize:14,fontWeight:800,color:"#f87171"}}>-{formatRp(ci.monthly)}</p><p style={{fontSize:10,color:isPaidNow(ci)?"#4ade80":T.textSub,marginTop:2,fontWeight:isPaidNow(ci)?700:500}}>{isPaidNow(ci)?"✓ "+(lang==="en"?"Paid":L.cicilanPaid||"Lunas"):(ci.duration-getPaid(ci))+" "+(L.cicilanRemain||"bln lagi")}</p></div>
+                      <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>{ci.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{lang==="en"?"Inst.":"Cicilan ke-"} {getPaid(ci)}/{ci.duration} · tgl {ci.dueDay}</p><div style={{height:3,borderRadius:99,background:T.card2,overflow:"hidden",marginTop:5,maxWidth:100}}><div style={{height:"100%",width:`${getPct(ci)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99}}/></div></div>
+                      <div style={{textAlign:"right",flexShrink:0}}><p style={{fontSize:14,fontWeight:800,color:"#f87171"}}>-{formatRp(ci.monthly)}</p><p style={{fontSize:10,color:isPaidNow(ci)?"#4ade80":T.textSub,marginTop:2,fontWeight:isPaidNow(ci)?700:500}}>{isPaidNow(ci)?"✓ "+(lang==="en"?"Paid":lang==="en"?"Paid":"Lunas"):(ci.duration-getPaid(ci))+" "+(L.cicilanRemain||"bln lagi")}</p></div>
                     </div>
                   ))}
                 </div>
@@ -2189,7 +2189,7 @@ export default function App() {
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:20, position:"relative" }}>
                     <div style={{ cursor:"pointer" }} onClick={() => { setTempIncome(income); setTempIncomeDisplay(income ? income.toLocaleString("id-ID") : ""); setIncomeAdj(""); setIncomeAdjDisplay(""); setEditIncome(true); }}>
                       <div style={{ display:"flex", alignItems:"center", gap:4, marginBottom:3 }}>
-                        <p style={{ fontSize:7, color:"rgba(255,255,255,0.38)", fontWeight:700, letterSpacing:1, textTransform:"uppercase" }}>{lang==="en"?"Income":"Pemasukan"}</p>
+                        <p style={{ fontSize:7, color:"rgba(255,255,255,0.38)", fontWeight:700, letterSpacing:1, textTransform:"uppercase" }}>{L.income}</p>
                         <Pencil size={7} color="rgba(255,255,255,0.38)" strokeWidth={2.5}/>
                       </div>
                       <p style={{ fontSize:13, fontWeight:900, color:"rgba(255,255,255,0.88)", lineHeight:1 }}><AnimatedNumber value={income} format={formatRp}/></p>
@@ -2874,7 +2874,7 @@ export default function App() {
                         </div>
                         <div style={{ flex:1, minWidth:0 }}>
                           <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{r.description}</p>
-                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>· Auto</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}</p>
+                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}</p>
                         </div>
                         <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5 }}>
                           <p style={{ fontSize:13, fontWeight:800, color:"#f87171" }}>-{formatRp(Number(r.amount))}</p>

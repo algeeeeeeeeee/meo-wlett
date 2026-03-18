@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meowlett-v2';
+const CACHE_NAME = 'meowlett-v1773873389';
 const ASSETS = ['/', '/index.html', '/meow.png', '/manifest.json'];
 
 self.addEventListener('install', e => {
