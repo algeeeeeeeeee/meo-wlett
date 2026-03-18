@@ -3674,7 +3674,7 @@ export default function App() {
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Data":"Data"}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{L.dataSubtitle||"Backup, restore & reset"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{L.dataSubtitle}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>

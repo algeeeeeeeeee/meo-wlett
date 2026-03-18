@@ -81,7 +81,7 @@ export const LANG = {
     repInsightMonthly:"Insight Bulanan", repInsightWeekly:"Insight Mingguan",
     repWeekTotal:"Total minggu ini:", repMoreSpend:"Lebih boros", repLessSpend:"Lebih hemat",
     repVsLastWeek:"vs minggu lalu", repTopCat:"Kategori terbanyak:",
-    backupData:"Backup Data", backupDesc:"Unduh semua data sebagai JSON", restoreBackup:"Restore Backup", restoreDesc:"Import dari file backup", resetDesc:"Hapus semua data permanen", dataSubtitle:"Backup, restore & reset", restoreConfirmMsg:"Restore backup ini? Data saat ini akan diganti.",
+    showMore:"Lihat Lebih", backupData:"Backup Data", backupDesc:"Unduh semua data sebagai JSON", restoreBackup:"Pulihkan Backup", restoreDesc:"Import dari file backup", resetDesc:"Hapus semua data permanen", dataSubtitle:"Backup, pulihkan & reset", restoreConfirmMsg:"Restore backup ini? Data saat ini akan diganti.",
     backupOk:"Backup berhasil diunduh", restoreOk:"Backup berhasil dipulihkan!",
     restoreConfirm:"Restore backup ini? Data saat ini akan diganti.",
     backupInvalid:"File backup tidak valid",
@@ -248,6 +248,6 @@ export const LANG = {
     backupOk:"Backup downloaded", restoreOk:"Backup restored!",
     restoreConfirm:"Restore this backup? Current data will be replaced.",
     backupInvalid:"Invalid backup file",
-    backupData:"Backup Data", backupDesc:"Download all data as JSON", restoreBackup:"Restore Backup", restoreDesc:"Import from backup file", resetDesc:"Delete all data permanently", dataSubtitle:"Backup, restore & reset", restoreConfirmMsg:"Restore this backup? Current data will be replaced.",
+    showMore:"Lihat Lebih", backupData:"Backup Data", backupDesc:"Download all data as JSON", restoreBackup:"Pulihkan Backup", restoreDesc:"Import from backup file", resetDesc:"Delete all data permanently", dataSubtitle:"Backup, pulihkan & reset", restoreConfirmMsg:"Restore this backup? Current data will be replaced.",
   }
 };
