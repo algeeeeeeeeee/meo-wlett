@@ -1,4 +1,3 @@
-import { darken, lighten } from "../utils/theme.js";
 import { Calculator2, Calendar, Pill, X } from "../icons.jsx";
 import { getCatLabel, haptic, today } from "../utils/helpers.js";
 import { CatIcon } from "./ui.jsx";
@@ -13,7 +12,7 @@ export default function ModalAddTransaction({ ctx }) {
     showForm, setShowForm,
     setShowCalc,
     submitForm,
-    kbHeight
+    kbHeight,
   } = ctx;
 
   return (
@@ -179,11 +178,6 @@ export default function ModalAddTransaction({ ctx }) {
             </div>
           );
         })()}
-      </div>
-    </div>
-  );
-}
-
         </>
   );
 }
