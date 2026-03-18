@@ -17,6 +17,7 @@ export default function ModalAddTransaction({ ctx }) {
   } = ctx;
 
   return (
+        <>
           <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center", boxSizing:"border-box" }}
             onClick={e => { if (e.target===e.currentTarget) { setShowForm(false); setEditItem(null); } }}>
             <div className="modal-float" style={{ background:T.modalBg, borderRadius:"24px 24px 0 0", width:"100%", maxWidth:400, boxShadow: dark ? "0 24px 60px rgba(0,0,0,0.8)" : "0 12px 40px rgba(0,0,0,0.2)", overflow:"hidden", maxHeight: kbHeight > 0 ? `calc(100dvh - ${kbHeight}px - env(safe-area-inset-top))` : "88dvh", display:"flex", flexDirection:"column", marginBottom: kbHeight > 0 ? kbHeight : 0, transition:"margin-bottom 0.25s ease, max-height 0.25s ease" }}>
@@ -183,5 +184,6 @@ export default function ModalAddTransaction({ ctx }) {
   );
 }
 
+        </>
   );
 }
