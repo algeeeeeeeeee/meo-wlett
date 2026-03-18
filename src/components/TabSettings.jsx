@@ -1,4 +1,3 @@
-import React from 'react';
 import { Camera, ChevronRight, Download, Package, Pencil, Trash2, Upload } from "../icons.jsx";
 import { formatRp, getCatLabel, getMonth, parseRpInput, today } from "../utils/helpers.js";
 import { CatIcon } from "./ui.jsx";
@@ -17,7 +16,7 @@ export default function TabSettings({ ctx }) {
     editCatKey, setEditCatKey,
     showCatManager, setShowCatManager,
     showBudgetLimit, setShowBudgetLimit,
-    budgets, setBudgets,
+    budgets, setBudgets, budgetEntries,
     overallBudget, setOverallBudget,
     income, setIncome,
     transactions, setTransactions,
@@ -35,11 +34,10 @@ export default function TabSettings({ ctx }) {
     exportCSV, exportPDFReport,
     ICON_OPTIONS, COLOR_OPTIONS,
     streak,
-    LUCIDE_MAP, currentMonth, showToast, showConfirm, isRestoringRef, DEFAULT_CATEGORIES, budgetsDisplay, CSN, IBN,
   } = ctx;
 
   return (
-        <React.Fragment>
+        <>
           <div key="settings" className={`fi${tabAnim ? " tab-enter" : ""}`} style={{ padding:"0" }}>
             <div style={{ padding:"14px 16px 0", paddingTop:`${headerHeight + 8}px`, paddingBottom:"16px" }}>
 
@@ -139,6 +137,7 @@ export default function TabSettings({ ctx }) {
 
           </div>
         </div>
+        )}
 
         {/* BUDGET LIMIT MODAL */}
         {showBudgetLimit && (
@@ -322,6 +321,6 @@ export default function TabSettings({ ctx }) {
             </div>
           </div>
         )}
-        </React.Fragment>
+        </>
   );
 }

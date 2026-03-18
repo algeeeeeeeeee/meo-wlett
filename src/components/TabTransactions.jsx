@@ -23,11 +23,10 @@ export default function TabTransactions({ ctx }) {
     showRecurPanel, setShowRecurPanel,
     editRecurId, setEditRecurId,
     showToast,
-    getCategory, CS, CSN, activeCardId, setActiveCardId,
   } = ctx;
 
   return (
-        <React.Fragment>
+        <>
           <div key="transactions" className={`fi${tabAnim ? " tab-enter" : ""}`} style={{ padding:"0 0 0" }}>
             <div style={{ padding:"14px 16px 0", paddingTop:`${headerHeight + 8}px`, paddingBottom:"16px" }}>
 
@@ -271,6 +270,6 @@ export default function TabTransactions({ ctx }) {
 
             </div>
           </div>
-        </React.Fragment>
+        </>
   );
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle, ChevronDown, Heart, Palette, Pencil, Plus, SlidersHorizontal, Sparkles, Trash2, X } from "../icons.jsx";
 import { formatRp, getMonth, haptic, today } from "../utils/helpers.js";
 import { PresetIcon } from "./ui.jsx";
@@ -18,16 +17,15 @@ export default function TabDate({ ctx }) {
     transactions, categories,
     income,
     budgets, setBudgets,
-
+    budgetEntries,
     overallBudget,
     triggerThemeChange,
     setTempOverallBudget, setTempOverallBudgetDisplay,
     setShowOverallBudgetModal,
-    THEME_LABELS, currentMonth, showToast, CS, IBN, activeDateId, setActiveDateId, dateWishlist, setDateWishlist, showWishlistForm, setShowWishlistForm, wishlistInput, setWishlistInput, deleteTransaction,
   } = ctx;
 
   return (
-        <React.Fragment>
+        <>
           <div key="date" className={`fi${tabAnim ? " tab-enter" : ""}`} style={{ padding:"0" }}>
             <div style={{ padding:"14px 16px 0", paddingTop:`${headerHeight + 8}px`, paddingBottom:"16px" }}>
 
@@ -153,6 +151,7 @@ export default function TabDate({ ctx }) {
             </div>
           </div>
         </div>
+        )}
 
         {/* THEME PICKER MODAL */}
         {showThemePicker && (
@@ -246,6 +245,6 @@ export default function TabDate({ ctx }) {
             </div>
           </div>
         )}
-        </React.Fragment>
+        </>
   );
 }

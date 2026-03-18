@@ -14,8 +14,6 @@ export default function ModalAppearance({ ctx }) {
     setDarkOverride,
     setShowAppearanceModal,
     triggerThemeChange,
-    THEME_LABELS,
-    TP,
   } = ctx;
 
   return (

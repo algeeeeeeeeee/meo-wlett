@@ -11,13 +11,12 @@ export default function TabDashboard({ ctx }) {
     T, dark, lang, L,
     tabAnim, loaded, headerHeight,
     income, totalExpense, balance, savePct, monthlySave,
-    balanceCardRef,
     themeAccent, themePrimary,
     transactions, categories, recentTxns, recentCount, setRecentCount,
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
     streak, weeklyInsight,
     savingsGoals, setSavingsGoals,
-    overallBudget,
+    overallBudget, budgetEntries,
     quickAddGoalId, setQuickAddGoalId,
     quickAddAmtDisplay, setQuickAddAmtDisplay, setQuickAddAmt,
     setShowOverallBudgetModal,
@@ -28,13 +27,10 @@ export default function TabDashboard({ ctx }) {
     setTempOverallBudget, setTempOverallBudgetDisplay,
     setBudgets, setBudgetsDisplay,
     changeTab,
-    currentMonth, getCategory, CS, IBN,
-    TP,
-    budgets, budgetsDisplay,
   } = ctx;
 
   return (
-        <React.Fragment>
+        <>
           <div key="dashboard" className={`fi${tabAnim ? " tab-enter" : ""}`} style={{ padding:"16px 16px 0", paddingTop:`${headerHeight + 16}px`, paddingBottom:"16px" }}>
             {!loaded && (
               <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
@@ -521,6 +517,6 @@ export default function TabDashboard({ ctx }) {
               )}
             </div>
           </div>
-        </React.Fragment>
+        </>
   );
 }

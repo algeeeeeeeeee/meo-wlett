@@ -1396,6 +1396,7 @@ export default function App() {
   // Props bundle passed to all tab components
   const ctx = {
     T, dark, lang, L, CS, CSN, IBN, TP,
+    settingsToggleRef, toggleDark, darkToggleRef,
     currentMonth, getCategory, THEME_LABELS, LUCIDE_MAP, DEFAULT_CATEGORIES,
     showToast, showConfirm, isRestoringRef,
     activeCardId, setActiveCardId,

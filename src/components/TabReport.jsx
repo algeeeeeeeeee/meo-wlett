@@ -17,17 +17,14 @@ export default function TabReport({ ctx }) {
     monthCompareData, monthInsights,
     catTrendData, catBreakdown,
     prevMonth, avgMonthlySaved,
-    budgets,
+    budgets, budgetEntries,
     overallBudget,
     showExportMenu, setShowExportMenu,
     exportCSV, exportPDFReport,
-    currentMonth, getCategory, showToast, CSN,
-    CS,
-    TP,
   } = ctx;
 
   return (
-        <React.Fragment>
+        <>
           <div key="report" className={`fi${tabAnim ? " tab-enter" : ""}`} style={{ padding:"0" }}>
             <div style={{ padding:"14px 16px 0", paddingTop:`${headerHeight + 8}px`, overflowX:"hidden", width:"100%", boxSizing:"border-box", paddingBottom:"16px" }}>
 
@@ -460,9 +457,10 @@ export default function TabReport({ ctx }) {
                   })()}
               </React.Fragment>
             )}
+            )}
 
           </div>
             </div>
-        </React.Fragment>
+        </>
   );
 }
