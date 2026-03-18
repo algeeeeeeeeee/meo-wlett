@@ -8,7 +8,7 @@ export default function ModalNotif({ ctx }) {
     weeklyNotif, setWeeklyNotif,
     weeklyNotifDay, setWeeklyNotifDay,
     setShowNotifModal,
-    handleNotification,
+    handleNotification
   } = ctx;
 
   return (

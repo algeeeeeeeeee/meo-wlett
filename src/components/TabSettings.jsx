@@ -16,7 +16,7 @@ export default function TabSettings({ ctx }) {
     editCatKey, setEditCatKey,
     showCatManager, setShowCatManager,
     showBudgetLimit, setShowBudgetLimit,
-    budgets, setBudgets, budgetEntries,
+    budgets, setBudgets,
     overallBudget, setOverallBudget,
     income, setIncome,
     transactions, setTransactions,
@@ -33,7 +33,7 @@ export default function TabSettings({ ctx }) {
     handleNotification,
     exportCSV, exportPDFReport,
     ICON_OPTIONS, COLOR_OPTIONS,
-    streak,
+    streak
   } = ctx;
 
   return (
@@ -248,7 +248,6 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
-        )}
 
         {/* DATA MODAL */}
         {showDataModal && (
@@ -318,7 +317,6 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
-        )}
         </>
   );
 }

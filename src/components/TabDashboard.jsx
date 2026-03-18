@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertCircle, AlertTriangle, ArrowRight, Flame, PiggyBank, Plus, Pencil, Save, TrendingUp, Wallet, Zap, CheckCircle, X, BarChart2 } from "../icons.jsx";
 import { formatRp, dateLabel, getCatLabel, getMonth, haptic, parseRpInput, today } from "../utils/helpers.js";
 import { darken } from "../utils/theme.js";
@@ -16,7 +15,7 @@ export default function TabDashboard({ ctx }) {
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
     streak, weeklyInsight,
     savingsGoals, setSavingsGoals,
-    overallBudget, budgetEntries,
+    overallBudget,
     quickAddGoalId, setQuickAddGoalId,
     quickAddAmtDisplay, setQuickAddAmtDisplay, setQuickAddAmt,
     setShowOverallBudgetModal,
@@ -26,7 +25,7 @@ export default function TabDashboard({ ctx }) {
     setIncomeAdj, setIncomeAdjDisplay, setEditIncome,
     setTempOverallBudget, setTempOverallBudgetDisplay,
     setBudgets, setBudgetsDisplay,
-    changeTab,
+    changeTab
   } = ctx;
 
   return (
@@ -146,7 +145,7 @@ export default function TabDashboard({ ctx }) {
                 {weeklyInsight.thisTotal === 0 ? (
                   <p style={{ fontSize:12, color:T.textSub }}>{lang==="en"?"No spending this week yet.":"Belum ada transaksi minggu ini."}</p>
                 ) : (
-                  <React.Fragment>
+                  <>
                     <p style={{ fontSize:18, fontWeight:900, color:T.text, lineHeight:1, marginBottom:3 }}><AnimatedNumber value={weeklyInsight.thisTotal} format={formatRp}/></p>
                     {weeklyInsight.hasBoth && weeklyInsight.diff !== 0 && (
                       <p style={{ fontSize:11, color: weeklyInsight.diff > 0 ? "#f87171" : "#4ade80", fontWeight:700, marginBottom:3 }}>
@@ -189,7 +188,7 @@ export default function TabDashboard({ ctx }) {
                         </div>
                       );
                     })()}
-                  </React.Fragment>
+                  </>
                 )}
               </div>
             </div>
@@ -217,10 +216,10 @@ export default function TabDashboard({ ctx }) {
 
             {/* Budget per Kategori — prominent dashboard card */}
             {(() => {
-              const budgetEntries = Object.entries(budgets).filter(([,v]) => v > 0);
+              const= Object.entries(budgets).filter(([,v]) => v > 0);
               const allCatKeys = Object.keys(categories);
               // Empty state CTA
-              if (budgetEntries.length === 0 && !overallBudget) return (
+              if (.length === 0 && !overallBudget) return (
                 <div className="card" style={{ padding:"16px 18px", marginBottom:14, ...CS }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                     <div style={{ width:44, height:44, borderRadius:14, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -277,7 +276,7 @@ export default function TabDashboard({ ctx }) {
                         </div>
                       );
                     })()}
-                    {budgetEntries.slice(0, 4).map(([key, bgt]) => {
+                    {.slice(0, 4).map(([key, bgt]) => {
                       const spent = transactions.filter(t => t.category === key && getMonth(t.date) === currentMonth).reduce((a,t) => a+t.amount, 0);
                       const pct = Math.min(100, Math.round((spent / bgt) * 100));
                       const over = pct >= 100; const warn = pct >= 80;

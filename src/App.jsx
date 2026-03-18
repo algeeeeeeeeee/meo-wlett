@@ -1395,20 +1395,10 @@ export default function App() {
 
   // Props bundle passed to all tab components
   const ctx = {
-    T, dark, lang, L, CS, CSN, IBN, TP,
-    settingsToggleRef, toggleDark, darkToggleRef,
-    currentMonth, getCategory, THEME_LABELS, LUCIDE_MAP, DEFAULT_CATEGORIES,
-    showToast, showConfirm, isRestoringRef,
-    activeCardId, setActiveCardId,
-    activeDateId, setActiveDateId,
-    dateWishlist, setDateWishlist,
-    showWishlistForm, setShowWishlistForm,
-    wishlistInput, setWishlistInput,
-    budgetsDisplay,
+    T, dark, lang, L,
     tab, tabAnim, loaded, headerHeight,
     themeAccent, themePrimary, THEME_PRESETS,
     income, totalExpense, balance, savePct, monthlySave,
-    balanceCardRef,
     transactions, categories,
     recentTxns, recentCount, setRecentCount,
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
