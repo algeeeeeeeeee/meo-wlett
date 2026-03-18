@@ -91,3 +91,14 @@ export const Upload         = fallback('Upload', 'UploadCloud', 'ArrowUp');
 
 // Alias
 export const Calculator2    = fallback('Calculator', 'Plus');
+
+export const Tag            = fallback('Tag', 'Hash', 'Bookmark');
+export const Tags           = fallback('Tags', 'Bookmark', 'Hash');
+export const CreditCard     = fallback('CreditCard', 'Wallet', 'DollarSign');
+export const ImagePlus      = fallback('ImagePlus', 'Image', 'Camera');
+export const Image          = fallback('Image', 'ImageIcon', 'Camera');
+export const ZoomIn         = fallback('ZoomIn', 'Maximize', 'Search');
+export const CheckCheck     = fallback('CheckCheck', 'Check', 'CheckCircle');
+export const Hash           = fallback('Hash', 'Tag', 'Bookmark');
+export const AlarmClock     = fallback('AlarmClock', 'Clock', 'Bell');
+export const BellRing       = fallback('BellRing', 'Bell', 'BellOff');

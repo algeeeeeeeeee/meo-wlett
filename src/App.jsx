@@ -45,7 +45,7 @@ const loadFromIDB = async () => {
 };
 import { darken, lighten, getLuminance, getContrastText, buildTheme } from "./utils/theme.js";
 import { exportCSV, exportPDFReport } from "./utils/export.js";
-import { requestNotificationPermission, sendLocalNotification, scheduleLocalReminder } from "./utils/notifications.js";
+import { requestNotificationPermission, sendLocalNotification, scheduleSmartReminder } from "./utils/notifications.js";
 import { DEFAULT_CATEGORIES, THEME_PRESETS, GOAL_ICONS, ICON_OPTIONS, COLOR_OPTIONS, PRESET_ICONS } from "./constants/index.js";
 import { LANG } from "./constants/lang.js";
 import AnimatedNumber from "./components/AnimatedNumber.jsx";
@@ -607,6 +607,44 @@ export default function App() {
   const [notifEnabled, setNotifEnabled] = useState(() => {
     try { return localStorage.getItem("gm_notif") === "1"; } catch { return false; }
   });
+  // Cicilan
+  const [cicilan, setCicilan] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_cicilan") || "[]"); } catch { return []; }
+  });
+  useEffect(() => { try { localStorage.setItem("gm_cicilan", JSON.stringify(cicilan)); } catch {} }, [cicilan]);
+  const [showCicilanModal, setShowCicilanModal] = useState(false);
+
+  // Reminder settings
+  const [reminderHour, setReminderHour] = useState(() => {
+    try { return Number(localStorage.getItem("gm_reminder_hour") || "21"); } catch { return 21; }
+  });
+  const [reminderDays, setReminderDays] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_reminder_days") || "[1,2,3,4,5]"); } catch { return [1,2,3,4,5]; }
+  });
+  const [reminderSmart, setReminderSmart] = useState(() => {
+    try { return localStorage.getItem("gm_reminder_smart") !== "0"; } catch { return true; }
+  });
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  useEffect(() => { try { localStorage.setItem("gm_reminder_hour", reminderHour); } catch {} }, [reminderHour]);
+  useEffect(() => { try { localStorage.setItem("gm_reminder_days", JSON.stringify(reminderDays)); } catch {} }, [reminderDays]);
+  useEffect(() => { try { localStorage.setItem("gm_reminder_smart", reminderSmart ? "1" : "0"); } catch {} }, [reminderSmart]);
+
+  // Tags
+  const [userTags, setUserTags] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_user_tags") || "[]"); } catch { return []; }
+  });
+  const [txTags, setTxTags] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_tx_tags") || "{}"); } catch { return {}; }
+  });
+  const [showTagModal, setShowTagModal] = useState(false);
+  useEffect(() => { try { localStorage.setItem("gm_user_tags", JSON.stringify(userTags)); } catch {} }, [userTags]);
+  useEffect(() => { try { localStorage.setItem("gm_tx_tags", JSON.stringify(txTags)); } catch {} }, [txTags]);
+
+  // Receipts (base64 stored per tx id)
+  const [txReceipts, setTxReceipts] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_tx_receipts") || "{}"); } catch { return {}; }
+  });
+  useEffect(() => { try { localStorage.setItem("gm_tx_receipts", JSON.stringify(txReceipts)); } catch {} }, [txReceipts]);
   const [showNameEdit, setShowNameEdit] = useState(false);
   const [tempName, setTempName] = useState("");
   const [toast, setToast] = useState(null);
@@ -899,7 +937,8 @@ export default function App() {
     transactions.filter(t => getMonth(t.date) === currentMonth).reduce((s, t) => s + t.amount, 0),
     [transactions, currentMonth]);
 
-  const balance = income - totalExpense;
+  const totalCicilanMonthly = cicilan.reduce((s, ci) => s + Number(ci.monthly || 0), 0);
+  const balance = income - totalExpense - totalCicilanMonthly;
   const monthlySave = Math.max(0, Math.min(balance, savingsGoal));
   const savePct = income > 0 ? Math.min(100, Math.round((monthlySave / income) * 100)) : 0;
 
@@ -1305,7 +1344,7 @@ export default function App() {
     if (perm === "granted") {
       setNotifEnabled(true);
       try { localStorage.setItem("gm_notif", "1"); } catch {}
-      scheduleLocalReminder();
+      scheduleSmartReminder({ hour: reminderHour, minute: 0, days: reminderDays, smart: reminderSmart, lang, getTransactions: () => transactions });
       await sendLocalNotification("Meowlett", lang === "en" ? "Reminder on! You'll be notified every day at 9 PM." : "Pengingat aktif! Kamu akan diingatkan setiap hari jam 9 malam.");
       showToast(L.toastReminderOn);
     } else if (perm === "denied") {
