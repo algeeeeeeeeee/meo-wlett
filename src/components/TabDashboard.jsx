@@ -15,7 +15,7 @@ export default function TabDashboard({ ctx }) {
     donutData, catBreakdown, sparkline7, monthPrediction, avgMonthlySaved,
     streak, weeklyInsight,
     savingsGoals, setSavingsGoals,
-    overallBudget, budgetEntries,
+    overallBudget,
     quickAddGoalId, setQuickAddGoalId,
     quickAddAmtDisplay, setQuickAddAmtDisplay, setQuickAddAmt,
     setShowOverallBudgetModal,

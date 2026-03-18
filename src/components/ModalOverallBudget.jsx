@@ -90,6 +90,5 @@ export default function ModalOverallBudget({ ctx }) {
               </div>
             </div>
           </div>
-        )}
   );
 }

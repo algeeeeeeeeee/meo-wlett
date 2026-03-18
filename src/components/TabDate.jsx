@@ -17,7 +17,6 @@ export default function TabDate({ ctx }) {
     transactions, categories,
     income,
     budgets, setBudgets,
-    budgetEntries,
     overallBudget,
     triggerThemeChange,
     setTempOverallBudget, setTempOverallBudgetDisplay,
@@ -151,7 +150,6 @@ export default function TabDate({ ctx }) {
             </div>
           </div>
         </div>
-        )}
 
         {/* THEME PICKER MODAL */}
         {showThemePicker && (

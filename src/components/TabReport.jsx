@@ -16,7 +16,7 @@ export default function TabReport({ ctx }) {
     monthCompareData, monthInsights,
     catTrendData, catBreakdown,
     prevMonth, avgMonthlySaved,
-    budgets, budgetEntries,
+    budgets,
     overallBudget,
     showExportMenu, setShowExportMenu,
     exportCSV, exportPDFReport,
