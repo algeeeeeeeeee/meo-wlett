@@ -131,12 +131,13 @@ export default function TabSettings({ ctx }) {
               </button>
             </div>
 
-            {/* Kategori — 1 card: Limit + Kelola + Tag */}
+            {/* KATEGORI section header */}
+            <p style={{ fontSize:11, fontWeight:800, color:T.textSub, letterSpacing:1, textTransform:"uppercase", marginBottom:6, paddingLeft:4 }}>{lang==="en"?"CATEGORY":"KATEGORI"}</p>
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Per-Category Limits":"Limit per Kategori"}</p>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
@@ -154,8 +155,8 @@ export default function TabSettings({ ctx }) {
                 <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                   <Hash size={14} color={T.accentText} strokeWidth={2}/>
                   <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
                   </div>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>

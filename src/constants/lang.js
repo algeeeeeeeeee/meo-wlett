@@ -35,7 +35,7 @@ export const LANG = {
     tapName:"Tap untuk isi nama", namePlaceholder:"Nama kamu...", search:"Cari transaksi...",
     filterToday:"Hari ini", filterWeek:"Minggu ini", filterMonth:"Bulan ini",
     thisMonth:"Bulan ini", lastMonth:"Bulan lalu",
-    budgetLimit:"Budget Limit", budgetLimitDesc:"Atur batas pengeluaran per kategori",
+    budgetLimit:"Batas Pengeluaran", budgetLimitDesc:"Atur batas pengeluaran per kategori",
     manageCategory:"Kelola Kategori", addCategory:"Tambah Kategori", editCategory:"Edit Kategori",
     catName:"Nama kategori...", pickIcon:"Pilih Ikon:", pickColor:"Pilih Warna:",
     previewLabel:"Preview", activeCategories:"Kategori Aktif",
@@ -136,7 +136,7 @@ export const LANG = {
     filterToday:"Today", filterWeek:"This week", filterMonth:"This month",
     thisMonth:"This month", lastMonth:"Last month",
     // Category manager
-    budgetLimit:"Budget Limit", budgetLimitDesc:"Set spending limits per category",
+    budgetLimit:"Batas Pengeluaran", budgetLimitDesc:"Set spending limits per category",
     manageCategory:"Manage Categories", addCategory:"Add Category", editCategory:"Edit Category",
     catName:"Category name...", pickIcon:"Choose Icon:", pickColor:"Choose Colour:",
     previewLabel:"Preview", activeCategories:"Active Categories",
