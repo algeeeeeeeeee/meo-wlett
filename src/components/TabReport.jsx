@@ -457,7 +457,6 @@ export default function TabReport({ ctx }) {
                   })()}
               </React.Fragment>
             )}
-            )}
 
           </div>
             </div>
