@@ -70,7 +70,6 @@ export default function TabSettings({ ctx }) {
                       <p style={{ fontSize:17, fontWeight:900, color:T.text }}>{userName || L.tapName}</p>
                       <Pencil size={12} strokeWidth={2} color={T.textSub}/>
                     </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -137,7 +136,6 @@ export default function TabSettings({ ctx }) {
 
           </div>
         </div>
-        )}
 
         {/* BUDGET LIMIT MODAL */}
         {showBudgetLimit && (
@@ -178,14 +176,12 @@ export default function TabSettings({ ctx }) {
                         <div style={{ height:6, borderRadius:6, background:T.catBg, overflow:"hidden" }}>
                           <div style={{ height:"100%", width:`${pct}%`, background: over?"#ef4444":pct>80?"#f59e0b":themeAccent, borderRadius:6, transition:"width 0.4s ease" }}/>
                         </div>
-                      )}
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-        )}
 
         {/* CATEGORY MANAGER MODAL */}
         {showCatManager && (

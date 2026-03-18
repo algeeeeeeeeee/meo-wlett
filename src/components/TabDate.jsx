@@ -151,7 +151,6 @@ export default function TabDate({ ctx }) {
             </div>
           </div>
         </div>
-        )}
 
         {/* THEME PICKER MODAL */}
         {showThemePicker && (
