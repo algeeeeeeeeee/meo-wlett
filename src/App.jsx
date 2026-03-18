@@ -3622,7 +3622,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Notifikasi (single row - reminder is inside notif modal) */}
+            {/* Notifikasi */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowNotifModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
@@ -3637,7 +3637,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Kategori + Tags + Budget Limit (grouped) */}
+            {/* Kategori — 1 card: Limit + Kelola + Tag */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
@@ -3657,9 +3657,9 @@ export default function App() {
               </button>
               <button onClick={() => setShowTagModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                   <Hash size={14} color={T.accentText} strokeWidth={2}/>
-                  <div>
+                  <div style={{ textAlign:"left" }}>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
                     <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
                   </div>
