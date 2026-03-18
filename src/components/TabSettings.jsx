@@ -70,6 +70,7 @@ export default function TabSettings({ ctx }) {
                       <p style={{ fontSize:17, fontWeight:900, color:T.text }}>{userName || L.tapName}</p>
                       <Pencil size={12} strokeWidth={2} color={T.textSub}/>
                     </div>
+                  )}
                 </div>
               </div>
             </div>
