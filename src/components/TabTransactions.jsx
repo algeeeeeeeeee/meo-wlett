@@ -269,8 +269,8 @@ export default function TabTransactions({ ctx }) {
             </div>
 
             </div>
-          </div>
         )}
+          </div>
         </>
   );
 }
