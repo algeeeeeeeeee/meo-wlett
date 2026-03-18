@@ -177,6 +177,7 @@ export default function TabSettings({ ctx }) {
                         <div style={{ height:6, borderRadius:6, background:T.catBg, overflow:"hidden" }}>
                           <div style={{ height:"100%", width:`${pct}%`, background: over?"#ef4444":pct>80?"#f59e0b":themeAccent, borderRadius:6, transition:"width 0.4s ease" }}/>
                         </div>
+                      )}
                     </div>
                   );
                 })}
