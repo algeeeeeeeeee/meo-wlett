@@ -2272,7 +2272,7 @@ export default function App() {
                 {weeklyInsight.thisTotal === 0 ? (
                   <p style={{ fontSize:12, color:T.textSub }}>{lang==="en"?"No spending this week yet.":"Belum ada transaksi minggu ini."}</p>
                 ) : (
-                  <>
+                  <React.Fragment>
                     <p style={{ fontSize:18, fontWeight:900, color:T.text, lineHeight:1, marginBottom:3 }}><AnimatedNumber value={weeklyInsight.thisTotal} format={formatRp}/></p>
                     {weeklyInsight.hasBoth && weeklyInsight.diff !== 0 && (
                       <p style={{ fontSize:11, color: weeklyInsight.diff > 0 ? "#f87171" : "#4ade80", fontWeight:700, marginBottom:3 }}>
@@ -2315,7 +2315,7 @@ export default function App() {
                         </div>
                       );
                     })()}
-                  </>
+                  </React.Fragment>
                 )}
               </div>
             </div>
@@ -2688,7 +2688,7 @@ export default function App() {
             {filtered.length === 0 ? (
               <div className="card" style={{ padding:"48px 20px 40px",textAlign:"center",background:T.card,border:`1px solid ${T.cardBorder}` }}>
                 {searchQuery ? (
-                  <>
+                  <React.Fragment>
                     <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
                       <div style={{ width:80, height:80, borderRadius:"50%", background:`linear-gradient(135deg,${themeAccent}18,${themePrimary}14)`, border:`1.5px solid ${themeAccent}25`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <Search size={34} color={T.accentText} strokeWidth={1.5}/>
@@ -2696,9 +2696,9 @@ export default function App() {
                     </div>
                     <p style={{ fontSize:16,fontWeight:900,color:T.text,marginBottom:6 }}>{L.noTxFound}</p>
                     <p style={{ fontSize:13,color:T.textSub,lineHeight:1.5 }}>{L.noTxFoundDesc} "{searchQuery}"</p>
-                  </>
+                  </React.Fragment>
                 ) : (
-                  <>
+                  <React.Fragment>
                     <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
                       <div className="empty-float" style={{ width:88, height:88, borderRadius:26, background:`${themeAccent}14`, border:`1.5px solid ${themeAccent}30`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <Wallet size={38} color={themeAccent} strokeWidth={1.5}/>
@@ -2710,7 +2710,7 @@ export default function App() {
                       onClick={() => { haptic(); setShowForm(true); setEditItem(null); }}>
                       <Plus size={16} strokeWidth={2.5}/> {lang==="en"?"Add first transaction":"Catat transaksi pertama"}
                     </button>
-                  </>
+                  </React.Fragment>
                 )}
               </div>
             ) : (
@@ -3266,7 +3266,7 @@ export default function App() {
                 <p style={{ color:T.textSub, fontSize:14 }}>{L.noTxDate}</p>
               </div>
             ) : (
-              <>
+              <React.Fragment>
                 <div className="card" style={{ padding:16, marginBottom:12, ...CS }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:11 }}>
                     <div style={{ width:24, height:24, borderRadius:7, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -3359,7 +3359,7 @@ export default function App() {
                       </div>
                     );
                   })()}
-              </>
+              </React.Fragment>
             )}
 
           </div>
