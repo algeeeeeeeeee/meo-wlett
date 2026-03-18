@@ -2804,7 +2804,6 @@ export default function App() {
                   </div>
                 );
               })()}
-              </div>
 
               {showRecurPanel && <div className="card" style={{ padding:16, marginBottom:10, ...CS }}>
                 <p style={{ fontSize:13, fontWeight:800, color:T.text, marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
