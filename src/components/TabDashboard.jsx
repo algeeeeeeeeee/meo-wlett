@@ -216,7 +216,7 @@ export default function TabDashboard({ ctx }) {
 
             {/* Budget per Kategori — prominent dashboard card */}
             {(() => {
-              const= Object.entries(budgets).filter(([,v]) => v > 0);
+              const budgetEntries = Object.entries(budgets).filter(([,v]) => v > 0);
               const allCatKeys = Object.keys(categories);
               // Empty state CTA
               if (.length === 0 && !overallBudget) return (
