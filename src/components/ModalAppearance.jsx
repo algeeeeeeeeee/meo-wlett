@@ -156,8 +156,5 @@ export default function ModalAppearance({ ctx }) {
               </div>
             </div>
           </div>
-        )}
-
-        {/* ── NOTIFICATION MODAL ── */}
   );
 }

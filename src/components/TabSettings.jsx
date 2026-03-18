@@ -137,7 +137,6 @@ export default function TabSettings({ ctx }) {
 
           </div>
         </div>
-        )}
 
         {/* BUDGET LIMIT MODAL */}
         {showBudgetLimit && (
@@ -320,6 +319,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
         </>
   );
 }
