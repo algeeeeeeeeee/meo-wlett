@@ -1324,7 +1324,7 @@ export default function App() {
       value,
       color: getCategory(key).color
     })),
-    [catBreakdown, categories]);
+    [catBreakdown, categories, lang]);
 
   const reportTxns = useMemo(() =>
     transactions.filter(t => t.date === reportDate).sort((a, b) => b.id - a.id),

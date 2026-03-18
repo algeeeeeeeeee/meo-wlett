@@ -1,6 +1,6 @@
 import { formatRp } from "../utils/helpers.js";
 
-export default function DonutChart({ data, total, T }) {
+export default function DonutChart({ data, total, T, lang }) {
   if (!data || data.length === 0) return null;
   const size = 200, cx = 100, cy = 100, outer = 90, inner = 58;
   const TWO_PI = 2 * Math.PI;
@@ -36,7 +36,7 @@ export default function DonutChart({ data, total, T }) {
         {slices.map((s, i) => (
           <path key={i} d={donutPath(cx, cy, outer, inner, s.startAngle, s.endAngle)} fill={s.color} opacity={0.92} />
         ))}
-        <text x={cx} y={cy - 10} textAnchor="middle" fontSize={13} fill={T.textSub} fontWeight={600}>Total</text>
+        <text x={cx} y={cy - 10} textAnchor="middle" fontSize={13} fill={T.textSub} fontWeight={600}>{lang === "en" ? "Total" : "Total"}</text>
         <text x={cx} y={cy + 12} textAnchor="middle" fontSize={15} fill={T.text} fontWeight={800}>{formatRp(total)}</text>
       </svg>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1, minWidth: 120 }}>

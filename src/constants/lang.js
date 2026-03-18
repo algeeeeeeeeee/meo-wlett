@@ -85,6 +85,38 @@ export const LANG = {
     backupOk:"Backup berhasil diunduh", restoreOk:"Backup berhasil dipulihkan!",
     restoreConfirm:"Restore backup ini? Data saat ini akan diganti.",
     backupInvalid:"File backup tidak valid",
+
+    save:"Simpan", cancel:"Batal", done:"Selesai", noTags:"Belum ada tag",
+    notifications:"Notifikasi",
+
+    tags:"Tag", addTag:"+ Tambah Tag", editTag:"Edit Tag",
+    tagAdded:"Tag ditambahkan", tagDeleted:"Tag dihapus",
+    tagPlaceholder:"Nama tag...", tagStats:"Statistik Tag",
+    tagSuggestions:"Saran", tagTx:"transaksi",
+
+    cicilan:"Cicilan", addCicilan:"+ Tambah Cicilan", editCicilan:"Edit Cicilan",
+    noCicilan:"Belum ada cicilan",
+    cicilanDesc:"Cicilan otomatis dikurangi dari pemasukan tiap bulan",
+    cicilanName:"Nama cicilan", cicilanMonthly:"Cicilan/bulan",
+    cicilanDue:"Tanggal jatuh tempo", cicilanTotal:"Total harga",
+    cicilanDuration:"Durasi (bulan)", cicilanProgress:"Progress cicilan",
+    cicilanRemain:"bulan lagi", cicilanPaid:"Lunas",
+    cicilanAlreadyPaid:"Sudah dibayar bulan ini",
+    cicilanMarkPaid:"Tandai Lunas Bulan Ini",
+    cicilanPaidToast:"ok:Cicilan bulan ini ditandai lunas",
+    cicilanSaved:"ok:Cicilan disimpan", cicilanDeleted:"del:Cicilan dihapus",
+    cicilanTotal2:"Total Cicilan/Bulan",
+
+    reminderTitle:"Pengingat Transaksi",
+    reminderDesc:"Notif kalau belum input pengeluaran hari ini",
+    reminderTime:"Waktu Pengingat", reminderDays:"Hari Aktif",
+    reminderSmart:"Pengingat Cerdas",
+    reminderSmartDesc:"Lewati kalau sudah ada transaksi hari ini",
+    reminderPreview:"Pratinjau Notifikasi",
+    reminderOn:"ok:Pengingat aktif", reminderOff:"Pengingat dinonaktifkan",
+    reminderNotifTitle:"🐾 Belum catat pengeluaran hari ini!",
+    reminderNotifBody:"Jangan lupa input transaksi biar keuanganmu tetap terkontrol 🐱",
+
   },
 
   en: {
@@ -187,5 +219,37 @@ export const LANG = {
     restoreConfirm:"Restore this backup? Current data will be replaced.",
     backupInvalid:"Invalid backup file",
     backupData:"Backup Data", backupDesc:"Download all data as JSON", restoreBackup:"Restore Backup", restoreDesc:"Import from backup file", resetDesc:"Delete all data permanently", dataSubtitle:"Backup, restore & reset", restoreConfirmMsg:"Restore this backup? Current data will be replaced.",
+
+    save:"Save", cancel:"Cancel", done:"Done", noTags:"No tags yet",
+    notifications:"Notifications",
+
+    tags:"Tags", addTag:"+ Add Tag", editTag:"Edit Tag",
+    tagAdded:"Tag added", tagDeleted:"Tag deleted",
+    tagPlaceholder:"Tag name...", tagStats:"Tag Stats",
+    tagSuggestions:"Suggestions", tagTx:"transactions",
+
+    cicilan:"Instalments", addCicilan:"+ Add Instalment", editCicilan:"Edit Instalment",
+    noCicilan:"No instalments yet",
+    cicilanDesc:"Instalments are auto-deducted from monthly income",
+    cicilanName:"Instalment name", cicilanMonthly:"Monthly payment",
+    cicilanDue:"Due date", cicilanTotal:"Total price",
+    cicilanDuration:"Duration (months)", cicilanProgress:"Progress",
+    cicilanRemain:"months left", cicilanPaid:"Paid",
+    cicilanAlreadyPaid:"Already paid this month",
+    cicilanMarkPaid:"Mark Paid This Month",
+    cicilanPaidToast:"ok:Instalment marked as paid",
+    cicilanSaved:"ok:Instalment saved", cicilanDeleted:"del:Instalment deleted",
+    cicilanTotal2:"Total Instalments/Month",
+
+    reminderTitle:"Transaction Reminder",
+    reminderDesc:"Notify if no spending recorded today",
+    reminderTime:"Reminder Time", reminderDays:"Active Days",
+    reminderSmart:"Smart Reminder",
+    reminderSmartDesc:"Skip if transaction already recorded today",
+    reminderPreview:"Notification Preview",
+    reminderOn:"ok:Reminder activated", reminderOff:"Reminder deactivated",
+    reminderNotifTitle:"🐾 No spending recorded today!",
+    reminderNotifBody:"Don't forget to log transactions to stay on track 🐱",
+
   }
 };

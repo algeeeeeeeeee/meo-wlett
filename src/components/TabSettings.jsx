@@ -34,6 +34,10 @@ export default function TabSettings({ ctx }) {
     exportCSV, exportPDFReport,
     ICON_OPTIONS, COLOR_OPTIONS,
     streak,
+    userTags, showTagModal, setShowTagModal,
+    budgetsDisplay, setBudgetsDisplay,
+    showToast, showConfirm,
+    DEFAULT_CATEGORIES,
   } = ctx;
 
   return (
