@@ -21,6 +21,7 @@ export default function TabDate({ ctx }) {
     triggerThemeChange,
     setTempOverallBudget, setTempOverallBudgetDisplay,
     setShowOverallBudgetModal
+    CS, IBN, THEME_LABELS, activeDateId, currentMonth, dateWishlist, kbHeight, setActiveDateId, setDateWishlist, setShowWishlistForm, setWishlistInput, showToast, showWishlistForm, wishlistInput,
   } = ctx;
 
   return (
