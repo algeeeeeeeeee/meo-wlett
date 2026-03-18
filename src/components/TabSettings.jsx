@@ -131,38 +131,32 @@ export default function TabSettings({ ctx }) {
               </button>
             </div>
 
-            {/* Tags */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
-              <button onClick={() => setShowTagModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <Hash size={16} color={T.accentText} strokeWidth={2}/>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} ${lang==="en"?"tags":"tag"}` : L.noTags}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-            </div>
-            {/* Per-kategori budget */}
+            {/* Kategori — 1 card: Limit + Kelola + Tag */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Per-Category Limits":"Limit per Kategori"}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
-            </div>
-
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:8, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowCatManager(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
+                </div>
+                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+              </button>
+              <button onClick={() => setShowTagModal(true)}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <Hash size={14} color={T.accentText} strokeWidth={2}/>
+                  <div style={{ textAlign:"left" }}>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
+                  </div>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -174,7 +168,7 @@ export default function TabSettings({ ctx }) {
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>Data</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Backup, restore & reset":"Backup, restore & reset"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Backup, restore & reset":L.dataSubtitle||"Backup, pulihkan & reset"}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -326,7 +320,7 @@ export default function TabSettings({ ctx }) {
                 <button onClick={() => document.getElementById("restore-input").click()}
                   style={{ width:"100%", padding:"14px", borderRadius:16, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, color:T.text, fontSize:14, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:12, boxSizing:"border-box", fontFamily:"inherit" }}>
                   <div style={{ width:38, height:38, borderRadius:12, ...CSN, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Upload size={18} strokeWidth={2} color={T.text}/></div>
-                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.text }}>{L.restoreBackup}</p><p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Import from backup file":"Import dari file backup"}</p></div>
+                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.text }}>{L.restoreBackup}</p><p style={{ fontSize:11, color:T.textSub }}>{L.restoreDesc}</p></div>
                 </button>
                 <input id="restore-input" type="file" accept=".json" style={{ display:"none" }} onChange={e => {
                     const file=e.target.files?.[0]; if(!file) return;

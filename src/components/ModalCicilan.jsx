@@ -195,7 +195,7 @@ export default function ModalCicilan({ ctx }) {
                       <p style={{ fontSize:20, fontWeight:900, color:"#f87171" }}>-{formatRp(totalMonthly)}</p>
                     </div>
                     <div style={{ textAlign:"right" }}>
-                      <p style={{ fontSize:11, fontWeight:700, color:T.textSub, marginBottom:3 }}>{cicilan.length} {lang==="en"?"items":"item"}</p>
+                      <p style={{ fontSize:11, fontWeight:700, color:T.textSub, marginBottom:3 }}>{cicilan.length} {lang==="en"?"items":"item aktif"}</p>
                       <p style={{ fontSize:11, color:T.textSub }}>{L.cicilanDesc}</p>
                     </div>
                   </div>

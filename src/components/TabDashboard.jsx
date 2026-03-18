@@ -63,7 +63,7 @@ export default function TabDashboard({ ctx }) {
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:20, position:"relative" }}>
                     <div style={{ cursor:"pointer" }} onClick={() => { setTempIncome(income); setTempIncomeDisplay(income ? income.toLocaleString("id-ID") : ""); setIncomeAdj(""); setIncomeAdjDisplay(""); setEditIncome(true); }}>
                       <div style={{ display:"flex", alignItems:"center", gap:4, marginBottom:3 }}>
-                        <p style={{ fontSize:7, color:"rgba(255,255,255,0.38)", fontWeight:700, letterSpacing:1, textTransform:"uppercase" }}>{lang==="en"?"Income":"Pemasukan"}</p>
+                        <p style={{ fontSize:7, color:"rgba(255,255,255,0.38)", fontWeight:700, letterSpacing:1, textTransform:"uppercase" }}>{L.income}</p>
                         <Pencil size={7} color="rgba(255,255,255,0.38)" strokeWidth={2.5}/>
                       </div>
                       <p style={{ fontSize:13, fontWeight:900, color:"rgba(255,255,255,0.88)", lineHeight:1 }}><AnimatedNumber value={income} format={formatRp}/></p>
@@ -289,7 +289,7 @@ export default function TabDashboard({ ctx }) {
                             <span style={{ fontSize:12, fontWeight:700, color:T.text, display:"flex", alignItems:"center", gap:5 }}>
                               <CatIcon iconKey={cat.icon} size={13} color={cat.color}/> {getCatLabel(cat, lang)}
                             </span>
-                            <button onClick={() => { setBudgets(prev => { const next={...prev}; next[key]=0; return next; }); setBudgetsDisplay(prev => { const next={...prev}; next[key]=""; return next; }); }} style={{ ...IBN, fontSize:11, color:T.textSub, padding:"0 4px", opacity:0.6 }} title="Reset">✕</button>
+                            <button onClick={() => { setBudgets(prev => { const next={...prev}; next[key]=0; return next; }); setBudgetsDisplay(prev => { const next={...prev}; next[key]=""; return next; }); }} style={{ ...IBN, fontSize:11, color:T.textSub, padding:"0 4px", opacity:0.6 }} title={lang==="en"?"Reset":"Hapus"}>✕</button>
                             <button onClick={() => { setBudgets(prev => { const next={...prev}; const cur=next[key]||0; const step=50000; next[key]=cur+step; return next; }); }} style={{ ...IBN, fontSize:12, fontWeight:800, color: over ? "#ef4444" : warn ? "#f59e0b" : T.textSub, padding:"0 4px" }}>
                               {pct}% {over && <AlertCircle size={11} color="#ef4444" strokeWidth={2.5} style={{ display:"inline-block", verticalAlign:"middle" }}/>}
                             </button>

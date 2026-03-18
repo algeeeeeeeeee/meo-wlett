@@ -2415,7 +2415,7 @@ export default function App() {
                             <span style={{ fontSize:12, fontWeight:700, color:T.text, display:"flex", alignItems:"center", gap:5 }}>
                               <CatIcon iconKey={cat.icon} size={13} color={cat.color}/> {getCatLabel(cat, lang)}
                             </span>
-                            <button onClick={() => { setBudgets(prev => { const next={...prev}; next[key]=0; return next; }); setBudgetsDisplay(prev => { const next={...prev}; next[key]=""; return next; }); }} style={{ ...IBN, fontSize:11, color:T.textSub, padding:"0 4px", opacity:0.6 }} title="Reset">✕</button>
+                            <button onClick={() => { setBudgets(prev => { const next={...prev}; next[key]=0; return next; }); setBudgetsDisplay(prev => { const next={...prev}; next[key]=""; return next; }); }} style={{ ...IBN, fontSize:11, color:T.textSub, padding:"0 4px", opacity:0.6 }} title={lang==="en"?"Reset":"Hapus"}>✕</button>
                             <button onClick={() => { setBudgets(prev => { const next={...prev}; const cur=next[key]||0; const step=50000; next[key]=cur+step; return next; }); }} style={{ ...IBN, fontSize:12, fontWeight:800, color: over ? "#ef4444" : warn ? "#f59e0b" : T.textSub, padding:"0 4px" }}>
                               {pct}% {over && <AlertCircle size={11} color="#ef4444" strokeWidth={2.5} style={{ display:"inline-block", verticalAlign:"middle" }}/>}
                             </button>
