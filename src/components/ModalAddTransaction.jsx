@@ -12,7 +12,8 @@ export default function ModalAddTransaction({ ctx }) {
     showForm, setShowForm,
     setShowCalc,
     submitForm,
-    kbHeight,
+    kbHeight,,
+    quickAddGoalId, editingGoal, changeTab,
   } = ctx;
 
   return (

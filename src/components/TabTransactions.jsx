@@ -22,7 +22,8 @@ export default function TabTransactions({ ctx }) {
     showRecurPanel, setShowRecurPanel,
     editRecurId, setEditRecurId,
     showToast,
-    CS, CSN, activeCardId, getCategory, setActiveCardId,
+    CS, CSN, activeCardId, getCategory, setActiveCardId,,
+    setTransactions,
   } = ctx;
 
   return (
