@@ -1,4 +1,4 @@
-import { Camera, ChevronRight, Download, Package, Pencil, Trash2, Upload } from "../icons.jsx";
+import { Camera, ChevronRight, Download, Hash, Package, Pencil, Trash2, Upload } from "../icons.jsx";
 import { formatRp, getCatLabel, getMonth, parseRpInput, today } from "../utils/helpers.js";
 import { CatIcon } from "./ui.jsx";
 
@@ -168,7 +168,7 @@ export default function TabSettings({ ctx }) {
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>Data</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Backup, restore & reset":L.dataSubtitle||"Backup, pulihkan & reset"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{L.dataSubtitle}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
