@@ -26,7 +26,7 @@ export default function TabDashboard({ ctx }) {
     setIncomeAdj, setIncomeAdjDisplay, setEditIncome,
     setTempOverallBudget, setTempOverallBudgetDisplay,
     setBudgets, setBudgetsDisplay,
-    changeTab,,
+    changeTab,
     balanceCardRef,
   } = ctx;
 
