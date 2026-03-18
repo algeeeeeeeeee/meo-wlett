@@ -301,6 +301,229 @@ function Calculator({ onUse, onClose, T, themeAccent, themePrimary, dark }) {
   );
 }
 
+
+
+// ── REMINDER MODAL COMPONENT ─────────────────────────────────────────────────
+function ReminderModal({ show, onClose, lang, L, T, themeAccent, themePrimary, notifEnabled, handleNotification, reminderHour, setReminderHour, reminderDays, setReminderDays, reminderSmart, setReminderSmart, scheduleSmartReminder, transactions, showToast }) {
+  if (!show) return null;
+  const padT = h => String(h).padStart(2,"0")+":00";
+  const DAY_L = lang==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:9}}><Bell size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.reminderTitle}</p></div>
+          <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
+        </div>
+        <div style={{overflowY:"auto",flex:1}}>
+          <div style={{margin:"14px 16px",padding:"16px",background:`linear-gradient(135deg,${themeAccent}18,${themePrimary}28)`,border:`1px solid ${themeAccent}25`,borderRadius:16,display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:50,height:50,borderRadius:16,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Bell size={22} color="white" strokeWidth={2}/></div>
+            <div><p style={{fontSize:14,fontWeight:800,color:T.text}}>{L.reminderTitle}</p><p style={{fontSize:12,color:T.textSub,marginTop:3,lineHeight:1.5}}>{L.reminderDesc}</p></div>
+          </div>
+          <div onClick={()=>handleNotification()} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}><div style={{width:38,height:38,borderRadius:12,background:T.card2,display:"flex",alignItems:"center",justifyContent:"center"}}><Bell size={18} color={notifEnabled?themeAccent:T.textSub} strokeWidth={2}/></div><div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{lang==="en"?"Push Notifications":"Notifikasi Push"}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{notifEnabled?L.notifActive:L.notifOff}</p></div></div>
+            <div style={{width:46,height:26,borderRadius:99,background:notifEnabled?`linear-gradient(135deg,${themeAccent},${themePrimary})`:T.card2,border:notifEnabled?"none":`1.5px solid ${T.cardBorder}`,position:"relative",flexShrink:0}}><div style={{position:"absolute",width:20,height:20,borderRadius:"50%",background:"white",top:3,left:notifEnabled?"calc(100% - 23px)":3,transition:"left 0.2s cubic-bezier(0.34,1.1,0.64,1)",boxShadow:"0 2px 6px rgba(0,0,0,0.3)"}}/></div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
+            <div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{L.reminderTime}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{lang==="en"?"Notification sent at":"Notif dikirim jam"}</p></div>
+            <select value={reminderHour} onChange={e=>setReminderHour(Number(e.target.value))} style={{background:T.card2,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"8px 12px",color:themeAccent,fontSize:16,fontWeight:900,cursor:"pointer",fontFamily:"inherit",outline:"none"}}>
+              {[6,7,8,9,10,12,15,18,19,20,21,22].map(h=><option key={h} value={h}>{padT(h)}</option>)}
+            </select>
+          </div>
+          <div style={{padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
+            <p style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:10}}>{L.reminderDays}</p>
+            <div style={{display:"flex",gap:6}}>
+              {[0,1,2,3,4,5,6].map(d=>(
+                <div key={d} onClick={()=>setReminderDays(p=>p.includes(d)?p.filter(x=>x!==d):[...p,d])} style={{flex:1,height:38,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,cursor:"pointer",transition:"all 0.15s",background:reminderDays.includes(d)?themeAccent+"20":T.card2,border:reminderDays.includes(d)?`1.5px solid ${themeAccent}50`:`1.5px solid ${T.cardBorder}`,color:reminderDays.includes(d)?themeAccent:T.textSub}}>{DAY_L[d]}</div>
+              ))}
+            </div>
+          </div>
+          <div onClick={()=>setReminderSmart(p=>!p)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}><div style={{width:38,height:38,borderRadius:12,background:T.card2,display:"flex",alignItems:"center",justifyContent:"center"}}><Bell size={18} color={T.textSub} strokeWidth={2}/></div><div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{L.reminderSmart}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{L.reminderSmartDesc}</p></div></div>
+            <div style={{width:46,height:26,borderRadius:99,background:reminderSmart?`linear-gradient(135deg,${themeAccent},${themePrimary})`:T.card2,border:reminderSmart?"none":`1.5px solid ${T.cardBorder}`,position:"relative",flexShrink:0}}><div style={{position:"absolute",width:20,height:20,borderRadius:"50%",background:"white",top:3,left:reminderSmart?"calc(100% - 23px)":3,transition:"left 0.2s cubic-bezier(0.34,1.1,0.64,1)",boxShadow:"0 2px 6px rgba(0,0,0,0.3)"}}/></div>
+          </div>
+          <div style={{margin:"14px 16px 0"}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8}}>{(L.reminderPreview||"PREVIEW").toUpperCase()}</p><div style={{background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:14}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}><div style={{width:28,height:28,borderRadius:8,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🐱</div><p style={{fontSize:11,fontWeight:700,color:T.textSub}}>Meowlett</p><p style={{fontSize:11,color:T.textMuted,marginLeft:"auto"}}>{padT(reminderHour)}</p></div><p style={{fontSize:13,fontWeight:800,color:T.text,marginBottom:3}}>{L.reminderNotifTitle}</p><p style={{fontSize:12,color:T.textSub,lineHeight:1.4}}>{L.reminderNotifBody}</p></div></div>
+          <button onClick={()=>{if(notifEnabled)scheduleSmartReminder({hour:reminderHour,minute:0,days:reminderDays,smart:reminderSmart,lang,getTransactions:()=>transactions});showToast("ok:"+(lang==="en"?"Settings saved":"Pengaturan disimpan"));onClose();}}
+            style={{display:"block",margin:"14px 16px 24px",width:"calc(100% - 32px)",padding:"14px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{lang==="en"?"Save Settings":"Simpan Pengaturan"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+// ── CICILAN MODAL COMPONENT ──────────────────────────────────────────────────
+function CicilanModal({ show, onClose, cicilan, setCicilan, lang, L, T, themeAccent, themePrimary, formatRp, parseRpInput, haptic, showToast }) {
+  const [view, setView] = React.useState("list");
+  const [editId, setEditId] = React.useState(null);
+  const [detail, setDetail] = React.useState(null);
+  const [form, setForm] = React.useState({name:"",monthly:"",monthlyDisplay:"",dueDay:"5",total:"",totalDisplay:"",duration:"12"});
+  if(!show) return null;
+  const curMonth = new Date().toISOString().slice(0,7);
+  const totalMonthly = cicilan.reduce((s,ci)=>s+Number(ci.monthly||0),0);
+  const getPaid = ci => (ci.paidMonths||[]).length;
+  const isPaidNow = ci => (ci.paidMonths||[]).includes(curMonth);
+  const getPct = ci => ci.duration ? Math.round(getPaid(ci)/ci.duration*100) : 0;
+  const save = () => {
+    if(!form.name||!form.monthly) return;
+    const item = {id:editId||Date.now(),name:form.name,total:Number(String(form.total).replace(/\./g,"")),monthly:Number(String(form.monthly).replace(/\./g,"")),dueDay:form.dueDay||"5",duration:Number(form.duration)||12,paidMonths:editId?(cicilan.find(x=>x.id===editId)?.paidMonths||[]):[]};
+    if(editId) setCicilan(p=>p.map(x=>x.id===editId?item:x)); else setCicilan(p=>[...p,item]);
+    showToast(L.cicilanSaved); setView("list"); setEditId(null); haptic("success");
+  };
+  const del = id => { setCicilan(p=>p.filter(x=>x.id!==id)); showToast(L.cicilanDeleted); setView("list"); haptic(); };
+  const openEdit = ci => { setEditId(ci.id); setForm({name:ci.name,monthly:ci.monthly,monthlyDisplay:Number(ci.monthly).toLocaleString("id-ID"),dueDay:ci.dueDay,total:ci.total||"",totalDisplay:ci.total?Number(ci.total).toLocaleString("id-ID"):"",duration:String(ci.duration)}); setView("form"); };
+  const markPaid = ci => {
+    if(isPaidNow(ci)){showToast("info:"+L.cicilanAlreadyPaid);return;}
+    setCicilan(p=>p.map(x=>x.id===ci.id?{...x,paidMonths:[...(x.paidMonths||[]),curMonth]}:x));
+    setDetail(p=>p?{...p,paidMonths:[...(p.paidMonths||[]),curMonth]}:p);
+    showToast(L.cicilanPaidToast); haptic("success");
+  };
+  const IBNs = {background:"none",border:"none",cursor:"pointer"};
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:9}}><CreditCard size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.cicilan}</p></div>
+          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+            {view==="list" && <button onClick={()=>{setEditId(null);setForm({name:"",monthly:"",monthlyDisplay:"",dueDay:"5",total:"",totalDisplay:"",duration:"12"});setView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addCicilan}</button>}
+            <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
+          </div>
+        </div>
+        <div style={{overflowY:"auto",flex:1}}>
+          {view==="form" && (
+            <div style={{padding:16,display:"flex",flexDirection:"column",gap:10}}>
+              <p style={{fontSize:13,fontWeight:800,color:T.text}}>{editId?L.editCicilan:L.addCicilan}</p>
+              <input className="inp" placeholder={L.cicilanName} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/>
+              <div style={{display:"flex",gap:8}}>
+                <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanMonthly}</p><input className="inp" type="text" inputMode="numeric" placeholder="750.000" value={form.monthlyDisplay||""} onFocus={e=>e.target.select()} onChange={e=>{const {display,raw}=parseRpInput(e.target.value);setForm(f=>({...f,monthly:raw,monthlyDisplay:display}));}} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
+                <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanDue}</p><input className="inp" type="number" min="1" max="31" placeholder="5" value={form.dueDay} onChange={e=>setForm(f=>({...f,dueDay:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanTotal}</p><input className="inp" type="text" inputMode="numeric" placeholder="18.000.000" value={form.totalDisplay||""} onFocus={e=>e.target.select()} onChange={e=>{const {display,raw}=parseRpInput(e.target.value);setForm(f=>({...f,total:raw,totalDisplay:display}));}} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
+                <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanDuration}</p><input className="inp" type="number" min="1" placeholder="24" value={form.duration} onChange={e=>setForm(f=>({...f,duration:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
+              </div>
+              <div style={{display:"flex",gap:8,marginTop:4}}>
+                <button onClick={save} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button>
+                <button onClick={()=>{setView("list");setEditId(null);}} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button>
+              </div>
+            </div>
+          )}
+          {view==="detail" && detail && (
+            <div>
+              <div style={{background:`linear-gradient(135deg,${themePrimary},${themeAccent}88)`,padding:"18px 20px 20px"}}>
+                <p style={{fontSize:18,fontWeight:900,color:"white"}}>{detail.name}</p>
+                <div style={{display:"flex",gap:20,marginTop:12}}>
+                  <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>{formatRp(detail.monthly)}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"per month":"per bulan"}</p></div>
+                  <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>{getPaid(detail)}/{detail.duration}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"months":"bulan"}</p></div>
+                  <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>tgl {detail.dueDay}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"due":"jatuh tempo"}</p></div>
+                </div>
+              </div>
+              <div style={{padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,fontWeight:600,marginBottom:8}}><span>Progress</span><span>{getPct(detail)}%</span></div>
+                <div style={{height:8,borderRadius:99,background:T.card2,overflow:"hidden"}}><div style={{height:"100%",width:`${getPct(detail)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99,transition:"width 0.6s ease"}}/></div>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:11,color:T.textSub}}><span>{lang==="en"?"Paid:":"Sudah:"} {formatRp(getPaid(detail)*detail.monthly)}</span><span>{lang==="en"?"Left:":"Sisa:"} {formatRp((detail.duration-getPaid(detail))*detail.monthly)}</span></div>
+              </div>
+              <div style={{padding:"14px 20px",display:"flex",gap:8,borderBottom:`1px solid ${T.cardBorder}`}}>
+                <button onClick={()=>markPaid(detail)} style={{flex:1,padding:"11px 0",borderRadius:12,background:isPaidNow(detail)?T.card2:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:isPaidNow(detail)?`1.5px solid ${T.cardBorder}`:"none",color:isPaidNow(detail)?T.textSub:"white",fontSize:12,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{isPaidNow(detail)?"✓ "+L.cicilanAlreadyPaid:L.cicilanMarkPaid}</button>
+                <button onClick={()=>openEdit(detail)} style={{width:42,height:42,borderRadius:12,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={15} color={T.text} strokeWidth={2}/></button>
+                <button onClick={()=>del(detail.id)} style={{width:42,height:42,borderRadius:12,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={15} color="#f87171" strokeWidth={2}/></button>
+              </div>
+              <button onClick={()=>setView("list")} style={{display:"block",margin:"12px 20px",width:"calc(100% - 40px)",padding:"10px 0",borderRadius:12,background:T.card2,border:`1.5px solid ${T.cardBorder}`,color:T.textSub,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← {lang==="en"?"Back":"Kembali"}</button>
+            </div>
+          )}
+          {view==="list" && (
+            <div>
+              {cicilan.length===0 ? (
+                <div style={{padding:"48px 20px",textAlign:"center"}}><div style={{width:72,height:72,borderRadius:22,background:themeAccent+"18",border:`1.5px solid ${themeAccent}30`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px"}}><CreditCard size={32} color={themeAccent} strokeWidth={1.5}/></div><p style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:6}}>{L.noCicilan}</p><p style={{fontSize:12,color:T.textSub}}>{L.cicilanDesc}</p></div>
+              ) : (
+                <div>
+                  <div style={{margin:"14px 16px 0",padding:"14px 16px",background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:3}}>{L.cicilanTotal2}</p><p style={{fontSize:20,fontWeight:900,color:"#f87171"}}>-{formatRp(totalMonthly)}</p></div><p style={{fontSize:11,color:T.textSub,maxWidth:120,textAlign:"right"}}>{L.cicilanDesc}</p></div>
+                  {cicilan.map((ci,i)=>(
+                    <div key={ci.id} onClick={()=>{setDetail(ci);setView("detail");}} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:i<cicilan.length-1?`1px solid ${T.cardBorder}`:"none",cursor:"pointer"}}>
+                      <div style={{width:44,height:44,borderRadius:14,background:themeAccent+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CreditCard size={20} color={themeAccent} strokeWidth={1.5}/></div>
+                      <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>{ci.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{lang==="en"?"Inst.":"Cicilan"} {getPaid(ci)}/{ci.duration} · tgl {ci.dueDay}</p><div style={{height:3,borderRadius:99,background:T.card2,overflow:"hidden",marginTop:5,maxWidth:100}}><div style={{height:"100%",width:`${getPct(ci)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99}}/></div></div>
+                      <div style={{textAlign:"right",flexShrink:0}}><p style={{fontSize:14,fontWeight:800,color:"#f87171"}}>-{formatRp(ci.monthly)}</p><p style={{fontSize:10,color:isPaidNow(ci)?"#4ade80":T.textSub,marginTop:2,fontWeight:isPaidNow(ci)?700:500}}>{isPaidNow(ci)?"✓ "+(lang==="en"?"Paid":L.cicilanPaid||"Lunas"):(ci.duration-getPaid(ci))+" "+(L.cicilanRemain||"bln lagi")}</p></div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── TAGS MODAL COMPONENT ─────────────────────────────────────────────────────
+const TAG_COLORS_LIST = ["#f87171","#fb923c","#fbbf24","#4ade80","#34d399","#60a5fa","#818cf8","#c084fc","#f472b6","#94a3b8"];
+function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions, lang, L, T, themeAccent, themePrimary, formatRp, haptic, showToast }) {
+  const [view, setView] = React.useState("list");
+  const [editId, setEditId] = React.useState(null);
+  const [form, setForm] = React.useState({name:"",color:"#60a5fa"});
+  const SUGG = lang==="en"?["holiday","wedding","lebaran","monthly","date","work"]:["liburan","kondangan","lebaran","bulanan","date","kerja"];
+  const tagCount = id => Object.values(txTags||{}).filter(tags=>(tags||[]).includes(id)).length;
+  const tagTotal = id => {const txIds=Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));return transactions.filter(t=>txIds.includes(t.id)).reduce((s,t)=>s+Number(t.amount||0),0);};
+  const saveTag = () => {
+    if(!form.name.trim()) return;
+    if(editId) setUserTags(p=>p.map(t=>t.id===editId?{...t,...form}:t));
+    else { setUserTags(p=>[...p,{id:Date.now(),...form}]); showToast(L.tagAdded); }
+    setView("list"); setEditId(null); haptic("success");
+  };
+  if(!show) return null;
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:9}}><Hash size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.tags}</p></div>
+          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+            {view==="list" && <button onClick={()=>{setEditId(null);setForm({name:"",color:"#60a5fa"});setView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addTag}</button>}
+            <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
+          </div>
+        </div>
+        <div style={{overflowY:"auto",flex:1}}>
+          {view==="form" && (
+            <div style={{padding:16,display:"flex",flexDirection:"column",gap:12}}>
+              <p style={{fontSize:13,fontWeight:800,color:T.text}}>{editId?L.editTag:L.addTag}</p>
+              <input className="inp" placeholder={L.tagPlaceholder} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}} autoFocus/>
+              <div><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8}}>{lang==="en"?"Color":"Warna"}</p><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{TAG_COLORS_LIST.map(col=>(<div key={col} onClick={()=>setForm(f=>({...f,color:col}))} style={{width:32,height:32,borderRadius:50,background:col,cursor:"pointer",border:form.color===col?"3px solid white":"3px solid transparent",boxShadow:form.color===col?`0 0 0 2px ${col}`:"none",transition:"all 0.15s"}}/>))}</div></div>
+              {form.name && <div style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:99,background:form.color+"18",border:`1.5px solid ${form.color}50`}}><Hash size={11} color={form.color} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:form.color}}>{form.name}</span></div>}
+              <div style={{display:"flex",gap:8}}><button onClick={saveTag} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button><button onClick={()=>{setView("list");setEditId(null);}} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button></div>
+            </div>
+          )}
+          {view==="list" && (
+            <div>
+              {userTags.length===0 ? (
+                <div>
+                  <div style={{padding:"36px 20px",textAlign:"center"}}><div style={{width:64,height:64,borderRadius:20,background:themeAccent+"18",border:`1.5px solid ${themeAccent}30`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px"}}><Hash size={28} color={themeAccent} strokeWidth={1.5}/></div><p style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:6}}>{L.noTags}</p><p style={{fontSize:12,color:T.textSub}}>{lang==="en"?"Add tags to group transactions":"Tambah tag untuk kelompokkan transaksi"}</p></div>
+                  <div style={{padding:"0 16px 20px"}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10}}>{(L.tagSuggestions||"SARAN").toUpperCase()}</p><div style={{display:"flex",flexWrap:"wrap",gap:6}}>{SUGG.map((s,i)=>(<button key={s} onClick={()=>{setForm({name:s,color:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]});setView("form");}} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"7px 12px",borderRadius:99,background:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]+"15",border:`1.5px solid ${TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]}40`,cursor:"pointer",fontFamily:"inherit"}}><Hash size={10} color={TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]}}>{s}</span></button>))}</div></div>
+                </div>
+              ) : (
+                <div>
+                  {userTags.map((tag,i)=>(
+                    <div key={tag.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<userTags.length-1?`1px solid ${T.cardBorder}`:"none"}}>
+                      <div style={{width:40,height:40,borderRadius:12,background:tag.color+"20",border:`1.5px solid ${tag.color}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Hash size={18} color={tag.color} strokeWidth={2}/></div>
+                      <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>#{tag.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}{tagCount(tag.id)>0?` · ${formatRp(tagTotal(tag.id))}`:""}</p></div>
+                      <div style={{display:"flex",gap:6}}>
+                        <button onClick={()=>{setEditId(tag.id);setForm({name:tag.name,color:tag.color});setView("form");}} style={{width:34,height:34,borderRadius:10,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={13} color={T.text} strokeWidth={2}/></button>
+                        <button onClick={()=>{setUserTags(p=>p.filter(t=>t.id!==tag.id));showToast(L.tagDeleted||"del:Tag dihapus");haptic();}} style={{width:34,height:34,borderRadius:10,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={13} color="#f87171" strokeWidth={2}/></button>
+                      </div>
+                    </div>
+                  ))}
+                  {userTags.some(t=>tagCount(t.id)>0) && (
+                    <div style={{padding:"14px 16px",borderTop:`1px solid ${T.cardBorder}`}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10}}>{(L.tagStats||"RINGKASAN").toUpperCase()}</p><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{userTags.filter(t=>tagCount(t.id)>0).map(tag=>(<div key={tag.id} style={{background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:14,padding:12}}><p style={{fontSize:12,fontWeight:700,color:tag.color,marginBottom:4}}>#{tag.name}</p><p style={{fontSize:15,fontWeight:900,color:T.text}}>{formatRp(tagTotal(tag.id))}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}</p></div>))}</div></div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("dashboard");
   const [showFabMenu, setShowFabMenu] = useState(false);
@@ -936,7 +1159,15 @@ export default function App() {
   const now = today();
   const currentWeek = getWeek(now);
   const currentMonth = getMonth(now);
-  const getCategory = (key) => categories[key] || { label: key, icon: "package", color: "#94a3b8" };
+  const getCategory = (key) => {
+    const cat = categories[key];
+    if (!cat) return { label: key, icon: "package", color: "#94a3b8" };
+    // Merge labelId from DEFAULT_CATEGORIES if missing (fixes English stuck bug)
+    if (!cat.labelId && DEFAULT_CATEGORIES[key]?.labelId) {
+      return { ...cat, labelId: DEFAULT_CATEGORIES[key].labelId };
+    }
+    return cat;
+  };
 
   const weekExpense = useMemo(() => {
     const d = new Date(); const startOfWeek = new Date(d); startOfWeek.setDate(d.getDate() - d.getDay() + 1);
@@ -970,12 +1201,21 @@ export default function App() {
     const dy = Math.abs(e.changedTouches[0].clientY - swipeStartY.current);
     swipeStartX.current = null;
     if (swipeBlocked.current) { swipeBlocked.current = false; return; }
-    if (Math.abs(dx) < 60 || dy > 80) return;
+    // Disable swipe when any modal/popup is open
+    const anyModalOpen = showForm || showCalc || editIncome || showCatManager ||
+      showBudgetLimit || showAppearanceModal || showNotifModal || showDataModal ||
+      showOverallBudgetModal || showCicilanModal || showTagModal || showReminderModal ||
+      editingGoal !== null;
+    if (anyModalOpen) return;
+    // Higher threshold (120px) + stricter vertical check (50px max)
+    if (Math.abs(dx) < 120 || dy > 50) return;
     const TABS = ["dashboard","transactions","report","date","settings"];
     const cur = TABS.indexOf(tab);
     if (dx < 0 && cur < TABS.length-1) changeTab(TABS[cur+1]);
     else if (dx > 0 && cur > 0) changeTab(TABS[cur-1]);
-  }, [tab, changeTab]);
+  }, [tab, changeTab, showForm, showCalc, editIncome, showCatManager,
+    showBudgetLimit, showAppearanceModal, showNotifModal, showDataModal,
+    showOverallBudgetModal, showCicilanModal, showTagModal, showReminderModal, editingGoal]);
 
   // Apply recurring transactions
   useEffect(() => {
@@ -1307,7 +1547,11 @@ export default function App() {
   const saveCat = () => {
     if (!catForm.label.trim()) return;
     if (editCatKey) {
-      setCategories(prev => ({ ...prev, [editCatKey]: { label: catForm.label, icon: catForm.icon, color: catForm.color } }));
+      // Preserve labelId if editing a default category (prevent English stuck bug)
+      const existing = categories[editCatKey] || {};
+      const defaults = DEFAULT_CATEGORIES[editCatKey];
+      const labelId = existing.labelId || defaults?.labelId || catForm.label;
+      setCategories(prev => ({ ...prev, [editCatKey]: { label: catForm.label, labelId, icon: catForm.icon, color: catForm.color } }));
       setEditCatKey(null);
     } else {
       const key = catForm.label.toLowerCase().replace(/\s+/g, "_") + "_" + Date.now();
@@ -3371,7 +3615,7 @@ export default function App() {
 
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowNotifModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Notifications":"Notifikasi"}</p>
@@ -3381,29 +3625,10 @@ export default function App() {
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
-            </div>
-
-            {/* Cicilan */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
-              <button onClick={() => setShowCicilanModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <CreditCard size={16} color={T.accentText} strokeWidth={2}/>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.cicilan}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{cicilan.length > 0 ? `${cicilan.length} ${lang==="en"?"active":"aktif"}` : L.noCicilan}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-            </div>
-
-            {/* Reminder */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowReminderModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <Bell size={16} color={T.accentText} strokeWidth={2}/>
+                  <Bell size={15} color={T.accentText} strokeWidth={2}/>
                   <div>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.reminderTitle}</p>
                     <p style={{ fontSize:11, color:T.textSub }}>{L.reminderDesc}</p>
@@ -3412,22 +3637,6 @@ export default function App() {
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
             </div>
-
-            {/* Tags */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
-              <button onClick={() => setShowTagModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <Hash size={16} color={T.accentText} strokeWidth={2}/>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-            </div>
-
             {/* Per-kategori budget */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
@@ -3440,12 +3649,47 @@ export default function App() {
               </button>
             </div>
 
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:8, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
+            {/* Kategori + Tags (grouped) */}
+            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowCatManager(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
+                </div>
+                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+              </button>
+              <button onClick={() => setShowTagModal(true)}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
+                  <Hash size={15} color={T.accentText} strokeWidth={2}/>
+                  <div>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
+                  </div>
+                </div>
+                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+              </button>
+            </div>
+
+            {/* Transaksi Rutin + Cicilan (grouped) */}
+            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
+              <button onClick={() => { changeTab("transactions"); setTimeout(()=>setShowRecurPanel(true),200); }}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                <div style={{ textAlign:"left" }}>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Recurring Transactions":"Transaksi Rutin"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{recurring.length} {lang==="en"?"active":"aktif"}</p>
+                </div>
+                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+              </button>
+              <button onClick={() => setShowCicilanModal(true)}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
+                  <CreditCard size={15} color={T.accentText} strokeWidth={2}/>
+                  <div>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.cicilan}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{cicilan.length > 0 ? `${cicilan.length} ${lang==="en"?"active":"aktif"}` : L.noCicilan}</p>
+                  </div>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -4059,16 +4303,30 @@ export default function App() {
                       </div>
                     </div>
                   ) : (
-                    <label style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:`1.5px dashed ${T.cardBorder}`, cursor:"pointer", background:T.catBg }}>
-                      <ImagePlus size={15} color={T.textSub} strokeWidth={2}/>
-                      <span style={{ fontSize:12, color:T.textSub, fontWeight:600 }}>{L.receiptUpload}</span>
-                      <input type="file" accept="image/*" capture="environment" style={{ display:"none" }} onChange={e => {
-                        const file = e.target.files?.[0]; if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = ev => { setTxReceipts(p=>({...p,[rKey]:ev.target.result})); showToast(L.receiptAdded); };
-                        reader.readAsDataURL(file);
-                      }}/>
-                    </label>
+                    <div style={{ display:"flex", gap:8 }}>
+                      {/* Foto dari kamera */}
+                      <label style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"10px 14px", borderRadius:12, border:`1.5px dashed ${T.cardBorder}`, cursor:"pointer", background:T.catBg }}>
+                        <Camera size={14} color={T.textSub} strokeWidth={2}/>
+                        <span style={{ fontSize:12, color:T.textSub, fontWeight:600 }}>{lang==="en"?"Camera":"Kamera"}</span>
+                        <input type="file" accept="image/*" capture="environment" style={{ display:"none" }} onChange={e => {
+                          const file = e.target.files?.[0]; if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = ev => { setTxReceipts(p=>({...p,[rKey]:ev.target.result})); showToast(L.receiptAdded); };
+                          reader.readAsDataURL(file);
+                        }}/>
+                      </label>
+                      {/* Upload dari galeri/file */}
+                      <label style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"10px 14px", borderRadius:12, border:`1.5px dashed ${T.cardBorder}`, cursor:"pointer", background:T.catBg }}>
+                        <ImagePlus size={14} color={T.textSub} strokeWidth={2}/>
+                        <span style={{ fontSize:12, color:T.textSub, fontWeight:600 }}>{lang==="en"?"Upload":"Unggah"}</span>
+                        <input type="file" accept="image/*,application/pdf" style={{ display:"none" }} onChange={e => {
+                          const file = e.target.files?.[0]; if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = ev => { setTxReceipts(p=>({...p,[rKey]:ev.target.result})); showToast(L.receiptAdded); };
+                          reader.readAsDataURL(file);
+                        }}/>
+                      </label>
+                    </div>
                   );
                 })()}
 
@@ -4088,214 +4346,22 @@ export default function App() {
         )}
 
 
-        {/* ── CICILAN MODAL ── */}
-        {showCicilanModal && (() => {
-          const totalMonthly = cicilan.reduce((s,ci)=>s+Number(ci.monthly||0),0);
-          const curMonth = new Date().toISOString().slice(0,7);
-          const [cView, setCView] = React.useState("list");
-          const [cEdit, setCEdit] = React.useState(null);
-          const [cDetail, setCDetail] = React.useState(null);
-          const [cForm, setCForm] = React.useState({name:"",monthly:"",monthlyDisplay:"",dueDay:"5",total:"",totalDisplay:"",duration:"12"});
-          const getPaid = ci => (ci.paidMonths||[]).length;
-          const isPaidNow = ci => (ci.paidMonths||[]).includes(curMonth);
-          const getPct = ci => ci.duration ? Math.round(getPaid(ci)/ci.duration*100) : 0;
-          const saveC = () => {
-            if(!cForm.name||!cForm.monthly) return;
-            const item = {id:cEdit||Date.now(),name:cForm.name,total:Number(String(cForm.total).replace(/\./g,"")),monthly:Number(String(cForm.monthly).replace(/\./g,"")),dueDay:cForm.dueDay||"5",duration:Number(cForm.duration)||12,paidMonths:cEdit?(cicilan.find(x=>x.id===cEdit)?.paidMonths||[]):[]};
-            if(cEdit) setCicilan(p=>p.map(x=>x.id===cEdit?item:x)); else setCicilan(p=>[...p,item]);
-            showToast(L.cicilanSaved); setCView("list"); haptic("success");
-          };
-          return (
-            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}}
-              onClick={e=>{if(e.target===e.currentTarget)setShowCicilanModal(false);}}>
-              <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-                <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:9}}><CreditCard size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.cicilan}</p></div>
-                  <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                    {cView==="list" && <button onClick={()=>{setCEdit(null);setCForm({name:"",monthly:"",monthlyDisplay:"",dueDay:"5",total:"",totalDisplay:"",duration:"12"});setCView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addCicilan}</button>}
-                    <button onClick={()=>setShowCicilanModal(false)} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
-                  </div>
-                </div>
-                <div style={{overflowY:"auto",flex:1}}>
-                  {cView==="form" && (
-                    <div style={{padding:16,display:"flex",flexDirection:"column",gap:10}}>
-                      <p style={{fontSize:13,fontWeight:800,color:T.text}}>{cEdit?L.editCicilan:L.addCicilan}</p>
-                      <input className="inp" placeholder={L.cicilanName} value={cForm.name} onChange={e=>setCForm(f=>({...f,name:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/>
-                      <div style={{display:"flex",gap:8}}>
-                        <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanMonthly}</p><input className="inp" type="text" inputMode="numeric" placeholder="750.000" value={cForm.monthlyDisplay||""} onFocus={e=>e.target.select()} onChange={e=>{const {display,raw}=parseRpInput(e.target.value);setCForm(f=>({...f,monthly:raw,monthlyDisplay:display}));}} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
-                        <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanDue}</p><input className="inp" type="number" min="1" max="31" placeholder="5" value={cForm.dueDay} onChange={e=>setCForm(f=>({...f,dueDay:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
-                      </div>
-                      <div style={{display:"flex",gap:8}}>
-                        <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanTotal}</p><input className="inp" type="text" inputMode="numeric" placeholder="18.000.000" value={cForm.totalDisplay||""} onFocus={e=>e.target.select()} onChange={e=>{const {display,raw}=parseRpInput(e.target.value);setCForm(f=>({...f,total:raw,totalDisplay:display}));}} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
-                        <div style={{flex:1}}><p style={{fontSize:10,fontWeight:700,color:T.textSub,marginBottom:4}}>{L.cicilanDuration}</p><input className="inp" type="number" min="1" placeholder="24" value={cForm.duration} onChange={e=>setCForm(f=>({...f,duration:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}}/></div>
-                      </div>
-                      <div style={{display:"flex",gap:8,marginTop:4}}>
-                        <button onClick={saveC} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button>
-                        <button onClick={()=>setCView("list")} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button>
-                      </div>
-                    </div>
-                  )}
-                  {cView==="detail" && cDetail && (
-                    <div>
-                      <div style={{background:`linear-gradient(135deg,${themePrimary},${themeAccent}88)`,padding:"18px 20px 20px"}}>
-                        <p style={{fontSize:18,fontWeight:900,color:"white"}}>{cDetail.name}</p>
-                        <div style={{display:"flex",gap:20,marginTop:12}}>
-                          <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>{formatRp(cDetail.monthly)}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"per month":"per bulan"}</p></div>
-                          <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>{getPaid(cDetail)}/{cDetail.duration}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"months":"bulan"}</p></div>
-                          <div><p style={{fontSize:16,fontWeight:900,color:"white"}}>tgl {cDetail.dueDay}</p><p style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lang==="en"?"due":"jatuh tempo"}</p></div>
-                        </div>
-                      </div>
-                      <div style={{padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
-                        <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,fontWeight:600,marginBottom:8}}><span>{lang==="en"?"Progress":"Progress"}</span><span>{getPct(cDetail)}%</span></div>
-                        <div style={{height:8,borderRadius:99,background:T.card2,overflow:"hidden"}}><div style={{height:"100%",width:`${getPct(cDetail)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99,transition:"width 0.6s ease"}}/></div>
-                        <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:11,color:T.textSub}}><span>{lang==="en"?"Paid:":"Sudah:"} {formatRp(getPaid(cDetail)*cDetail.monthly)}</span><span>{lang==="en"?"Left:":"Sisa:"} {formatRp((cDetail.duration-getPaid(cDetail))*cDetail.monthly)}</span></div>
-                      </div>
-                      <div style={{padding:"14px 20px",display:"flex",gap:8,borderBottom:`1px solid ${T.cardBorder}`}}>
-                        <button onClick={()=>{if(isPaidNow(cDetail)){showToast("info:"+L.cicilanAlreadyPaid);return;}setCicilan(p=>p.map(x=>x.id===cDetail.id?{...x,paidMonths:[...(x.paidMonths||[]),curMonth]}:x));setCDetail(p=>p?{...p,paidMonths:[...(p.paidMonths||[]),curMonth]}:p);showToast(L.cicilanPaidToast);haptic("success");}} style={{flex:1,padding:"11px 0",borderRadius:12,background:isPaidNow(cDetail)?T.card2:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:isPaidNow(cDetail)?`1.5px solid ${T.cardBorder}`:"none",color:isPaidNow(cDetail)?T.textSub:"white",fontSize:12,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{isPaidNow(cDetail)?"✓ "+L.cicilanAlreadyPaid:L.cicilanMarkPaid}</button>
-                        <button onClick={()=>{setCEdit(cDetail.id);setCForm({name:cDetail.name,monthly:cDetail.monthly,monthlyDisplay:Number(cDetail.monthly).toLocaleString("id-ID"),dueDay:cDetail.dueDay,total:cDetail.total||"",totalDisplay:cDetail.total?Number(cDetail.total).toLocaleString("id-ID"):"",duration:String(cDetail.duration)});setCView("form");}} style={{width:42,height:42,borderRadius:12,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={15} color={T.text} strokeWidth={2}/></button>
-                        <button onClick={()=>{setCicilan(p=>p.filter(x=>x.id!==cDetail.id));showToast(L.cicilanDeleted);setCView("list");haptic();}} style={{width:42,height:42,borderRadius:12,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={15} color="#f87171" strokeWidth={2}/></button>
-                      </div>
-                      <button onClick={()=>setCView("list")} style={{display:"block",margin:"12px 20px",width:"calc(100% - 40px)",padding:"10px 0",borderRadius:12,background:T.card2,border:`1.5px solid ${T.cardBorder}`,color:T.textSub,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>← {lang==="en"?"Back":"Kembali"}</button>
-                    </div>
-                  )}
-                  {cView==="list" && (
-                    <div>
-                      {cicilan.length===0 ? (
-                        <div style={{padding:"48px 20px",textAlign:"center"}}><div style={{width:72,height:72,borderRadius:22,background:themeAccent+"18",border:`1.5px solid ${themeAccent}30`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px"}}><CreditCard size={32} color={T.accentText} strokeWidth={1.5}/></div><p style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:6}}>{L.noCicilan}</p><p style={{fontSize:12,color:T.textSub}}>{L.cicilanDesc}</p></div>
-                      ) : (
-                        <div>
-                          <div style={{margin:"14px 16px 0",padding:"14px 16px",background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:3}}>{L.cicilanTotal2}</p><p style={{fontSize:20,fontWeight:900,color:"#f87171"}}>-{formatRp(totalMonthly)}</p></div><p style={{fontSize:11,color:T.textSub}}>{L.cicilanDesc}</p></div>
-                          {cicilan.map((ci,i)=>(
-                            <div key={ci.id} onClick={()=>{setCDetail(ci);setCView("detail");}} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:i<cicilan.length-1?`1px solid ${T.cardBorder}`:"none",cursor:"pointer"}}>
-                              <div style={{width:44,height:44,borderRadius:14,background:themeAccent+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CreditCard size={20} color={T.accentText} strokeWidth={1.5}/></div>
-                              <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>{ci.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{lang==="en"?"Inst.":"Cicilan"} {getPaid(ci)}/{ci.duration} · tgl {ci.dueDay}</p><div style={{height:3,borderRadius:99,background:T.card2,overflow:"hidden",marginTop:5,maxWidth:100}}><div style={{height:"100%",width:`${getPct(ci)}%`,background:`linear-gradient(90deg,${themeAccent},${themePrimary})`,borderRadius:99}}/></div></div>
-                              <div style={{textAlign:"right",flexShrink:0}}><p style={{fontSize:14,fontWeight:800,color:"#f87171"}}>-{formatRp(ci.monthly)}</p><p style={{fontSize:10,color:isPaidNow(ci)?"#4ade80":T.textSub,marginTop:2,fontWeight:isPaidNow(ci)?700:500}}>{isPaidNow(ci)?"✓ "+(lang==="en"?"Paid":L.cicilanPaid):(ci.duration-getPaid(ci))+" "+L.cicilanRemain}</p></div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })()}
+                {/* Cicilan Modal */}
+        {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
 
-        {/* ── REMINDER MODAL ── */}
-        {showReminderModal && (() => {
-          const padT = h=>String(h).padStart(2,"0")+":00";
-          const DAY_L = lang==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
-          const toggleDay = d => setReminderDays(p=>p.includes(d)?p.filter(x=>x!==d):[...p,d]);
-          return (
-            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}}
-              onClick={e=>{if(e.target===e.currentTarget)setShowReminderModal(false);}}>
-              <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-                <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:9}}><Bell size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.reminderTitle}</p></div>
-                  <button onClick={()=>setShowReminderModal(false)} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
-                </div>
-                <div style={{overflowY:"auto",flex:1}}>
-                  <div style={{margin:"14px 16px",padding:"16px",background:`linear-gradient(135deg,${themeAccent}18,${themePrimary}28)`,border:`1px solid ${themeAccent}25`,borderRadius:16,display:"flex",alignItems:"center",gap:14}}>
-                    <div style={{width:50,height:50,borderRadius:16,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Bell size={22} color="white" strokeWidth={2}/></div>
-                    <div><p style={{fontSize:14,fontWeight:800,color:T.text}}>{L.reminderTitle}</p><p style={{fontSize:12,color:T.textSub,marginTop:3,lineHeight:1.5}}>{L.reminderDesc}</p></div>
-                  </div>
-                  <div onClick={()=>handleNotification()} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:12}}><div style={{width:38,height:38,borderRadius:12,background:T.card2,display:"flex",alignItems:"center",justifyContent:"center"}}><Bell size={18} color={notifEnabled?themeAccent:T.textSub} strokeWidth={2}/></div><div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{L.notifications}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{notifEnabled?L.notifActive:L.notifOff}</p></div></div>
-                    <div style={{width:46,height:26,borderRadius:99,background:notifEnabled?`linear-gradient(135deg,${themeAccent},${themePrimary})`:T.card2,border:notifEnabled?"none":`1.5px solid ${T.cardBorder}`,position:"relative",flexShrink:0}}><div style={{position:"absolute",width:20,height:20,borderRadius:"50%",background:"white",top:3,left:notifEnabled?"calc(100% - 23px)":3,transition:"left 0.2s cubic-bezier(0.34,1.1,0.64,1)",boxShadow:"0 2px 6px rgba(0,0,0,0.3)"}}/></div>
-                  </div>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
-                    <div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{L.reminderTime}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{lang==="en"?"Notification sent at":"Notif dikirim jam"}</p></div>
-                    <select value={reminderHour} onChange={e=>setReminderHour(Number(e.target.value))} style={{background:T.card2,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"8px 12px",color:themeAccent,fontSize:16,fontWeight:900,cursor:"pointer",fontFamily:"inherit",outline:"none"}}>
-                      {[6,7,8,9,10,12,15,18,19,20,21,22].map(h=><option key={h} value={h}>{padT(h)}</option>)}
-                    </select>
-                  </div>
-                  <div style={{padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
-                    <p style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:10}}>{L.reminderDays}</p>
-                    <div style={{display:"flex",gap:6}}>
-                      {[0,1,2,3,4,5,6].map(d=>(
-                        <div key={d} onClick={()=>toggleDay(d)} style={{flex:1,height:38,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,cursor:"pointer",transition:"all 0.15s",background:reminderDays.includes(d)?themeAccent+"20":T.card2,border:reminderDays.includes(d)?`1.5px solid ${themeAccent}50`:`1.5px solid ${T.cardBorder}`,color:reminderDays.includes(d)?themeAccent:T.textSub}}>{DAY_L[d]}</div>
-                      ))}
-                    </div>
-                  </div>
-                  <div onClick={()=>setReminderSmart(p=>!p)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:12}}><div style={{width:38,height:38,borderRadius:12,background:T.card2,display:"flex",alignItems:"center",justifyContent:"center"}}><Bell size={18} color={T.textSub} strokeWidth={2}/></div><div><p style={{fontSize:14,fontWeight:700,color:T.text}}>{L.reminderSmart}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{L.reminderSmartDesc}</p></div></div>
-                    <div style={{width:46,height:26,borderRadius:99,background:reminderSmart?`linear-gradient(135deg,${themeAccent},${themePrimary})`:T.card2,border:reminderSmart?"none":`1.5px solid ${T.cardBorder}`,position:"relative",flexShrink:0}}><div style={{position:"absolute",width:20,height:20,borderRadius:"50%",background:"white",top:3,left:reminderSmart?"calc(100% - 23px)":3,transition:"left 0.2s cubic-bezier(0.34,1.1,0.64,1)",boxShadow:"0 2px 6px rgba(0,0,0,0.3)"}}/></div>
-                  </div>
-                  <div style={{margin:"14px 16px 0"}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8,letterSpacing:0.5}}>{(L.reminderPreview||"PREVIEW").toUpperCase()}</p><div style={{background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:14}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}><div style={{width:28,height:28,borderRadius:8,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🐱</div><p style={{fontSize:11,fontWeight:700,color:T.textSub}}>Meowlett</p><p style={{fontSize:11,color:T.textMuted,marginLeft:"auto"}}>{padT(reminderHour)}</p></div><p style={{fontSize:13,fontWeight:800,color:T.text,marginBottom:3}}>{L.reminderNotifTitle}</p><p style={{fontSize:12,color:T.textSub,lineHeight:1.4}}>{L.reminderNotifBody}</p></div></div>
-                  <button onClick={()=>{if(notifEnabled)scheduleSmartReminder({hour:reminderHour,minute:0,days:reminderDays,smart:reminderSmart,lang,getTransactions:()=>transactions});showToast("ok:"+(lang==="en"?"Settings saved":"Pengaturan disimpan"));setShowReminderModal(false);}}
-                    style={{display:"block",margin:"14px 16px 24px",width:"calc(100% - 32px)",padding:"14px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{lang==="en"?"Save Settings":"Simpan Pengaturan"}</button>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
+        {/* Tags Modal */}
+        {showTagModal && <TagsModal show={showTagModal} onClose={()=>setShowTagModal(false)} userTags={userTags} setUserTags={setUserTags} txTags={txTags} transactions={transactions} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} haptic={haptic} showToast={showToast}/>}
 
-        {/* ── TAGS MODAL ── */}
-        {showTagModal && (() => {
-          const TAG_COLORS = ["#f87171","#fb923c","#fbbf24","#4ade80","#34d399","#60a5fa","#818cf8","#c084fc","#f472b6","#94a3b8"];
-          const [tView, setTView] = React.useState("list");
-          const [tEdit, setTEdit] = React.useState(null);
-          const [tForm, setTForm] = React.useState({name:"",color:"#60a5fa"});
-          const SUGG = lang==="en"?["holiday","wedding","lebaran","monthly","date","work"]:["liburan","kondangan","lebaran","bulanan","date","kerja"];
-          const tagCount = id => Object.values(txTags||{}).filter(tags=>(tags||[]).includes(id)).length;
-          const tagTotal = id => {const txIds=Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([id])=>Number(id));return transactions.filter(t=>txIds.includes(t.id)).reduce((s,t)=>s+Number(t.amount||0),0);};
-          const saveTag = () => {if(!tForm.name.trim())return;if(tEdit)setUserTags(p=>p.map(t=>t.id===tEdit?{...t,...tForm}:t));else{setUserTags(p=>[...p,{id:Date.now(),...tForm}]);showToast(L.tagAdded);}setTView("list");haptic("success");};
-          return (
-            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}}
-              onClick={e=>{if(e.target===e.currentTarget)setShowTagModal(false);}}>
-              <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-                <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:9}}><Hash size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.tags}</p></div>
-                  <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                    {tView==="list" && <button onClick={()=>{setTEdit(null);setTForm({name:"",color:"#60a5fa"});setTView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addTag}</button>}
-                    <button onClick={()=>setShowTagModal(false)} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
-                  </div>
-                </div>
-                <div style={{overflowY:"auto",flex:1}}>
-                  {tView==="form" && (
-                    <div style={{padding:16,display:"flex",flexDirection:"column",gap:12}}>
-                      <p style={{fontSize:13,fontWeight:800,color:T.text}}>{tEdit?L.editTag:L.addTag}</p>
-                      <input className="inp" placeholder={L.tagPlaceholder} value={tForm.name} onChange={e=>setTForm(f=>({...f,name:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}} autoFocus/>
-                      <div><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8}}>{lang==="en"?"Color":"Warna"}</p><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{TAG_COLORS.map(col=>(<div key={col} onClick={()=>setTForm(f=>({...f,color:col}))} style={{width:32,height:32,borderRadius:50,background:col,cursor:"pointer",border:tForm.color===col?"3px solid white":"3px solid transparent",boxShadow:tForm.color===col?`0 0 0 2px ${col}`:"none",transition:"all 0.15s"}}/>))}</div></div>
-                      {tForm.name && <div style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:99,background:tForm.color+"18",border:`1.5px solid ${tForm.color}50`}}><Hash size={11} color={tForm.color} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:tForm.color}}>{tForm.name}</span></div>}
-                      <div style={{display:"flex",gap:8}}><button onClick={saveTag} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button><button onClick={()=>setTView("list")} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button></div>
-                    </div>
-                  )}
-                  {tView==="list" && (
-                    <div>
-                      {userTags.length===0 ? (
-                        <div>
-                          <div style={{padding:"36px 20px",textAlign:"center"}}><div style={{width:64,height:64,borderRadius:20,background:themeAccent+"18",border:`1.5px solid ${themeAccent}30`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px"}}><Hash size={28} color={T.accentText} strokeWidth={1.5}/></div><p style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:6}}>{L.noTags}</p><p style={{fontSize:12,color:T.textSub}}>{lang==="en"?"Add tags to group transactions":"Tambah tag untuk kelompokkan transaksi"}</p></div>
-                          <div style={{padding:"0 16px 20px"}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10,letterSpacing:0.5}}>{(L.tagSuggestions||"SARAN").toUpperCase()}</p><div style={{display:"flex",flexWrap:"wrap",gap:6}}>{SUGG.map((s,i)=>(<button key={s} onClick={()=>{setTForm({name:s,color:TAG_COLORS[i%TAG_COLORS.length]});setTView("form");}} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"7px 12px",borderRadius:99,background:TAG_COLORS[i%TAG_COLORS.length]+"15",border:`1.5px solid ${TAG_COLORS[i%TAG_COLORS.length]}40`,cursor:"pointer",fontFamily:"inherit"}}><Hash size={10} color={TAG_COLORS[i%TAG_COLORS.length]} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:TAG_COLORS[i%TAG_COLORS.length]}}>{s}</span></button>))}</div></div>
-                        </div>
-                      ) : (
-                        <div>
-                          {userTags.map((tag,i)=>(
-                            <div key={tag.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<userTags.length-1?`1px solid ${T.cardBorder}`:"none"}}>
-                              <div style={{width:40,height:40,borderRadius:12,background:tag.color+"20",border:`1.5px solid ${tag.color}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Hash size={18} color={tag.color} strokeWidth={2}/></div>
-                              <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>#{tag.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{tagCount(tag.id)} {L.tagTx}{tagCount(tag.id)>0?` · ${formatRp(tagTotal(tag.id))}`:""}</p></div>
-                              <div style={{display:"flex",gap:6}}>
-                                <button onClick={()=>{setTEdit(tag.id);setTForm({name:tag.name,color:tag.color});setTView("form");}} style={{width:34,height:34,borderRadius:10,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={13} color={T.text} strokeWidth={2}/></button>
-                                <button onClick={()=>{setUserTags(p=>p.filter(t=>t.id!==tag.id));showToast(L.tagDeleted);haptic();}} style={{width:34,height:34,borderRadius:10,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={13} color="#f87171" strokeWidth={2}/></button>
-                              </div>
-                            </div>
-                          ))}
-                          {userTags.some(t=>tagCount(t.id)>0) && (
-                            <div style={{padding:"14px 16px",borderTop:`1px solid ${T.cardBorder}`}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10,letterSpacing:0.5}}>{(L.tagStats||"RINGKASAN").toUpperCase()}</p><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{userTags.filter(t=>tagCount(t.id)>0).map(tag=>(<div key={tag.id} style={{background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:14,padding:12}}><p style={{fontSize:12,fontWeight:700,color:tag.color,marginBottom:4}}>#{tag.name}</p><p style={{fontSize:15,fontWeight:900,color:T.text}}>{formatRp(tagTotal(tag.id))}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{tagCount(tag.id)} {L.tagTx}</p></div>))}</div></div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })()}
+        {showReminderModal && <ReminderModal
+          show={showReminderModal} onClose={()=>setShowReminderModal(false)}
+          lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary}
+          notifEnabled={notifEnabled} handleNotification={handleNotification}
+          reminderHour={reminderHour} setReminderHour={setReminderHour}
+          reminderDays={reminderDays} setReminderDays={setReminderDays}
+          reminderSmart={reminderSmart} setReminderSmart={setReminderSmart}
+          scheduleSmartReminder={scheduleSmartReminder} transactions={transactions}
+          showToast={showToast}
+        />}
 
         {/* Bottom Nav */}
         {(() => {
