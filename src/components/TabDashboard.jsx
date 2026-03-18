@@ -27,8 +27,8 @@ export default function TabDashboard({ ctx }) {
     setBudgets, setBudgetsDisplay,
     changeTab,
     balanceCardRef,
-    CS, IBN, TP, currentMonth, getCategory,,
-    budgets,
+    CS, IBN, TP, currentMonth, getCategory,
+    budgets
   } = ctx;
 
   return (

@@ -34,8 +34,8 @@ export default function TabSettings({ ctx }) {
     exportCSV, exportPDFReport,
     ICON_OPTIONS, COLOR_OPTIONS,
     streak,
-    CSN, DEFAULT_CATEGORIES, IBN, LUCIDE_MAP, budgetsDisplay, currentMonth, isRestoringRef, kbHeight, setBudgetsDisplay, showConfirm, showToast, themePresetId,,
-    THEME_PRESETS,
+    CSN, DEFAULT_CATEGORIES, IBN, LUCIDE_MAP, budgetsDisplay, currentMonth, isRestoringRef, kbHeight, setBudgetsDisplay, showConfirm, showToast, themePresetId,
+    THEME_PRESETS
   } = ctx;
 
   return (

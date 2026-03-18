@@ -12,7 +12,7 @@ export default function ModalOverallBudget({ ctx }) {
     setShowOverallBudgetModal,
     showToast, kbHeight,
     transactions,
-    currentMonth,
+    currentMonth
   } = ctx;
 
   return (
