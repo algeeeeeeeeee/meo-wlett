@@ -177,7 +177,6 @@ export default function ModalAddTransaction({ ctx }) {
             </div>
           );
         })()}
-      </div>
-    </div>
+        </>
   );
 }
