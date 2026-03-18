@@ -1397,6 +1397,7 @@ export default function App() {
   const ctx = {
     T, dark, lang, L,
     balanceCardRef,
+    CS, CSN, IBN, TP, currentMonth, getCategory, showToast, showConfirm, isRestoringRef, DEFAULT_CATEGORIES, LUCIDE_MAP, THEME_LABELS, budgetsDisplay, activeCardId, setActiveCardId, activeDateId, setActiveDateId, dateWishlist, setDateWishlist, showWishlistForm, setShowWishlistForm, wishlistInput, setWishlistInput, toggleDark, darkToggleRef, settingsToggleRef,
     tab, tabAnim, loaded, headerHeight,
     themeAccent, themePrimary, THEME_PRESETS,
     income, totalExpense, balance, savePct, monthlySave,
@@ -1415,14 +1416,14 @@ export default function App() {
     setTempIncome, setTempIncomeDisplay,
     setIncomeAdj, setIncomeAdjDisplay, setEditIncome,
     changeTab,
-    // modal vars
+    // modal vars,
     kbHeight,
     showCalc, setShowCalc,
     submitForm,
     showOverallBudgetModal, setShowOverallBudgetModal,
     tempOverallBudget, setTempOverallBudget,
     tempOverallBudgetDisplay, setTempOverallBudgetDisplay,
-    // transactions tab
+    // transactions tab,
     filtered, filteredTotal,
     filterPeriod, setFilterPeriod,
     filterCat, setFilterCat,
@@ -1432,7 +1433,7 @@ export default function App() {
     recurring, setRecurring,
     showRecurPanel, setShowRecurPanel,
     editRecurId, setEditRecurId,
-    // report tab
+    // report tab,
     reportTxns, reportTotal, reportByCat,
     reportDate, setReportDate,
     monthCompareData, monthInsights,
@@ -1440,13 +1441,13 @@ export default function App() {
     prevMonth,
     showExportMenu, setShowExportMenu,
     exportCSV, exportPDFReport,
-    // date tab
+    // date tab,
     themePresetId, setThemePresetId,
     customPrimary, setCustomPrimary,
     customAccent, setCustomAccent,
     showThemePicker, setShowThemePicker,
     dateExpense, triggerThemeChange,
-    // settings tab
+    // settings tab,
     weeklyNotif, weeklyNotifDay,
     setWeeklyNotif, setWeeklyNotifDay,
     userName, setUserName,

@@ -21,6 +21,7 @@ export default function TabReport({ ctx }) {
     overallBudget,
     showExportMenu, setShowExportMenu,
     exportCSV, exportPDFReport,
+    CSN, TP, currentMonth, getCategory, showToast,
   } = ctx;
 
   return (
