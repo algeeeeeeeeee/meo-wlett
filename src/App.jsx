@@ -2796,6 +2796,14 @@ export default function App() {
                   </div>
                 );
               })()}
+                {/* Cicilan button inline */}
+                <button onClick={() => setShowCicilanModal(true)}
+                  style={{ display:"flex", alignItems:"center", gap:5, padding:"4px 10px", borderRadius:99, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, cursor:"pointer", flexShrink:0, ...IBN, fontFamily:"inherit" }}>
+                  <CreditCard size={10} color={T.accentText} strokeWidth={2}/>
+                  <p style={{ fontSize:10, fontWeight:800, color:T.accentText, letterSpacing:0.5 }}>{L.cicilan}</p>
+                  {cicilan.length > 0 && <span style={{ background:themeAccent, borderRadius:99, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 3px", fontSize:9, fontWeight:900, color:"white" }}>{cicilan.length}</span>}
+                </button>
+              </div>
 
               {showRecurPanel && <div className="card" style={{ padding:16, marginBottom:10, ...CS }}>
                 <p style={{ fontSize:13, fontWeight:800, color:T.text, marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
@@ -2896,6 +2904,23 @@ export default function App() {
                   })}
                 </div>
               ))}
+            </div>
+
+            {/* ── CICILAN collapsible ── */}
+            <div style={{ marginTop:0, marginBottom:12 }}>
+              <div onClick={() => setShowCicilanModal(true)} style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer", marginBottom:0 }}>
+                <div style={{ flex:1, height:1, background:T.cardBorder }}/>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <CreditCard size={11} color={T.textSub} strokeWidth={2}/>
+                  <p style={{ fontSize:11, fontWeight:800, color:T.textSub, letterSpacing:1.5, whiteSpace:"nowrap" }}>{(L.cicilan||"CICILAN").toUpperCase()}</p>
+                  {cicilan.length > 0 && (
+                    <div style={{ background:themeAccent, borderRadius:99, minWidth:16, height:16, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>
+                      <p style={{ fontSize:9, fontWeight:900, color:"white" }}>{cicilan.length}</p>
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex:1, height:1, background:T.cardBorder }}/>
+              </div>
             </div>
 
             </div>
@@ -3613,9 +3638,10 @@ export default function App() {
               </button>
             </div>
 
+            {/* Notifikasi (single row - reminder is inside notif modal) */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowNotifModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Notifications":"Notifikasi"}</p>
@@ -3625,32 +3651,18 @@ export default function App() {
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
-              <button onClick={() => setShowReminderModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <Bell size={15} color={T.accentText} strokeWidth={2}/>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.reminderTitle}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{L.reminderDesc}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
             </div>
-            {/* Per-kategori budget */}
+
+            {/* Kategori + Tags + Budget Limit (grouped) */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Per-Category Limits":"Limit per Kategori"}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
-            </div>
-
-            {/* Kategori + Tags (grouped) */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowCatManager(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
@@ -3662,33 +3674,10 @@ export default function App() {
               <button onClick={() => setShowTagModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <Hash size={15} color={T.accentText} strokeWidth={2}/>
+                  <Hash size={14} color={T.accentText} strokeWidth={2}/>
                   <div>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
                     <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-            </div>
-
-            {/* Transaksi Rutin + Cicilan (grouped) */}
-            <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
-              <button onClick={() => { changeTab("transactions"); setTimeout(()=>setShowRecurPanel(true),200); }}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
-                <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Recurring Transactions":"Transaksi Rutin"}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{recurring.length} {lang==="en"?"active":"aktif"}</p>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-              <button onClick={() => setShowCicilanModal(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10, textAlign:"left" }}>
-                  <CreditCard size={15} color={T.accentText} strokeWidth={2}/>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.cicilan}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{cicilan.length > 0 ? `${cicilan.length} ${lang==="en"?"active":"aktif"}` : L.noCicilan}</p>
                   </div>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
@@ -3700,8 +3689,8 @@ export default function App() {
               <button onClick={() => setShowDataModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>Data</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Backup, restore & reset":"Backup, restore & reset"}</p>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Data":"Data"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{L.dataSubtitle||"Backup, restore & reset"}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -3820,6 +3809,20 @@ export default function App() {
                   </div>
                 ))}
               </div>
+              {/* Tags sub-entry */}
+              <div onClick={() => { setShowCatManager(false); setTimeout(()=>setShowTagModal(true),200); }}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", borderTop:`1px solid ${T.cardBorder}`, cursor:"pointer" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:34, height:34, borderRadius:10, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <Hash size={16} color={T.accentText} strokeWidth={2}/>
+                  </div>
+                  <div>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
+                  </div>
+                </div>
+                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+              </div>
             </div>
           </div>
         )}
@@ -3830,7 +3833,7 @@ export default function App() {
             onClick={e => { if (e.target===e.currentTarget) setShowDataModal(false); }}>
             <div className="fi scroll-area modal-up" style={{ background:T.modalBg, borderRadius:"22px 22px 0 0", padding:22, paddingBottom:40, width:"100%", maxWidth:480, boxSizing:"border-box" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
-                <p style={{ fontSize:16, fontWeight:800, color:T.text }}>Data</p>
+                <p style={{ fontSize:16, fontWeight:800, color:T.text }}>{lang==="en"?"Data":"Data"}</p>
                 <button onClick={() => setShowDataModal(false)} style={{ background:T.btnG, border:"none", borderRadius:10, padding:"6px 14px", cursor:"pointer", fontSize:13, fontWeight:700, color:T.btnGText }}>{L.done}</button>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
@@ -3848,12 +3851,12 @@ export default function App() {
                   }}
                   style={{ width:"100%", padding:"14px", borderRadius:16, background:`${themeAccent}15`, border:`1.5px solid ${themeAccent}40`, color:T.accentText, fontSize:14, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:12, boxSizing:"border-box", fontFamily:"inherit" }}>
                   <div style={{ width:38, height:38, borderRadius:12, background:`${themeAccent}20`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Download size={18} strokeWidth={2} color={T.accentText}/></div>
-                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.accentText }}>{L.backupData}</p><p style={{ fontSize:11, color:T.accentText, opacity:0.7 }}>{lang==="en"?"Download all data as JSON":"Unduh semua data sebagai JSON"}</p></div>
+                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.accentText }}>{L.backupData}</p><p style={{ fontSize:11, color:T.accentText, opacity:0.7 }}>{L.backupDesc}</p></div>
                 </button>
                 <button onClick={() => document.getElementById("restore-input").click()}
                   style={{ width:"100%", padding:"14px", borderRadius:16, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, color:T.text, fontSize:14, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:12, boxSizing:"border-box", fontFamily:"inherit" }}>
                   <div style={{ width:38, height:38, borderRadius:12, ...CSN, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Upload size={18} strokeWidth={2} color={T.text}/></div>
-                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.text }}>{L.restoreBackup}</p><p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Import from backup file":"Import dari file backup"}</p></div>
+                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:T.text }}>{L.restoreBackup}</p><p style={{ fontSize:11, color:T.textSub }}>{L.restoreDesc}</p></div>
                 </button>
                 <input id="restore-input" type="file" accept=".json" style={{ display:"none" }} onChange={e => {
                     const file=e.target.files?.[0]; if(!file) return;
@@ -3862,10 +3865,7 @@ export default function App() {
                       try {
                         const data=JSON.parse(ev.target.result);
                         if(!data.transactions) throw new Error("invalid");
-                        const msg = lang==="en"
-                          ? "Restore this backup? Current data will be replaced."
-                          : "Restore backup ini? Data saat ini akan diganti.";
-                        showConfirm(msg, () => {
+                        showConfirm(L.restoreConfirm, () => {
                           isRestoringRef.current = true;
                           if(data.transactions) setTransactions(data.transactions);
                           if(data.income) setIncome(data.income);
@@ -3887,7 +3887,7 @@ export default function App() {
                 <button onClick={() => { showConfirm(L.resetConfirm, () => { try{localStorage.clear();}catch{} setTransactions([]); setIncome(5000000); setSavingsGoals([]); setBudgets({}); setCategories(DEFAULT_CATEGORIES); showToast("ok:Data berhasil direset"); setShowDataModal(false); }); }}
                   style={{ width:"100%", padding:"14px", borderRadius:16, background:"#ef444412", border:"1.5px solid #ef444435", color:"#ef4444", fontSize:14, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:12, boxSizing:"border-box", fontFamily:"inherit" }}>
                   <div style={{ width:38, height:38, borderRadius:12, background:"#ef444420", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Trash2 size={18} strokeWidth={2} color="#ef4444"/></div>
-                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:"#ef4444" }}>{L.resetData}</p><p style={{ fontSize:11, color:"#ef4444", opacity:0.7 }}>{lang==="en"?"Delete all data permanently":"Hapus semua data permanen"}</p></div>
+                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:"#ef4444" }}>{L.resetData}</p><p style={{ fontSize:11, color:"#ef4444", opacity:0.7 }}>{lang==="en"?L.resetDesc:(L.resetDesc||"Hapus semua data permanen")}</p></div>
                 </button>
               </div>
             </div>
@@ -4098,6 +4098,20 @@ export default function App() {
                     ))}
                   </div>
                 )}
+                {/* Pengingat Transaksi sub-item */}
+                <div onClick={() => { setShowNotifModal(false); setTimeout(()=>setShowReminderModal(true), 200); }}
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", borderTop:`1px solid ${T.cardBorder}`, cursor:"pointer", marginTop: weeklyNotif ? 0 : 0 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                    <div style={{ width:36, height:36, borderRadius:12, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <Bell size={18} color={T.textSub} strokeWidth={2}/>
+                    </div>
+                    <div>
+                      <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.reminderTitle}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{L.reminderDesc}</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+                </div>
               </div>
             </div>
           </div>
