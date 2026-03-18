@@ -219,7 +219,7 @@ export default function TabDashboard({ ctx }) {
               const budgetEntries = Object.entries(budgets).filter(([,v]) => v > 0);
               const allCatKeys = Object.keys(categories);
               // Empty state CTA
-              if (.length === 0 && !overallBudget) return (
+              if (budgetEntries.length === 0 && !overallBudget) return (
                 <div className="card" style={{ padding:"16px 18px", marginBottom:14, ...CS }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                     <div style={{ width:44, height:44, borderRadius:14, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -276,7 +276,7 @@ export default function TabDashboard({ ctx }) {
                         </div>
                       );
                     })()}
-                    {.slice(0, 4).map(([key, bgt]) => {
+                    {budgetEntries.slice(0, 4).map(([key, bgt]) => {
                       const spent = transactions.filter(t => t.category === key && getMonth(t.date) === currentMonth).reduce((a,t) => a+t.amount, 0);
                       const pct = Math.min(100, Math.round((spent / bgt) * 100));
                       const over = pct >= 100; const warn = pct >= 80;
