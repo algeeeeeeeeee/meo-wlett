@@ -132,12 +132,12 @@ export default function TabSettings({ ctx }) {
               </button>
             </div>
 
-            {/* Kategori — 1 card: Limit + Kelola + Tag */}
+            {/* Kategori */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Per-Category Limits":"Limit per Kategori"}</p>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
@@ -152,12 +152,9 @@ export default function TabSettings({ ctx }) {
               </button>
               <button onClick={() => setShowTagModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <Hash size={14} color={T.accentText} strokeWidth={2}/>
-                  <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
-                  </div>
+                <div style={{ textAlign:"left" }}>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{userTags && userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
