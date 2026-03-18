@@ -1,3 +1,4 @@
+import React from 'react';
 import { AlertCircle, AlertTriangle, BarChart2, Calculator2, Calendar, CheckCircle, Download, Inbox, Share2, TrendingUp, Zap } from "../icons.jsx";
 import { formatRp, fmtDate, getCatLabel, getMonth, haptic } from "../utils/helpers.js";
 import { darken, lighten } from "../utils/theme.js";
@@ -361,7 +362,7 @@ export default function TabReport({ ctx }) {
                 <p style={{ color:T.textSub, fontSize:14 }}>{L.noTxDate}</p>
               </div>
             ) : (
-              <>
+              <React.Fragment>
                 <div className="card" style={{ padding:16, marginBottom:12, ...CS }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:11 }}>
                     <div style={{ width:24, height:24, borderRadius:7, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -454,7 +455,7 @@ export default function TabReport({ ctx }) {
                       </div>
                     );
                   })()}
-              </>
+              </React.Fragment>
             )}
 
           </div>
