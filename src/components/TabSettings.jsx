@@ -184,6 +184,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
 
         {/* CATEGORY MANAGER MODAL */}
         {showCatManager && (
@@ -248,6 +249,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
 
         {/* DATA MODAL */}
         {showDataModal && (
@@ -317,6 +319,7 @@ export default function TabSettings({ ctx }) {
               </div>
             </div>
           </div>
+        )}
         </>
   );
 }
