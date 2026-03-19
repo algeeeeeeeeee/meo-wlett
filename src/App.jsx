@@ -140,6 +140,9 @@ const STYLES = `
   .modal-float { animation: modal-float 0.28s cubic-bezier(0.34,1.2,0.64,1) forwards; }
 
   /* Nav icon active pop */
+  @keyframes nav-icon-in { 0%{transform:scale(0.8); opacity:0.4} 60%{transform:scale(1.15)} 100%{transform:scale(1); opacity:1} }
+  @keyframes nav-label-in { 0%{opacity:1; -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0)} 100%{opacity:1; -webkit-clip-path:inset(0 0% 0 0); clip-path:inset(0 0% 0 0)} }
+  .nav-icon-pop { animation: nav-icon-pop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
 
   /* Skeleton */
@@ -195,8 +198,6 @@ const STYLES = `
   .budget-bar { animation: budget-fill 0.9s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
 
   /* Empty state pulse */
-  @keyframes empty-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-  .empty-float { animation: empty-float 3s ease-in-out infinite; }
   @keyframes fab-item-in { from{opacity:0;transform:translateY(12px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
 
   /* Share copy flash */
@@ -2708,7 +2709,7 @@ export default function App() {
                 ) : (
                   <React.Fragment>
                     <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
-                      <div className="empty-float" style={{ width:88, height:88, borderRadius:26, background:`${themeAccent}14`, border:`1.5px solid ${themeAccent}30`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <div style={{ width:88, height:88, borderRadius:26, background:`${themeAccent}14`, border:`1.5px solid ${themeAccent}30`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <Wallet size={38} color={themeAccent} strokeWidth={1.5}/>
                       </div>
                     </div>
@@ -4074,7 +4075,7 @@ export default function App() {
                     try { localStorage.setItem("gm_follow_system", next ? "1" : "0"); } catch {}
                     if (!next) { setDarkOverride(dark); try { localStorage.setItem("gm_dark_override", String(dark)); } catch {} }
                     else { setDarkOverride(null); try { localStorage.removeItem("gm_dark_override"); } catch {} }
-                  }} style={{ width:48, height:28, borderRadius:50, background: followSystem ? themePrimary : T.catBorder, cursor:"pointer", position:"relative", flexShrink:0, transition:"background 0.2s" }}>
+                  }} style={{ width:48, height:28, borderRadius:50, background: followSystem ? themePrimary : T.catBorder, cursor:"pointer", position:"relative", flexShrink:0, transition:"width 0.5s cubic-bezier(0.4,0,0.2,1), min-width 0.5s cubic-bezier(0.4,0,0.2,1), padding 0.5s cubic-bezier(0.4,0,0.2,1), background 0.2s" }}>
                     <div style={{ position:"absolute", top:4, left: followSystem ? 24 : 4, width:20, height:20, borderRadius:50, background:"white", boxShadow:"0 2px 6px rgba(0,0,0,0.2)", transition:"left 0.2s" }}/>
                   </div>
                 </div>
@@ -4555,7 +4556,7 @@ export default function App() {
                     >
                       <NI id={id} size={isActive ? 18 : 22} color={isActive ? activeColor : (isDate ? "#f9a8d4" : iconInactive)}/>
                       {isActive && (
-                        <span style={{ fontSize:12, fontWeight:800, color:activeColor, whiteSpace:"nowrap", overflow:"hidden", letterSpacing:0.1 }}>
+                        <span style={{ fontSize:12, fontWeight:800, color:activeColor, whiteSpace:"nowrap", overflow:"hidden", animation:"nav-label-in 0.55s cubic-bezier(0.4,0,0.2,1) forwards", letterSpacing:0.1 }}>
                           {label}
                         </span>
                       )}
