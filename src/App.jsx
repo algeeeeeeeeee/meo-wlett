@@ -4786,7 +4786,7 @@ export default function App() {
                   <div style={{ background:`${themeAccent}12`, border:`1.5px solid ${themeAccent}33`, borderRadius:16, padding:16, textAlign:"center" }}>
                     <p style={{ fontSize:12, color:T.textSub, marginBottom:4 }}>{lang==="en"?"Each person pays":"Setiap orang bayar"}</p>
                     <p style={{ fontSize:32, fontWeight:900, color:themeAccent }}>{formatRp(splitResult)}</p>
-                    <p style={{ fontSize:11, color:T.textSub, marginTop:4 }}>{splitForm.people} {lang==="en"?"people × ":"orang × "}{formatRp(splitResult)} = {formatRp(splitResult * splitForm.people)}</p>
+                    <p style={{ fontSize:11, color:T.textSub, marginTop:4 }}>{splitForm.people} {lang==="en"?"people x ":"orang x "}{formatRp(splitResult)} = {formatRp(splitResult * splitForm.people)}</p>
                     <div style={{ display:"flex", gap:8, marginTop:14 }}>
                       <button onClick={() => {
                         const newTx = { id:Date.now(), date:splitForm.date||today(), amount:splitResult, category:splitForm.category, description:splitForm.desc||(lang==="en"?"Split bill":"Split bill"), location:"", note:`Split ${splitForm.people} ${lang==="en"?"people":"orang"}` };
@@ -4799,8 +4799,8 @@ export default function App() {
                       </button>
                       <button onClick={() => {
                         const text = lang==="en"
-                          ? `Split bill: ${formatRp(Number(splitForm.total))} ÷ ${splitForm.people} = ${formatRp(splitResult)}/person`
-                          : `Split bill: ${formatRp(Number(splitForm.total))} ÷ ${splitForm.people} orang = ${formatRp(splitResult)}/orang`;
+                          ? `Split bill: ${formatRp(Number(splitForm.total))} / ${splitForm.people} = ${formatRp(splitResult)}/person`
+                          : `Split bill: ${formatRp(Number(splitForm.total))} / ${splitForm.people} orang = ${formatRp(splitResult)}/orang`;
                         const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                         window.open(url, "_blank");
                       }} style={{ flex:1, padding:"10px", borderRadius:12, border:`1.5px solid ${themeAccent}`, background:"transparent", color:T.accentText, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
