@@ -3644,7 +3644,7 @@ export default function App() {
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Category":"Kategori"}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Manage & organise categories":"Atur & kelola kategori"}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -3691,7 +3691,7 @@ export default function App() {
                   style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                   <div style={{ textAlign:"left" }}>
                     <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Manage & organise categories":"Atur & kelola kategori"}</p>
                   </div>
                   <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
                 </button>
