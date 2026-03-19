@@ -794,11 +794,6 @@ export default function App() {
   useEffect(() => { try { localStorage.setItem("gm_reminder_smart", reminderSmart ? "1" : "0"); } catch {} }, [reminderSmart]);
 
 
-  // Split Bill
-  const [showSplitBill, setShowSplitBill] = useState(false);
-  const [splitForm, setSplitForm] = useState({ total:"", totalDisplay:"", people:2, desc:"", category:"food", date:today() });
-  const [splitResult, setSplitResult] = useState(null);
-
   // Receipts (base64 stored per tx id)
   const [txReceipts, setTxReceipts] = useState(() => {
     try { return JSON.parse(localStorage.getItem("gm_tx_receipts") || "{}"); } catch { return {}; }
@@ -900,7 +895,7 @@ export default function App() {
     try { const v = localStorage.getItem("gm_recurring"); return v ? JSON.parse(v) : []; } catch { return []; }
   });
   useEffect(() => { try { localStorage.setItem("gm_recurring", JSON.stringify(recurring)); } catch {} }, [recurring]);
-  const [recurForm, setRecurForm] = useState({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true, endDate:"" });
+  const [recurForm, setRecurForm] = useState({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true });
   const [editRecurId, setEditRecurId] = useState(null);
   const [showRecurPanel, setShowRecurPanel] = useState(false);
 
@@ -914,11 +909,6 @@ export default function App() {
   const [showRecurIncomePanel, setShowRecurIncomePanel] = useState(false);
 
   // Budgets
-  const [budgetRollover, setBudgetRollover] = useState(() => {
-    try { const v = localStorage.getItem("gm_budget_rollover"); return v ? JSON.parse(v) : false; } catch { return false; }
-  });
-  useEffect(() => { try { localStorage.setItem("gm_budget_rollover", JSON.stringify(budgetRollover)); } catch {} }, [budgetRollover]);
-
   const [budgets, setBudgets] = useState(() => {
     try { const v = localStorage.getItem("gm_budgets"); return v ? JSON.parse(v) : {}; } catch { return {}; }
   });
@@ -1171,10 +1161,7 @@ export default function App() {
     if (!loaded) return;
     const todayDate = today();
     const todayDay = new Date().getDate();
-    const today_ = today();
     recurring.forEach(r => {
-      // Skip if end date passed
-      if (r.endDate && today_ > r.endDate) return;
       const shouldApply = r.autoApply !== false;
       if (!shouldApply) {
         // Send reminder notif for manual recurring items due today
@@ -2405,13 +2392,6 @@ export default function App() {
             {/* Budget per Kategori — prominent dashboard card */}
             {(() => {
               const budgetEntries = Object.entries(budgets).filter(([,v]) => v > 0);
-              const getRolloverBonus = (catKey) => {
-                if (!budgetRollover) return 0;
-                const prevM = (() => { const d = new Date(currentMonth+"-01"); d.setMonth(d.getMonth()-1); return d.toISOString().slice(0,7); })();
-                const prevSpent = transactions.filter(t => t.category===catKey && getMonth(t.date)===prevM).reduce((s,t)=>s+t.amount,0);
-                const prevBudget = budgets[catKey] || 0;
-                return Math.max(0, prevBudget - prevSpent);
-              };
               const allCatKeys = Object.keys(categories);
               // Empty state CTA
               if (budgetEntries.length === 0 && !overallBudget) return (
@@ -2472,10 +2452,8 @@ export default function App() {
                       );
                     })()}
                     {budgetEntries.slice(0, 4).map(([key, bgt]) => {
-                      const rollBonus2 = budgetRollover ? getRolloverBonus(key) : 0;
-                      const effectiveBgt = bgt + rollBonus2;
                       const spent = transactions.filter(t => t.category === key && getMonth(t.date) === currentMonth).reduce((a,t) => a+t.amount, 0);
-                      const pct = Math.min(100, Math.round((spent / effectiveBgt) * 100));
+                      const pct = Math.min(100, Math.round((spent / bgt) * 100));
                       const over = pct >= 100; const warn = pct >= 80;
                       const cat = getCategory(key);
                       const barColor2 = over ? "#ef4444" : warn ? "#f59e0b" : themeAccent;
@@ -2754,11 +2732,7 @@ export default function App() {
               <p style={{ fontSize:12, color:T.textSub, fontWeight:600 }}>{filtered.length} {L.transactions_label}</p>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <p key={filteredTotal} style={{ fontSize:12, fontWeight:700, color:"#f87171", animation:"count-up 0.3s cubic-bezier(0.25,0.46,0.45,0.94) both" }}>-{formatRp(filteredTotal)}</p>
-                <button onClick={() => { haptic(); setSplitForm({ total:"", totalDisplay:"", people:2, desc:"", category:Object.keys(categories)[0]||"food", date:today() }); setSplitResult(null); setShowSplitBill(true); }}
-                  style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99, border:`1.5px solid ${T.cardBorder}`, background:T.catBg, cursor:"pointer", fontSize:11, fontWeight:700, color:T.textSub, fontFamily:"inherit" }}>
-                  <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  Split
-                </button>
+
               </div>
             </div>
 
@@ -2911,14 +2885,6 @@ export default function App() {
                       <p style={{ fontSize:11, color:T.textSub }}>{L.autoApplyDesc}</p>
                     </div>
                   </div>
-                  {/* End date */}
-                  <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
-                    <p style={{ fontSize:11, fontWeight:700, color:T.textSub }}>{lang==="en"?"End Date (optional)":"Tanggal Berakhir (opsional)"}</p>
-                    <input className="inp" type="date" value={recurForm.endDate||""}
-                      onChange={e => setRecurForm(f => ({ ...f, endDate: e.target.value }))}
-                      style={{ background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text, colorScheme:dark?"dark":"light" }}/>
-                    {recurForm.endDate && <p style={{ fontSize:10, color:T.textSub }}>{lang==="en"?"Will stop after this date":"Akan berhenti setelah tanggal ini"}</p>}
-                  </div>
                   <button className="btn-p" style={{ padding:"10px", fontSize:13 }} onClick={() => {
                     if (!recurForm.description || !recurForm.amount) return;
                     if (editRecurId) {
@@ -2929,7 +2895,7 @@ export default function App() {
                       setRecurring(prev => [...prev, { ...recurForm, id: Date.now() }]);
                       haptic("success"); showToast(lang==="en" ? "ok:Recurring transaction added" : L.toastRecurAdd);
                     }
-                    setRecurForm({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true, endDate:"" });
+                    setRecurForm({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true });
                   }}>{editRecurId ? <span style={{display:"flex",alignItems:"center",gap:6,justifyContent:"center"}}><Save size={14} strokeWidth={2}/>{L.done}</span> : "+ "+L.addRecurring}</button>
                 </div>
               </div>}
@@ -2955,7 +2921,7 @@ export default function App() {
                         </div>
                         <div style={{ flex:1, minWidth:0 }}>
                           <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{r.description}</p>
-                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}{r.endDate ? <span style={{color:T.textSub,fontWeight:600}}> · {lang==="en"?"ends":"berakhir"} {r.endDate}</span> : ""}</p>
+                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}</p>
                         </div>
                         <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5 }}>
                           <p style={{ fontSize:13, fontWeight:800, color:"#f87171" }}>-{formatRp(Number(r.amount))}</p>
@@ -3913,16 +3879,7 @@ export default function App() {
             onClick={e => { if (e.target===e.currentTarget) setShowBudgetLimit(false); }}>
             <div className="fi scroll-area modal-up" style={{ background:T.modalBg, borderRadius:"22px 22px 0 0", padding:22, paddingBottom:`22px + ${kbHeight > 0 ? kbHeight : 0}px`, width:"100%", maxHeight:"88vh", overflowY:"auto" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                  <p style={{ fontSize:16, fontWeight:800, color:T.text }}>{L.budgetLimit}</p>
-                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Rollover":"Rollover"}</p>
-                    <div onClick={() => setBudgetRollover(v=>!v)} style={{ width:40, height:24, borderRadius:50, background: budgetRollover ? themePrimary : T.catBorder, cursor:"pointer", position:"relative", flexShrink:0, transition:"background 0.2s" }}>
-                      <div style={{ position:"absolute", top:3, left: budgetRollover ? 19 : 3, width:18, height:18, borderRadius:50, background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.2)", transition:"left 0.2s" }}/>
-                    </div>
-                  </div>
-                </div>
-                {budgetRollover && <p style={{ fontSize:11, color:themeAccent, marginTop:4 }}>{lang==="en"?"Unspent budget carries over to next month":"Sisa budget bulan ini dibawa ke bulan depan"}</p>}
+                <p style={{ fontSize:16, fontWeight:800, color:T.text }}>{L.budgetLimit}</p>
                 <button onClick={() => setShowBudgetLimit(false)}
                   style={{ background:T.btnG, border:"none", borderRadius:10, padding:"6px 14px", cursor:"pointer", fontSize:13, fontWeight:700, color:T.btnGText }}>{L.done}</button>
               </div>
@@ -4713,68 +4670,7 @@ export default function App() {
           </div>
         )}
 
-        {showSplitBill && (
-          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}}
-            onClick={e=>{if(e.target===e.currentTarget)setShowSplitBill(false);}}>
-            <div style={{background:T.card,borderRadius:"28px 28px 0 0",width:"100%",maxWidth:400,maxHeight:"90dvh",overflowY:"auto",paddingBottom:32}}>
-              <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0"}}/>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 20px 12px"}}>
-                <p style={{fontSize:17,fontWeight:900,color:T.text}}>Split Bill</p>
-                <button onClick={()=>setShowSplitBill(false)} style={{background:T.catBg,border:"none",borderRadius:50,width:32,height:32,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={16} color={T.textSub} strokeWidth={2.5}/></button>
-              </div>
-              <div style={{padding:"0 20px 20px",display:"flex",flexDirection:"column",gap:12}}>
-                <div style={{position:"relative"}}>
-                  <span style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)",fontSize:14,fontWeight:800,color:T.textSub}}>Rp</span>
-                  <input type="text" inputMode="numeric" className="inp" placeholder="0"
-                    value={splitForm.totalDisplay||""}
-                    onChange={e=>{const {display,raw}=parseRpInput(e.target.value);setSplitForm(f=>({...f,total:raw,totalDisplay:display}));setSplitResult(null);}}
-                    style={{paddingLeft:44,fontSize:20,fontWeight:900,background:T.inp,border:"1.5px solid "+T.inpBorder,color:T.text}}/>
-                </div>
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <button onClick={()=>{setSplitForm(f=>({...f,people:Math.max(2,f.people-1)}));setSplitResult(null);}}
-                    style={{width:44,height:44,borderRadius:12,background:T.catBg,border:"1.5px solid "+T.cardBorder,fontSize:22,fontWeight:800,cursor:"pointer",color:T.text,fontFamily:"inherit"}}>-</button>
-                  <div style={{flex:1,textAlign:"center"}}>
-                    <p style={{fontSize:28,fontWeight:900,color:T.text}}>{splitForm.people}</p>
-                    <p style={{fontSize:11,color:T.textSub}}>{lang==="en"?"people":"orang"}</p>
-                  </div>
-                  <button onClick={()=>{setSplitForm(f=>({...f,people:Math.min(20,f.people+1)}));setSplitResult(null);}}
-                    style={{width:44,height:44,borderRadius:12,background:T.catBg,border:"1.5px solid "+T.cardBorder,fontSize:22,fontWeight:800,cursor:"pointer",color:T.text,fontFamily:"inherit"}}>+</button>
-                </div>
-                <button onClick={()=>{
-                  if(!splitForm.total||splitForm.people<2)return;
-                  setSplitResult(Math.ceil(Number(splitForm.total)/splitForm.people));
-                  haptic("success");
-                }} style={{padding:"12px",borderRadius:14,border:"none",background:"linear-gradient(135deg,"+themeAccent+","+themePrimary+")",color:"white",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>
-                  {lang==="en"?"Calculate":"Hitung"}
-                </button>
-                {splitResult && (
-                  <div style={{background:T.catBg,border:"1.5px solid "+T.cardBorder,borderRadius:16,padding:16,textAlign:"center"}}>
-                    <p style={{fontSize:12,color:T.textSub,marginBottom:4}}>{lang==="en"?"Each person pays":"Tiap orang bayar"}</p>
-                    <p style={{fontSize:32,fontWeight:900,color:themeAccent}}>{formatRp(splitResult)}</p>
-                    <p style={{fontSize:11,color:T.textSub,marginTop:4}}>{splitForm.people} x {formatRp(splitResult)}</p>
-                    <div style={{display:"flex",gap:8,marginTop:14}}>
-                      <button onClick={()=>{
-                        const newTx={id:Date.now(),date:today(),amount:splitResult,category:splitForm.category||"food",description:"Split bill",location:"",note:"Split "+splitForm.people+" "+(lang==="en"?"orang":"orang")};
-                        setTransactions(prev=>[newTx,...prev]);
-                        showToast("ok:"+(lang==="en"?"Recorded!":"Dicatat!"));
-                        setShowSplitBill(false);
-                        haptic("success");
-                      }} style={{flex:1,padding:"10px",borderRadius:12,border:"none",background:"linear-gradient(135deg,"+themeAccent+","+themePrimary+")",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>
-                        {lang==="en"?"Record My Share":"Catat Bagianku"}
-                      </button>
-                      <button onClick={()=>{
-                        const msg="Split bill: "+formatRp(Number(splitForm.total))+" / "+splitForm.people+" = "+formatRp(splitResult);
-                        window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
-                      }} style={{flex:1,padding:"10px",borderRadius:12,border:"1px solid "+T.cardBorder,background:T.catBg,color:T.text,fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>
-                        Share WA
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+
         {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
 
 
