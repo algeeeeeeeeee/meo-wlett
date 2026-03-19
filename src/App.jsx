@@ -3642,7 +3642,7 @@ export default function App() {
               <button onClick={() => setShowBudgetLimit(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
                 <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Per-Category Limits":"Limit per Kategori"}</p>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
                   <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
@@ -4117,7 +4117,7 @@ export default function App() {
                       <Wallet size={18} color="white" strokeWidth={2}/>
                     </div>
                     <div>
-                      <p style={{ fontSize:15, fontWeight:900, color:"white", marginBottom:1 }}>{lang==="en"?"Monthly Budget Limit":"Limit Budget Bulanan"}</p>
+                      <p style={{ fontSize:15, fontWeight:900, color:"white", marginBottom:1 }}>{lang==="en"?"Monthly Budget":"Anggaran Bulanan"}</p>
                       <p style={{ fontSize:11, color:"rgba(255,255,255,0.65)" }}>{lang==="en"?"Total spending cap per month":"Batas total pengeluaran per bulan"}</p>
                     </div>
                   </div>
@@ -4152,7 +4152,7 @@ export default function App() {
 
               {/* Body */}
               <div style={{ padding:"20px 20px 24px" }}>
-                <p style={{ fontSize:12, fontWeight:700, color:T.textSub, marginBottom:8 }}>{lang==="en"?"SET NEW LIMIT (Rp)":"SET LIMIT BARU (Rp)"}</p>
+                <p style={{ fontSize:12, fontWeight:700, color:T.textSub, marginBottom:8 }}>{lang==="en"?"SET NEW LIMIT (Rp)":"ATUR BATAS BARU (Rp)"}</p>
                 <input
                   className="inp"
                   type="text"
@@ -4161,17 +4161,17 @@ export default function App() {
                   placeholder={lang==="en"?"3.000.000":"3.000.000"}
                   value={tempOverallBudgetDisplay}
                   onChange={e => { const {display,raw}=parseRpInput(e.target.value); setTempOverallBudgetDisplay(display); setTempOverallBudget(raw); }}
-                  onKeyDown={e => { if(e.key==="Enter" && tempOverallBudget > 0){ setOverallBudget(tempOverallBudget); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget limit saved!":"Limit budget disimpan!"); }}}
+                  onKeyDown={e => { if(e.key==="Enter" && tempOverallBudget > 0){ setOverallBudget(tempOverallBudget); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget saved!":"Anggaran disimpan!"); }}}
                   style={{ background:T.inp, border:"1.5px solid "+(dark?"rgba(255,255,255,0.1)":T.cardBorder), color:T.text, fontSize:18, fontWeight:700, marginBottom:12 }}
                 />
                 <div style={{ display:"flex", gap:8 }}>
                   {overallBudget > 0 && (
-                    <button onClick={() => { setOverallBudget(0); setTempOverallBudget(0); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget limit removed":"Limit dihapus"); }}
+                    <button onClick={() => { setOverallBudget(0); setTempOverallBudget(0); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget removed":"Anggaran dihapus"); }}
                       style={{ flex:1, padding:"13px 0", borderRadius:14, background:dark?"rgba(239,68,68,0.15)":"#fef2f2", border:"1.5px solid "+dark?"rgba(239,68,68,0.3)":"#fecaca", color:"#f87171", fontSize:13, fontWeight:800, cursor:"pointer" }}>
                       {lang==="en"?"Remove":"Hapus"}
                     </button>
                   )}
-                  <button onClick={() => { if(tempOverallBudget > 0){ setOverallBudget(tempOverallBudget); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget limit saved!":"Limit budget disimpan!"); haptic(); }}}
+                  <button onClick={() => { if(tempOverallBudget > 0){ setOverallBudget(tempOverallBudget); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget saved!":"Anggaran disimpan!"); haptic(); }}}
                     style={{ flex:2, padding:"13px 0", borderRadius:14, background: tempOverallBudget > 0 ? themePrimary : (dark?"rgba(255,255,255,0.08)":"#f3f4f6"), color: tempOverallBudget > 0 ? "white" : T.textSub, fontSize:13, fontWeight:800, cursor: tempOverallBudget > 0 ? "pointer":"default", border:"none", transition:"all 0.2s" }}>
                     {lang==="en"?"Save Limit":"Simpan Limit"}
                   </button>

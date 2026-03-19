@@ -168,7 +168,7 @@ export const LANG = {
     filterToday:"Today", filterWeek:"This week", filterMonth:"This month",
     thisMonth:"This month", lastMonth:"Last month",
     // Category manager
-    budgetLimit:"Batas Pengeluaran", budgetLimitDesc:"Set spending limits per category",
+    budgetLimit:"Spending Limits", budgetLimitDesc:"Set spending limits per category",
     manageCategory:"Manage Categories", addCategory:"Add Category", editCategory:"Edit Category",
     catName:"Category name...", pickIcon:"Choose Icon:", pickColor:"Choose Colour:",
     previewLabel:"Preview", activeCategories:"Active Categories",
