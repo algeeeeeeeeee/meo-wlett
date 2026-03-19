@@ -882,6 +882,7 @@ export default function App() {
   const [tempName, setTempName] = useState("");
   const [toast, setToast] = useState(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [showStoryCard, setShowStoryCard] = useState(false);
   // Skeleton
   const [loaded, setLoaded] = useState(true);
 
@@ -3343,6 +3344,13 @@ export default function App() {
                     <svg width={16} height={16} viewBox="0 0 24 24" fill={T.accentText}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     {lang==="en" ? "Share to WhatsApp" : "Bagikan ke WhatsApp"}
                   </button>
+                  {/* Export as Image */}
+                  <button onClick={() => { haptic(); setShowStoryCard(true); }}
+                    style={{ width:"100%", marginTop:8, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                      padding:"12px", borderRadius:14, border:`1.5px solid ${T.cardBorder}`, cursor:"pointer",
+                      background:T.catBg, color:T.text, fontSize:13, fontWeight:800 }}>
+                    <Download size={15} strokeWidth={2}/> {lang==="en"?"Export as Image":"Ekspor sebagai Gambar"}
+                  </button>
                 </div>
               );
             })()}
@@ -4486,6 +4494,127 @@ export default function App() {
 
 
                 {/* Cicilan Modal */}
+        {/* ── STORY CARD MODAL ── */}
+        {showStoryCard && (() => {
+          const now4 = new Date();
+          const bulanStr = now4.toLocaleDateString(lang==="en"?"en-GB":"id-ID", { month:"long", year:"numeric" });
+          const sisa = income - totalExpense;
+          const pct = income > 0 ? Math.round(totalExpense/income*100) : 0;
+          const topCats = Object.entries(
+            transactions.filter(t => getMonth(t.date) === currentMonth)
+              .reduce((acc, t) => { acc[t.category] = (acc[t.category]||0) + t.amount; return acc; }, {})
+          ).sort((a,b) => b[1]-a[1]).slice(0,3);
+
+          const handleDownload = () => {
+            const el = document.getElementById("meowlett-story-card");
+            if (!el) return;
+            // Use html2canvas via CDN if available, else show hint
+            if (window.html2canvas) {
+              window.html2canvas(el, { scale:3, backgroundColor:null, useCORS:true }).then(canvas => {
+                const a = document.createElement("a");
+                a.download = `meowlett-${currentMonth}.png`;
+                a.href = canvas.toDataURL("image/png");
+                a.click();
+                showToast("ok:"+(lang==="en"?"Image downloaded!":"Gambar berhasil diunduh!"));
+              });
+            } else {
+              // Fallback: load html2canvas then retry
+              const s = document.createElement("script");
+              s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+              s.onload = () => {
+                window.html2canvas(el, { scale:3, backgroundColor:null, useCORS:true }).then(canvas => {
+                  const a = document.createElement("a");
+                  a.download = `meowlett-${currentMonth}.png`;
+                  a.href = canvas.toDataURL("image/png");
+                  a.click();
+                  showToast("ok:"+(lang==="en"?"Image downloaded!":"Gambar berhasil diunduh!"));
+                });
+              };
+              document.head.appendChild(s);
+            }
+          };
+
+          return (
+            <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", backdropFilter:"blur(8px)", zIndex:400, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:20 }}
+              onClick={() => setShowStoryCard(false)}>
+              <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:380 }}>
+                {/* Card preview */}
+                <div id="meowlett-story-card" style={{
+                  background:`linear-gradient(135deg, ${themePrimary}, ${themePrimary}cc, #0d0d0d)`,
+                  borderRadius:24, padding:32, color:"white", position:"relative", overflow:"hidden"
+                }}>
+                  {/* Decorative circles */}
+                  <div style={{ position:"absolute", top:-40, right:-40, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }}/>
+                  <div style={{ position:"absolute", bottom:-20, left:-20, width:100, height:100, borderRadius:"50%", background:"rgba(255,255,255,0.04)" }}/>
+
+                  {/* Header */}
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:24, position:"relative" }}>
+                    <div>
+                      <p style={{ fontSize:11, color:"rgba(255,255,255,0.5)", fontWeight:600, letterSpacing:1, marginBottom:3 }}>MEOWLETT</p>
+                      <p style={{ fontSize:14, fontWeight:800, color:"white" }}>{bulanStr}</p>
+                    </div>
+                    <div style={{ background:"rgba(255,255,255,0.1)", borderRadius:12, padding:"6px 12px" }}>
+                      <p style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.8)" }}>{pct}% {lang==="en"?"used":"terpakai"}</p>
+                    </div>
+                  </div>
+
+                  {/* Main number */}
+                  <p style={{ fontSize:11, color:"rgba(255,255,255,0.5)", fontWeight:600, letterSpacing:1, marginBottom:4, position:"relative" }}>{lang==="en"?"TOTAL SPENDING":"TOTAL PENGELUARAN"}</p>
+                  <p style={{ fontSize:36, fontWeight:900, color:"white", letterSpacing:-1, marginBottom:4, position:"relative" }}>{formatRp(totalExpense)}</p>
+                  <p style={{ fontSize:12, color:"rgba(255,255,255,0.45)", marginBottom:24, position:"relative" }}>{lang==="en"?`of ${formatRp(income)} income`:`dari ${formatRp(income)} pemasukan`}</p>
+
+                  {/* Progress bar */}
+                  <div style={{ background:"rgba(255,255,255,0.1)", borderRadius:99, height:6, overflow:"hidden", marginBottom:24, position:"relative" }}>
+                    <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:"rgba(255,255,255,0.7)", borderRadius:99 }}/>
+                  </div>
+
+                  {/* Top categories */}
+                  {topCats.length > 0 && (
+                    <div style={{ position:"relative" }}>
+                      <p style={{ fontSize:10, color:"rgba(255,255,255,0.4)", fontWeight:700, letterSpacing:1, marginBottom:10 }}>{lang==="en"?"TOP CATEGORIES":"KATEGORI TERBESAR"}</p>
+                      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                        {topCats.map(([key, amt]) => {
+                          const cat = getCategory(key);
+                          return (
+                            <div key={key} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                                <div style={{ width:8, height:8, borderRadius:"50%", background:cat.color, flexShrink:0 }}/>
+                                <span style={{ fontSize:12, color:"rgba(255,255,255,0.8)", fontWeight:600 }}>{getCatLabel(cat, lang)}</span>
+                              </div>
+                              <span style={{ fontSize:12, fontWeight:800, color:"white" }}>{formatRp(amt)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sisa */}
+                  <div style={{ marginTop:20, paddingTop:16, borderTop:"1px solid rgba(255,255,255,0.1)", display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
+                    <span style={{ fontSize:12, color:"rgba(255,255,255,0.5)", fontWeight:600 }}>{lang==="en"?"Remaining":"Sisa"}</span>
+                    <span style={{ fontSize:15, fontWeight:900, color: sisa >= 0 ? "rgba(255,255,255,0.9)" : "#f87171" }}>{sisa >= 0 ? formatRp(sisa) : `-${formatRp(Math.abs(sisa))}`}</span>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div style={{ display:"flex", gap:10, marginTop:14 }}>
+                  <button onClick={() => setShowStoryCard(false)}
+                    style={{ flex:1, padding:"12px", borderRadius:14, border:"1.5px solid rgba(255,255,255,0.2)", background:"transparent", color:"white", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                    {L.cancel}
+                  </button>
+                  <button onClick={handleDownload}
+                    style={{ flex:2, padding:"12px", borderRadius:14, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:13, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
+                    <Download size={15} strokeWidth={2}/> {lang==="en"?"Download Image":"Unduh Gambar"}
+                  </button>
+                </div>
+                <p style={{ textAlign:"center", fontSize:11, color:"rgba(255,255,255,0.35)", marginTop:10 }}>
+                  {lang==="en"?"Tap outside to close":"Tap di luar untuk tutup"}
+                </p>
+              </div>
+            </div>
+          );
+        })()}
+
         {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
 
         {/* Tags Modal */}
