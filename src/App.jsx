@@ -3833,8 +3833,8 @@ export default function App() {
                 <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowTagModal(true),200); }}
                   style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", width:"100%", ...IBN, fontFamily:"inherit" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                    <div style={{ width:36, height:36, borderRadius:10, background:"rgba(156,163,175,0.15)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                      <Hash size={18} strokeWidth={2} color={T.textSub}/>
+                    <div style={{ width:36, height:36, borderRadius:10, background:`${themeAccent}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Hash size={18} strokeWidth={2} color={T.accentText}/>
                     </div>
                     <div style={{ textAlign:"left" }}>
                       <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
@@ -4208,7 +4208,7 @@ export default function App() {
                 <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", borderBottom:`1px solid ${T.cardBorder}` }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                     <div style={{ width:36, height:36, borderRadius:12, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      {notifEnabled ? <Bell size={18} color={T.inpFocus} strokeWidth={2}/> : <BellOff size={18} color={T.accentText} strokeWidth={2}/>}
+                      {notifEnabled ? <Bell size={18} color={themeAccent} strokeWidth={2}/> : <BellOff size={18} color={T.textSub} strokeWidth={2}/>}
                     </div>
                     <div>
                       <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.dailyReminder}</p>
@@ -4224,7 +4224,7 @@ export default function App() {
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                       <div style={{ width:36, height:36, borderRadius:12, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                        <BarChart2 size={18} color={weeklyNotif ? T.inpFocus : T.textSub} strokeWidth={2}/>
+                        <BarChart2 size={18} color={weeklyNotif ? themeAccent : T.textSub} strokeWidth={2}/>
                       </div>
                       <div>
                         <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Weekly Summary":"Ringkasan Mingguan"}</p>
@@ -4251,7 +4251,7 @@ export default function App() {
                   style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", borderTop:`1px solid ${T.cardBorder}`, cursor:"pointer", marginTop: weeklyNotif ? 0 : 0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                     <div style={{ width:36, height:36, borderRadius:12, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <Bell size={18} color={T.textSub} strokeWidth={2}/>
+                      <Bell size={18} color={themeAccent} strokeWidth={2}/>
                     </div>
                     <div>
                       <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.reminderTitle}</p>
