@@ -2790,7 +2790,7 @@ export default function App() {
               {(() => {
                 const pendingRecurs = recurring.filter(r => r.autoApply === false);
                 return (
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom: showRecurPanel ? 12 : 0 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom: showRecurPanel ? 12 : 0 }}>
                     <div onClick={() => setShowRecurPanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, flex:1, cursor:"pointer" }}>
                       <div style={{ flex:1, height:1, background:T.cardBorder }}/>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
@@ -2918,9 +2918,9 @@ export default function App() {
 
             {/* ── RECURRING INCOME collapsible ── */}
             <div style={{ marginTop:4, marginBottom:12 }}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"center", marginBottom: showRecurIncomePanel ? 12 : 0 }}>
-                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer", margin:"0 auto" }}>
-                  <div style={{ width:32, height:1, background:"#4ade8033" }}/>
+              <div style={{ display:"flex", alignItems:"center", marginBottom: showRecurIncomePanel ? 12 : 0 }}>
+                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer", flex:1 }}>
+                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <TrendingUp size={11} color="#4ade80" strokeWidth={2}/>
                     <p style={{ fontSize:11, fontWeight:800, color:"#4ade80", letterSpacing:1.5, whiteSpace:"nowrap" }}>{lang==="en"?"RECURRING INCOME":"PEMASUKAN RUTIN"}</p>
@@ -4556,7 +4556,7 @@ export default function App() {
                     >
                       <NI id={id} size={isActive ? 18 : 22} color={isActive ? activeColor : (isDate ? "#f9a8d4" : iconInactive)}/>
                       {isActive && (
-                        <span style={{ fontSize:12, fontWeight:800, color:activeColor, whiteSpace:"nowrap", overflow:"hidden", animation:"nav-label-in 0.55s cubic-bezier(0.4,0,0.2,1) forwards", letterSpacing:0.1 }}>
+                        <span style={{ fontSize:12, fontWeight:800, color:activeColor, whiteSpace:"nowrap", overflow:"hidden", letterSpacing:0.1 }}>
                           {label}
                         </span>
                       )}
