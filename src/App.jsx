@@ -1324,7 +1324,7 @@ export default function App() {
       value,
       color: getCategory(key).color
     })),
-    [catBreakdown, categories, lang]);
+    [catBreakdown, categories]);
 
   const reportTxns = useMemo(() =>
     transactions.filter(t => t.date === reportDate).sort((a, b) => b.id - a.id),
@@ -2354,10 +2354,10 @@ export default function App() {
                     </div>
                     <div style={{ flex:1 }}>
                       <p style={{ fontSize:13, fontWeight:800, color:T.text, marginBottom:2 }}>{L.monthlyBudget}</p>
-                      <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"No limits set. Set one to stay on track.":"Belum ada limit. Set biar lebih terkontrol."}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"No budget set yet. Tap to set one.":"Belum ada anggaran. Tap untuk mengatur."}</p>
                     </div>
                     <button onClick={() => { haptic(); setTempOverallBudget(overallBudget || 0); setTempOverallBudgetDisplay(overallBudget ? Number(overallBudget).toLocaleString("id-ID") : ""); setShowOverallBudgetModal(true); }} style={{ background:`${TP}18`, border:`1px solid ${TP}33`, borderRadius:10, padding:"7px 12px", color: TP, fontSize:11, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>
-                      {lang==="en"?"Set Budget":"Set Budget"}
+                      {lang==="en"?"Set Budget":"Atur Anggaran"}
                     </button>
                   </div>
                 </div>
@@ -2927,7 +2927,7 @@ export default function App() {
                 <div key={k} style={{ display:"flex",alignItems:"center",gap:10,padding:"11px 14px",borderRadius:14,background:over?"#fef2f2":"#fffbeb",border:`1.5px solid ${over?"#fca5a5":"#fde68a"}`,marginBottom:8 }}>
                   <AlertCircle size={18} color={over?"#ef4444":"#f59e0b"} strokeWidth={2}/>
                   <div style={{ flex:1 }}>
-                    <p style={{ fontSize:13,fontWeight:700,color:over?"#b91c1c":"#92400e" }}>{over?(lang==="en"?"Exceeded":"Terlampaui"):(lang==="en"?"Near limit":"Mendekati limit")}: {getCatLabel(cat, lang)}</p>
+                    <p style={{ fontSize:13,fontWeight:700,color:over?"#b91c1c":"#92400e" }}>{over?(lang==="en"?"Exceeded":"Terlampaui"):(lang==="en"?"Near limit":"Mendekati batas")}: {getCatLabel(cat, lang)}</p>
                     <p style={{ fontSize:11,color:over?"#ef4444":"#f59e0b" }}>{formatRp(spent)} / {formatRp(v)}</p>
                   </div>
                 </div>
@@ -3637,7 +3637,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Kategori — 1 card: Limit + Kelola + Tag */}
+            {/* Kategori */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
               <button onClick={() => setShowBudgetLimit(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
@@ -3657,12 +3657,9 @@ export default function App() {
               </button>
               <button onClick={() => setShowTagModal(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <Hash size={14} color={T.accentText} strokeWidth={2}/>
-                  <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
-                  </div>
+                <div style={{ textAlign:"left" }}>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -4141,7 +4138,7 @@ export default function App() {
                             <div style={{ height:"100%", width:pct+"%", borderRadius:99, background: over?"#f87171":"rgba(255,255,255,0.8)", transition:"width 0.4s" }}/>
                           </div>
                           <p style={{ fontSize:11, color: over?"#fca5a5":"rgba(255,255,255,0.65)", marginTop:5, fontWeight:600 }}>
-                            {formatRp(spent)} {lang==="en"?"spent":"terpakai"} · {over ? (lang==="en"?"Over budget!":"Melebihi limit!") : (lang==="en"?"remaining":"sisa")+" "+formatRp(overallBudget-spent)}
+                            {formatRp(spent)} {lang==="en"?"spent":"terpakai"} · {over ? (lang==="en"?"Over budget!":"Melebihi batas!") : (lang==="en"?"remaining":"sisa")+" "+formatRp(overallBudget-spent)}
                           </p>
                         </div>
                       );
@@ -4173,7 +4170,7 @@ export default function App() {
                   )}
                   <button onClick={() => { if(tempOverallBudget > 0){ setOverallBudget(tempOverallBudget); setShowOverallBudgetModal(false); showToast(lang==="en"?"Budget saved!":"Anggaran disimpan!"); haptic(); }}}
                     style={{ flex:2, padding:"13px 0", borderRadius:14, background: tempOverallBudget > 0 ? themePrimary : (dark?"rgba(255,255,255,0.08)":"#f3f4f6"), color: tempOverallBudget > 0 ? "white" : T.textSub, fontSize:13, fontWeight:800, cursor: tempOverallBudget > 0 ? "pointer":"default", border:"none", transition:"all 0.2s" }}>
-                    {lang==="en"?"Save Limit":"Simpan Limit"}
+                    {lang==="en"?"Save Limit":"Simpan Batas"}
                   </button>
                 </div>
               </div>
