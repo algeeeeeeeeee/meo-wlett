@@ -4721,7 +4721,7 @@ export default function App() {
               <div style={{ width:36, height:4, background:T.cardBorder, borderRadius:99, margin:"12px auto 0" }}/>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px 12px" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:36, height:36, borderRadius:12, background:`${themeAccent}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ width:36, height:36, borderRadius:12, background:themeAccent+"18", display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={T.accentText} strokeWidth={2} strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   </div>
                   <p style={{ fontSize:17, fontWeight:900, color:T.text }}>{lang==="en"?"Split Bill":"Split Bill"}</p>
@@ -4739,7 +4739,7 @@ export default function App() {
                     <input type="text" inputMode="numeric" className="inp" placeholder="0"
                       value={splitForm.totalDisplay||""}
                       onChange={e => { const {display,raw}=parseRpInput(e.target.value); setSplitForm(f=>({...f,total:raw,totalDisplay:display})); setSplitResult(null); }}
-                      style={{ paddingLeft:44, fontSize:20, fontWeight:900, background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }}/>
+                      style={{ paddingLeft:44, fontSize:20, fontWeight:900, background:T.inp, border:"1.5px solid "+T.inpBorder, color:T.text }}/>
                   </div>
                 </div>
                 {/* People count */}
@@ -4747,25 +4747,25 @@ export default function App() {
                   <p style={{ fontSize:11, fontWeight:700, color:T.textSub, marginBottom:5 }}>{lang==="en"?"Split between":"Dibagi"}</p>
                   <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                     <button onClick={() => { setSplitForm(f=>({...f,people:Math.max(2,f.people-1)})); setSplitResult(null); }}
-                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>-</button>
+                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:"1.5px solid "+T.cardBorder, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>-</button>
                     <div style={{ flex:1, textAlign:"center" }}>
                       <p style={{ fontSize:28, fontWeight:900, color:T.text }}>{splitForm.people}</p>
                       <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"people":"orang"}</p>
                     </div>
                     <button onClick={() => { setSplitForm(f=>({...f,people:Math.min(20,f.people+1)})); setSplitResult(null); }}
-                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>+</button>
+                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:"1.5px solid "+T.cardBorder, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>+</button>
                   </div>
                 </div>
                 {/* Description + category */}
                 <input className="inp" placeholder={L.descPlaceholder} value={splitForm.desc}
                   onChange={e => setSplitForm(f=>({...f,desc:e.target.value}))}
-                  style={{ background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }}/>
+                  style={{ background:T.inp, border:"1.5px solid "+T.inpBorder, color:T.text }}/>
                 <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:2, scrollbarWidth:"none" }}>
                   {Object.entries(categories).map(([k,v]) => {
                     const isSel = splitForm.category===k;
                     return <button key={k} onClick={()=>setSplitForm(f=>({...f,category:k}))}
                       style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 11px", borderRadius:20, flexShrink:0,
-                        background:isSel?v.color+"22":T.catBg, border:isSel?`2px solid ${v.color}`:`1.5px solid ${T.cardBorder}`, cursor:"pointer" }}>
+                        background:isSel?v.color+"22":T.catBg, border:isSel?"2px solid "+v.color:"1.5px solid "+T.cardBorder, cursor:"pointer" }}>
                       <CatIcon iconKey={v.icon} size={11} color={isSel?v.color:T.textSub}/>
                       <span style={{ fontSize:11, fontWeight:isSel?700:500, color:isSel?v.color:T.textSub, whiteSpace:"nowrap" }}>{getCatLabel(v,lang)}</span>
                     </button>;
@@ -4778,23 +4778,23 @@ export default function App() {
                   setSplitResult(perPerson);
                   haptic("success");
                 }}
-                  style={{ padding:"12px", borderRadius:14, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:14, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
+                  style={{ padding:"12px", borderRadius:14, border:"none", background:"linear-gradient(135deg,"+themeAccent+","+themePrimary+")", color:"white", fontSize:14, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
                   {lang==="en"?"Calculate Split":"Hitung Split"}
                 </button>
                 {/* Result */}
                 {splitResult && (
-                  <div style={{ background:`${themeAccent}12`, border:`1.5px solid ${themeAccent}33`, borderRadius:16, padding:16, textAlign:"center" }}>
+                  <div style={{ background:themeAccent+"12", border:"1.5px solid "+themeAccent+"33", borderRadius:16, padding:16, textAlign:"center" }}>
                     <p style={{ fontSize:12, color:T.textSub, marginBottom:4 }}>{lang==="en"?"Each person pays":"Setiap orang bayar"}</p>
                     <p style={{ fontSize:32, fontWeight:900, color:themeAccent }}>{formatRp(splitResult)}</p>
                     <p style={{ fontSize:11, color:T.textSub, marginTop:4 }}>{splitForm.people} {lang==="en"?"people x ":"orang x "}{formatRp(splitResult)} = {formatRp(splitResult * splitForm.people)}</p>
                     <div style={{ display:"flex", gap:8, marginTop:14 }}>
                       <button onClick={() => {
-                        const newTx = { id:Date.now(), date:splitForm.date||today(), amount:splitResult, category:splitForm.category, description:splitForm.desc||(lang==="en"?"Split bill":"Split bill"), location:"", note:`Split ${splitForm.people} ${lang==="en"?"people":"orang"}` };
+                        const newTx = { id:Date.now(), date:splitForm.date||today(), amount:splitResult, category:splitForm.category, description:splitForm.desc||(lang==="en"?"Split bill":"Split bill"), location:"", note:"Split " + splitForm.people + " " + (lang==="en"?"people":"orang") };
                         setTransactions(prev=>[newTx,...prev]);
                         showToast("ok:"+(lang==="en"?"Your share recorded!":"Bagianmu dicatat!"));
                         setShowSplitBill(false);
                         haptic("success");
-                      }} style={{ flex:1, padding:"10px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
+                      }} style={{ flex:1, padding:"10px", borderRadius:12, border:"none", background:"linear-gradient(135deg,"+themeAccent+","+themePrimary+")", color:"white", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
                         {lang==="en"?"Record My Share":"Catat Bagianku"}
                       </button>
                       <button onClick={() => {
