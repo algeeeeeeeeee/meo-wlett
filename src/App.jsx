@@ -978,6 +978,15 @@ export default function App() {
   const [editRecurId, setEditRecurId] = useState(null);
   const [showRecurPanel, setShowRecurPanel] = useState(false);
 
+  // ── Recurring Income ──────────────────────────────────────────────────────
+  const [recurringIncome, setRecurringIncome] = useState(() => {
+    try { const v = localStorage.getItem("gm_recurring_income"); return v ? JSON.parse(v) : []; } catch { return []; }
+  });
+  useEffect(() => { try { localStorage.setItem("gm_recurring_income", JSON.stringify(recurringIncome)); } catch {} }, [recurringIncome]);
+  const [recurIncomeForm, setRecurIncomeForm] = useState({ description:"", amount:"", amountDisplay:"", day:1, autoApply:true });
+  const [editRecurIncomeId, setEditRecurIncomeId] = useState(null);
+  const [showRecurIncomePanel, setShowRecurIncomePanel] = useState(false);
+
   // Budgets
   const [budgets, setBudgets] = useState(() => {
     try { const v = localStorage.getItem("gm_budgets"); return v ? JSON.parse(v) : {}; } catch { return {}; }
@@ -2907,6 +2916,114 @@ export default function App() {
               ))}
             </div>
 
+            {/* ── RECURRING INCOME collapsible ── */}
+            <div style={{ marginTop:4, marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom: showRecurIncomePanel ? 12 : 0 }}>
+                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, flex:1, cursor:"pointer" }}>
+                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
+                  <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                    <TrendingUp size={11} color="#4ade80" strokeWidth={2}/>
+                    <p style={{ fontSize:11, fontWeight:800, color:"#4ade80", letterSpacing:1.5, whiteSpace:"nowrap" }}>{lang==="en"?"RECURRING INCOME":"PEMASUKAN RUTIN"}</p>
+                    <ChevronDown size={11} color="#4ade80" strokeWidth={2.5} style={{ transform: showRecurIncomePanel?"rotate(180deg)":"rotate(0)", transition:"transform 0.2s" }}/>
+                  </div>
+                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
+                </div>
+              </div>
+
+              {showRecurIncomePanel && <div className="card" style={{ padding:16, marginBottom:10, border:"1px solid #4ade8033" }}>
+                <p style={{ fontSize:13, fontWeight:800, color:"#4ade80", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
+                  <TrendingUp size={15} color="#4ade80" strokeWidth={2}/> {lang==="en"?"Add Recurring Income":"Tambah Pemasukan Rutin"}
+                </p>
+                <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
+                  <input className="inp" placeholder={lang==="en"?"Name (e.g. Salary, Freelance...)":"Nama (mis: Gaji, Freelance...)"} value={recurIncomeForm.description}
+                    onChange={e => setRecurIncomeForm(f => ({ ...f, description: e.target.value }))}
+                    style={{ background:T.inp, border:"1.5px solid #4ade8055", color:T.text }}/>
+                  <div style={{ display:"flex", gap:8 }}>
+                    <input className="inp" type="text" inputMode="numeric" placeholder="5.000.000" value={recurIncomeForm.amountDisplay||""} onFocus={e => e.target.select()}
+                      onChange={e => { const {display,raw}=parseRpInput(e.target.value); setRecurIncomeForm(f => ({ ...f, amount: raw, amountDisplay: display })); }}
+                      style={{ flex:2, background:T.inp, border:"1.5px solid #4ade8055", color:T.text }}/>
+                    <div style={{ flex:1, display:"flex", flexDirection:"column", gap:3 }}>
+                      <p style={{ fontSize:10, fontWeight:700, color:"#4ade80", paddingLeft:2 }}>{L.dayLabel}</p>
+                      <input className="inp" type="number" min="1" max="31" placeholder={L.recurDay} value={recurIncomeForm.day} onFocus={e => e.target.select()}
+                        onChange={e => setRecurIncomeForm(f => ({ ...f, day: e.target.value }))}
+                        style={{ background:T.inp, border:"1.5px solid #4ade8055", color:T.text }}/>
+                    </div>
+                  </div>
+                  <div onClick={() => { haptic(); setRecurIncomeForm(f => ({ ...f, autoApply: !f.autoApply })); }} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:T.catBg, borderRadius:12, cursor:"pointer", userSelect:"none" }}>
+                    <div style={{ width:20, height:20, borderRadius:6, border:`2px solid ${recurIncomeForm.autoApply ? "#4ade80" : T.catBorder}`, background: recurIncomeForm.autoApply ? "#4ade80" : "transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
+                      {recurIncomeForm.autoApply && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <div>
+                      <p style={{ fontSize:13, fontWeight:700, color:T.text }}>{L.autoApply}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{L.autoApplyDesc}</p>
+                    </div>
+                  </div>
+                  <button style={{ padding:"10px", fontSize:13, borderRadius:12, border:"none", background:"#4ade80", color:"#052e16", fontWeight:800, cursor:"pointer", fontFamily:"inherit" }} onClick={() => {
+                    if (!recurIncomeForm.description || !recurIncomeForm.amount) return;
+                    if (editRecurIncomeId) {
+                      setRecurringIncome(prev => prev.map(x => x.id === editRecurIncomeId ? { ...recurIncomeForm, id: editRecurIncomeId } : x));
+                      setEditRecurIncomeId(null);
+                      haptic("success"); showToast("ok:"+(lang==="en"?"Income updated":"Pemasukan diperbarui"));
+                    } else {
+                      setRecurringIncome(prev => [...prev, { ...recurIncomeForm, id: Date.now() }]);
+                      haptic("success"); showToast("ok:"+(lang==="en"?"Recurring income added":"Pemasukan rutin ditambahkan"));
+                    }
+                    setRecurIncomeForm({ description:"", amount:"", amountDisplay:"", day:1, autoApply:true });
+                  }}>{editRecurIncomeId ? <span style={{display:"flex",alignItems:"center",gap:6,justifyContent:"center"}}><Save size={14} strokeWidth={2}/>{L.done}</span> : "+ "+(lang==="en"?"Add Income":"Tambah Pemasukan")}</button>
+                </div>
+              </div>}
+
+              {showRecurIncomePanel && (recurringIncome.length === 0 ? (
+                <div className="card" style={{ padding:"28px 20px", textAlign:"center", border:"1px solid #4ade8022" }}>
+                  <div style={{ display:"flex", justifyContent:"center", marginBottom:10 }}>
+                    <div style={{ width:60, height:60, borderRadius:"50%", background:"#4ade8022", border:"1.5px solid #4ade8030", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <TrendingUp size={26} color="#4ade80" strokeWidth={1.5}/>
+                    </div>
+                  </div>
+                  <p style={{ fontSize:13, color:"#4ade80", opacity:0.7 }}>{lang==="en"?"No recurring income yet":"Belum ada pemasukan rutin"}</p>
+                </div>
+              ) : (
+                <div className="card" style={{ borderRadius:18, overflow:"hidden", border:"1px solid #4ade8033" }}>
+                  {recurringIncome.map((r, idx) => {
+                    const isManual = r.autoApply === false;
+                    return (
+                      <div key={r.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"13px 14px", borderBottom: idx < recurringIncome.length-1 ? "1px solid #4ade8022" : "none" }}>
+                        <div style={{ width:40, height:40, borderRadius:12, background:"#4ade8025", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                          <TrendingUp size={20} color="#4ade80" strokeWidth={2}/>
+                        </div>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{r.description}</p>
+                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:"#4ade80",fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}</p>
+                        </div>
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5 }}>
+                          <p style={{ fontSize:13, fontWeight:800, color:"#4ade80" }}>+{formatRp(Number(r.amount))}</p>
+                          <div style={{ display:"flex", gap:5 }}>
+                            {isManual && (
+                              <button onClick={() => {
+                                haptic("light");
+                                setIncome(prev => prev + Number(r.amount));
+                                showToast("ok:"+(lang==="en"?"Income recorded":"Pemasukan dicatat"));
+                              }} style={{ background:"rgba(74,222,128,0.15)", border:"1px solid rgba(74,222,128,0.4)", borderRadius:8, padding:"5px 10px", cursor:"pointer", fontSize:10, fontWeight:800, color:"#4ade80", fontFamily:"inherit" }}>
+                                {lang==="en"?"Record":"Catat"}
+                              </button>
+                            )}
+                            <button onClick={() => { haptic(); setRecurIncomeForm({ description:r.description, amount:r.amount, amountDisplay:r.amount?Number(r.amount).toLocaleString("id-ID"):"", day:r.day, autoApply:r.autoApply!==false }); setEditRecurIncomeId(r.id); }}
+                              style={{ background:T.btnSm, border:`1.5px solid ${T.btnSmBdr}`, borderRadius:8, padding:"5px 8px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                              <Pencil size={13} strokeWidth={2} color={T.btnSmText}/>
+                            </button>
+                            <button onClick={() => { haptic(); setRecurringIncome(prev => prev.filter(x => x.id !== r.id)); showToast("del:"+(lang==="en"?"Income deleted":"Pemasukan dihapus")); }}
+                              style={{ background:T.btnD, border:`1.5px solid ${T.btnDBorder}`, borderRadius:8, padding:"5px 8px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                              <Trash2 size={13} strokeWidth={2} color={T.btnDText}/>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+
 
             </div>
           </div>
@@ -4389,7 +4506,7 @@ export default function App() {
         {(() => {
           const NI = ({ id, size=22, color }) => {
             const s = { fill:"none", stroke:color, strokeWidth:1.5, strokeLinecap:"round", strokeLinejoin:"round" };
-            if (id==="dashboard") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M3 12L12 4L21 12"/><path d="M5 10V20C5 20.55 5.45 21 6 21H9V16H15V21H18C18.55 21 19 20.55 19 20V10"/></svg>;
+            if (id==="dashboard") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M4 12L12 5L20 12"/><path d="M6 10.5V19C6 19.55 6.45 20 7 20H10V16H14V20H17C17.55 20 18 19.55 18 19V10.5"/></svg>;
             if (id==="transactions") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="17" y2="12"/><line x1="3" y1="18" x2="13" y2="18"/></svg>;
             if (id==="report") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
             if (id==="date") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M12 21C12 21 3 15 3 8.5C3 5.46 5.46 3 8.5 3C10.2 3 11.72 3.88 12 5C12.28 3.88 13.8 3 15.5 3C18.54 3 21 5.46 21 8.5C21 15 12 21 12 21Z"/></svg>;
