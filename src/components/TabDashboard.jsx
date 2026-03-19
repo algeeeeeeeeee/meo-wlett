@@ -513,7 +513,7 @@ export default function TabDashboard({ ctx }) {
                 <p style={{ fontSize:13, color:T.textSub, lineHeight:1.6 }}>{L.startDesc}</p>
               </div>
               ) : (
-                <DonutChart data={donutData} total={totalExpense} T={T} />
+                <DonutChart data={donutData} total={totalExpense} T={T} lang={lang} />
               )}
             </div>
           </div>
