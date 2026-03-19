@@ -4428,26 +4428,32 @@ export default function App() {
                 </div>
 
                 {/* Tags */}
-                {userTags.length > 0 && (
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                    {userTags.map(tag => {
-                      const itemTags = (editItem ? (txTags[editItem.id]||[]) : (form._tags||[]));
-                      const active = itemTags.includes(tag.id);
-                      return (
-                        <button key={tag.id} onClick={() => {
-                          const cur = editItem ? (txTags[editItem.id]||[]) : (form._tags||[]);
-                          const next = active ? cur.filter(x=>x!==tag.id) : [...cur, tag.id];
-                          if (editItem) setTxTags(p=>({...p,[editItem.id]:next}));
-                          else setForm(f=>({...f,_tags:next}));
-                        }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99,
-                          border: active ? `1.5px solid ${tag.color}88` : `1.5px solid ${T.cardBorder}`,
-                          background: active ? tag.color+"18" : T.catBg, cursor:"pointer", transition:"all 0.15s" }}>
-                          <Hash size={10} color={active ? tag.color : T.textSub} strokeWidth={2.5}/>
-                          <span style={{ fontSize:11, fontWeight:700, color: active ? tag.color : T.textSub }}>{tag.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center" }}>
+                  {userTags.map(tag => {
+                    const itemTags = (editItem ? (txTags[editItem.id]||[]) : (form._tags||[]));
+                    const active = itemTags.includes(tag.id);
+                    return (
+                      <button key={tag.id} onClick={() => {
+                        const cur = editItem ? (txTags[editItem.id]||[]) : (form._tags||[]);
+                        const next = active ? cur.filter(x=>x!==tag.id) : [...cur, tag.id];
+                        if (editItem) setTxTags(p=>({...p,[editItem.id]:next}));
+                        else setForm(f=>({...f,_tags:next}));
+                      }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99,
+                        border: active ? `1.5px solid ${tag.color}88` : `1.5px solid ${T.cardBorder}`,
+                        background: active ? tag.color+"18" : T.catBg, cursor:"pointer", transition:"all 0.15s" }}>
+                        <Hash size={10} color={active ? tag.color : T.textSub} strokeWidth={2.5}/>
+                        <span style={{ fontSize:11, fontWeight:700, color: active ? tag.color : T.textSub }}>{tag.name}</span>
+                      </button>
+                    );
+                  })}
+                  <button onClick={() => { setShowForm(false); setTimeout(()=>setShowTagModal(true), 200); }}
+                    style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99,
+                      border:`1.5px solid ${T.cardBorder}`, background:T.catBg, cursor:"pointer" }}>
+                    <Hash size={10} color={themeAccent} strokeWidth={2.5}/>
+                    <span style={{ fontSize:11, fontWeight:700, color:themeAccent }}>{userTags.length === 0 ? (lang==="en"?"+ Add Tag":"+ Tambah Tag") : (lang==="en"?"Manage Tags":"Kelola Tag")}</span>
+                  </button>
+                </div>
+                {false && (
                 )}
 
                 {/* Foto Struk */}
