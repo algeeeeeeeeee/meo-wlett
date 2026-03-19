@@ -140,9 +140,7 @@ const STYLES = `
   .modal-float { animation: modal-float 0.28s cubic-bezier(0.34,1.2,0.64,1) forwards; }
 
   /* Nav icon active pop */
-  @keyframes nav-icon-in { 0%{transform:scale(0.8); opacity:0.4} 60%{transform:scale(1.15)} 100%{transform:scale(1); opacity:1} }
-  @keyframes nav-label-in { 0%{opacity:1; -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0)} 100%{opacity:1; -webkit-clip-path:inset(0 0% 0 0); clip-path:inset(0 0% 0 0)} }
-  .nav-icon-pop { animation: nav-icon-pop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
 
   /* Skeleton */
   @keyframes skeleton-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.75} }
@@ -4553,7 +4551,7 @@ export default function App() {
                         background: isActive ? activeBg : "transparent",
                         cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
                         gap:6, padding: isActive ? "0 14px" : "0",
-                        flexShrink:0, transition:"width 0.5s cubic-bezier(0.4,0,0.2,1), min-width 0.5s cubic-bezier(0.4,0,0.2,1), padding 0.5s cubic-bezier(0.4,0,0.2,1), background 0.2s" }}
+                        flexShrink:0, transition:"background 0.2s" }}
                     >
                       <NI id={id} size={isActive ? 18 : 22} color={isActive ? activeColor : (isDate ? "#f9a8d4" : iconInactive)}/>
                       {isActive && (
