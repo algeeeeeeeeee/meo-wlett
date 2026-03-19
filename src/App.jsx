@@ -4453,8 +4453,6 @@ export default function App() {
                     <span style={{ fontSize:11, fontWeight:700, color:themeAccent }}>{userTags.length === 0 ? (lang==="en"?"+ Add Tag":"+ Tambah Tag") : (lang==="en"?"Manage Tags":"Kelola Tag")}</span>
                   </button>
                 </div>
-                {false && (
-                )}
 
                 {/* Foto Struk */}
                 {(() => {
