@@ -3805,26 +3805,41 @@ export default function App() {
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:0, padding:"0 16px 0" }}>
                 <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowBudgetLimit(true),200); }}
-                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
-                  <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                    <div style={{ width:36, height:36, borderRadius:10, background:`${themeAccent}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Wallet size={18} strokeWidth={2} color={T.accentText}/>
+                    </div>
+                    <div style={{ textAlign:"left" }}>
+                      <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
+                    </div>
                   </div>
                   <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
                 </button>
                 <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowCatManager(true),200); }}
-                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
-                  <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Manage & organise categories":"Atur & kelola kategori"}</p>
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                    <div style={{ width:36, height:36, borderRadius:10, background:`${themePrimary}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Settings size={18} strokeWidth={2} color={T.primaryText}/>
+                    </div>
+                    <div style={{ textAlign:"left" }}>
+                      <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Manage & organise categories":"Atur & kelola kategori"}</p>
+                    </div>
                   </div>
                   <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
                 </button>
                 <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowTagModal(true),200); }}
-                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                  <div style={{ textAlign:"left" }}>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                    <div style={{ width:36, height:36, borderRadius:10, background:"rgba(156,163,175,0.15)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Hash size={18} strokeWidth={2} color={T.textSub}/>
+                    </div>
+                    <div style={{ textAlign:"left" }}>
+                      <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
+                    </div>
                   </div>
                   <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
                 </button>
@@ -4020,7 +4035,7 @@ export default function App() {
                 <button onClick={() => { showConfirm(L.resetConfirm, () => { try{localStorage.clear();}catch{} setTransactions([]); setIncome(5000000); setSavingsGoals([]); setBudgets({}); setCategories(DEFAULT_CATEGORIES); showToast("ok:Data berhasil direset"); setShowDataModal(false); }); }}
                   style={{ width:"100%", padding:"14px", borderRadius:16, background:"#ef444412", border:"1.5px solid #ef444435", color:"#ef4444", fontSize:14, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:12, boxSizing:"border-box", fontFamily:"inherit" }}>
                   <div style={{ width:38, height:38, borderRadius:12, background:"#ef444420", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Trash2 size={18} strokeWidth={2} color="#ef4444"/></div>
-                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:"#ef4444" }}>{L.resetData}</p><p style={{ fontSize:11, color:"#ef4444", opacity:0.7 }}>{lang==="en"?L.resetDesc:(L.resetDesc||"Hapus semua data permanen")}</p></div>
+                  <div style={{ textAlign:"left" }}><p style={{ fontSize:14, fontWeight:800, color:"#ef4444" }}>{L.resetData}</p><p style={{ fontSize:11, color:"#ef4444", opacity:0.7 }}>{L.resetDesc}</p></div>
                 </button>
               </div>
             </div>
