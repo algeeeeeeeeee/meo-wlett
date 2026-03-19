@@ -828,6 +828,7 @@ export default function App() {
   const [incomeTab, setIncomeTab] = useState("tambah");
   const [tempSavings, setTempSavings] = useState(savingsGoal);
   const [showCatManager, setShowCatManager] = useState(false);
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [showBudgetLimit, setShowBudgetLimit] = useState(false);
   const [showAppearanceModal, setShowAppearanceModal] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
@@ -3511,7 +3512,7 @@ export default function App() {
                       </div>
                       <div style={{ display:"flex", alignItems:"center", gap:4 }}>
                         <PresetIcon name={preset.icon} size={12} color={isSelected ? preset.accent : T.textSub} strokeWidth={2.5}/>
-                        <span style={{ fontSize:12, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{L[THEME_LABELS[preset.id]]||preset.label}</span>
+                        <span style={{ fontSize:12, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{lang==="en" ? (preset.label) : (preset.labelId||preset.label)}</span>
                       </div>
                       {isSelected && <span style={{ fontSize:10, color:preset.accent, fontWeight:700, display:"flex", alignItems:"center", gap:3 }}><CheckCircle size={10} color={preset.accent} strokeWidth={2.5}/> {L.active}</span>}
                     </button>
@@ -3616,7 +3617,7 @@ export default function App() {
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
                   <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.displayMode}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{dark ? L.darkActive : L.lightActive} · {THEME_PRESETS.find(p=>p.id===themePresetId)?.label||"Custom"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{dark ? L.darkActive : L.lightActive} · {(lang==="en" ? (THEME_PRESETS.find(p=>p.id===themePresetId)?.label||"Custom") : (THEME_PRESETS.find(p=>p.id===themePresetId)?.labelId||"Kustom"))}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -3637,29 +3638,13 @@ export default function App() {
               </button>
             </div>
 
-            {/* Kategori */}
+            {/* Kategori - 1 row persis seperti Notifikasi */}
             <div style={{ background:T.card, borderRadius:20, border:`1px solid ${T.cardBorder}`, overflow:"hidden", marginBottom:12, boxShadow:`0 1px 4px ${T.cardShadow}` }}>
-              <button onClick={() => setShowBudgetLimit(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
-                <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-              <button onClick={() => setShowCatManager(true)}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
-                <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-              </button>
-              <button onClick={() => setShowTagModal(true)}
+              <button onClick={() => setShowCategoryMenu(true)}
                 style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", width:"100%", ...IBN, fontFamily:"inherit" }}>
                 <div style={{ textAlign:"left" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
-                  <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
+                  <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Category":"Kategori"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
                 </div>
                 <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </button>
@@ -3679,6 +3664,48 @@ export default function App() {
 
           </div>
         </div>
+        )}
+
+        {/* CATEGORY MENU MODAL */}
+        {showCategoryMenu && (
+          <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.55)", backdropFilter:"blur(4px)", WebkitBackdropFilter:"blur(4px)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}
+            onClick={e => { if(e.target===e.currentTarget) setShowCategoryMenu(false); }}>
+            <div className="modal-up" style={{ background:T.card, borderRadius:"28px 28px 0 0", width:"100%", maxWidth:480, paddingBottom:32 }}>
+              <div style={{ width:36, height:4, background:T.cardBorder, borderRadius:99, margin:"12px auto 0" }}/>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px 12px" }}>
+                <p style={{ fontSize:17, fontWeight:900, color:T.text }}>{lang==="en"?"Category":"Kategori"}</p>
+                <button onClick={() => setShowCategoryMenu(false)} style={{ background:T.catBg, border:"none", borderRadius:50, width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <X size={16} color={T.textSub} strokeWidth={2.5}/>
+                </button>
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", gap:0, padding:"0 16px 0" }}>
+                <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowBudgetLimit(true),200); }}
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                  <div style={{ textAlign:"left" }}>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Spending Limits":"Batas Pengeluaran"}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{L.budgetLimitDesc}</p>
+                  </div>
+                  <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+                </button>
+                <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowCatManager(true),200); }}
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit", borderBottom:`1px solid ${T.cardBorder}` }}>
+                  <div style={{ textAlign:"left" }}>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.manageCategory}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{Object.keys(categories).length} {lang==="en"?"active categories":"kategori aktif"}</p>
+                  </div>
+                  <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+                </button>
+                <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowTagModal(true),200); }}
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 4px", width:"100%", ...IBN, fontFamily:"inherit" }}>
+                  <div style={{ textAlign:"left" }}>
+                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
+                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
+                  </div>
+                  <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* BUDGET LIMIT MODAL */}
@@ -3977,7 +4004,7 @@ export default function App() {
                           </div>
                           <div style={{ display:"flex", alignItems:"center", gap:4 }}>
                             <PresetIcon name={preset.icon} size={11} color={isSelected ? preset.accent : T.textSub} strokeWidth={2.5}/>
-                            <span style={{ fontSize:11, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{L[THEME_LABELS[preset.id]]||preset.label}</span>
+                            <span style={{ fontSize:11, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{lang==="en" ? (preset.label) : (preset.labelId||preset.label)}</span>
                           </div>
                         </button>
                       );
