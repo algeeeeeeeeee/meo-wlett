@@ -116,7 +116,7 @@ export default function ModalAppearance({ ctx }) {
                           </div>
                           <div style={{ display:"flex", alignItems:"center", gap:4 }}>
                             <PresetIcon name={preset.icon} size={11} color={isSelected ? preset.accent : T.textSub} strokeWidth={2.5}/>
-                            <span style={{ fontSize:11, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{L[THEME_LABELS[preset.id]]||preset.label}</span>
+                            <span style={{ fontSize:11, fontWeight:700, color: isSelected ? preset.accent : T.textSub }}>{lang === 'id' ? preset.labelId : preset.label}</span>
                           </div>
                         </button>
                       );
