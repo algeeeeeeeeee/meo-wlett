@@ -2918,15 +2918,15 @@ export default function App() {
 
             {/* ── RECURRING INCOME collapsible ── */}
             <div style={{ marginTop:4, marginBottom:12 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom: showRecurIncomePanel ? 12 : 0 }}>
-                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, flex:1, cursor:"pointer" }}>
-                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom: showRecurIncomePanel ? 12 : 0 }}>
+                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
+                  <div style={{ width:40, height:1, background:"#4ade8033" }}/>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <TrendingUp size={11} color="#4ade80" strokeWidth={2}/>
                     <p style={{ fontSize:11, fontWeight:800, color:"#4ade80", letterSpacing:1.5, whiteSpace:"nowrap" }}>{lang==="en"?"RECURRING INCOME":"PEMASUKAN RUTIN"}</p>
                     <ChevronDown size={11} color="#4ade80" strokeWidth={2.5} style={{ transform: showRecurIncomePanel?"rotate(180deg)":"rotate(0)", transition:"transform 0.2s" }}/>
                   </div>
-                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
+                  <div style={{ width:40, height:1, background:"#4ade8033" }}/>
                 </div>
               </div>
 
