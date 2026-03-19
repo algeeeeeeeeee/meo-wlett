@@ -794,6 +794,11 @@ export default function App() {
   useEffect(() => { try { localStorage.setItem("gm_reminder_smart", reminderSmart ? "1" : "0"); } catch {} }, [reminderSmart]);
 
 
+  // Split Bill
+  const [showSplitBill, setShowSplitBill] = useState(false);
+  const [splitForm, setSplitForm] = useState({ total:"", totalDisplay:"", people:2, desc:"", category:"food", date:today() });
+  const [splitResult, setSplitResult] = useState(null);
+
   // Receipts (base64 stored per tx id)
   const [txReceipts, setTxReceipts] = useState(() => {
     try { return JSON.parse(localStorage.getItem("gm_tx_receipts") || "{}"); } catch { return {}; }
@@ -895,7 +900,7 @@ export default function App() {
     try { const v = localStorage.getItem("gm_recurring"); return v ? JSON.parse(v) : []; } catch { return []; }
   });
   useEffect(() => { try { localStorage.setItem("gm_recurring", JSON.stringify(recurring)); } catch {} }, [recurring]);
-  const [recurForm, setRecurForm] = useState({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true });
+  const [recurForm, setRecurForm] = useState({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true, endDate:"" });
   const [editRecurId, setEditRecurId] = useState(null);
   const [showRecurPanel, setShowRecurPanel] = useState(false);
 
@@ -909,6 +914,11 @@ export default function App() {
   const [showRecurIncomePanel, setShowRecurIncomePanel] = useState(false);
 
   // Budgets
+  const [budgetRollover, setBudgetRollover] = useState(() => {
+    try { const v = localStorage.getItem("gm_budget_rollover"); return v ? JSON.parse(v) : false; } catch { return false; }
+  });
+  useEffect(() => { try { localStorage.setItem("gm_budget_rollover", JSON.stringify(budgetRollover)); } catch {} }, [budgetRollover]);
+
   const [budgets, setBudgets] = useState(() => {
     try { const v = localStorage.getItem("gm_budgets"); return v ? JSON.parse(v) : {}; } catch { return {}; }
   });
@@ -935,6 +945,14 @@ export default function App() {
     } catch { return []; }
   });
   useEffect(() => { try { localStorage.setItem("gm_savings_goals", JSON.stringify(savingsGoals)); } catch {} }, [savingsGoals]);
+  // ── Daily Notes ─────────────────────────────────────────────────────────────
+  const [dailyNotes, setDailyNotes] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gm_daily_notes") || "{}"); } catch { return {}; }
+  });
+  useEffect(() => { try { localStorage.setItem("gm_daily_notes", JSON.stringify(dailyNotes)); } catch {} }, [dailyNotes]);
+  const [showDailyNote, setShowDailyNote] = useState(false);
+  const [dailyNoteInput, setDailyNoteInput] = useState("");
+
   const [editingGoal, setEditingGoal] = useState(null); // null or goal id
   const modalScrollY = useRef(0);
   const anyModal = showForm || editIncome || editingGoal !== null;
@@ -1133,7 +1151,7 @@ export default function App() {
     swipeStartX.current = null;
     if (swipeBlocked.current) { swipeBlocked.current = false; return; }
     // Disable swipe when any modal/popup is open
-    const anyModalOpen = showForm || showCalc || editIncome || showCatManager ||
+    const anyModalOpen = showForm || showCalc || editIncome || showCatManager || showDailyNote ||
       showBudgetLimit || showAppearanceModal || showNotifModal || showDataModal ||
       showOverallBudgetModal || showCicilanModal || showReminderModal ||
       editingGoal !== null;
@@ -1153,7 +1171,10 @@ export default function App() {
     if (!loaded) return;
     const todayDate = today();
     const todayDay = new Date().getDate();
+    const today_ = today();
     recurring.forEach(r => {
+      // Skip if end date passed
+      if (r.endDate && today_ > r.endDate) return;
       const shouldApply = r.autoApply !== false;
       if (!shouldApply) {
         // Send reminder notif for manual recurring items due today
@@ -1300,6 +1321,49 @@ export default function App() {
     });
     return insights.slice(0, 4);
   }, [transactions, currentMonth, prevMonth, categories]);
+
+  // ── Financial Health Score ───────────────────────────────────────────────────
+  const healthScore = useMemo(() => {
+    let score = 0;
+    const scores = {};
+
+    // 1. Rasio pengeluaran vs pemasukan (max 30 poin)
+    if (income > 0) {
+      const ratio = totalExpense / income;
+      if (ratio <= 0.5) scores.ratio = 30;
+      else if (ratio <= 0.7) scores.ratio = 20;
+      else if (ratio <= 0.9) scores.ratio = 10;
+      else scores.ratio = 0;
+    } else scores.ratio = 0;
+
+    // 2. Konsistensi mencatat (max 25 poin) — berapa hari bulan ini ada transaksi
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    const daysPassed = new Date().getDate();
+    const activeDays = new Set(transactions.filter(t => getMonth(t.date) === currentMonth).map(t => t.date)).size;
+    const consistency = activeDays / Math.min(daysPassed, daysInMonth);
+    scores.consistency = Math.round(consistency * 25);
+
+    // 3. Streak (max 15 poin)
+    scores.streak = Math.min(15, Math.round(streak.count / 7 * 15));
+
+    // 4. Ada savings goal (max 15 poin)
+    scores.goals = savingsGoals.length > 0 ? (savingsGoals.some(g => g.saved > 0) ? 15 : 8) : 0;
+
+    // 5. Budget tidak terlampaui (max 15 poin)
+    const overBudget = Object.entries(budgets).filter(([k,v]) => {
+      const spent = transactions.filter(t => t.category===k && getMonth(t.date)===currentMonth).reduce((s,t)=>s+t.amount,0);
+      return spent > v;
+    }).length;
+    scores.budget = overBudget === 0 ? 15 : overBudget === 1 ? 8 : 0;
+
+    score = Object.values(scores).reduce((s,v) => s+v, 0);
+    const label = score >= 80 ? (lang==="en"?"Excellent":"Sangat Baik") :
+                  score >= 60 ? (lang==="en"?"Good":"Baik") :
+                  score >= 40 ? (lang==="en"?"Fair":"Cukup") :
+                  (lang==="en"?"Need Attention":"Perlu Perhatian");
+    const color = score >= 80 ? "#4ade80" : score >= 60 ? themeAccent : score >= 40 ? "#fbbf24" : "#f87171";
+    return { score, label, color, scores };
+  }, [transactions, income, totalExpense, currentMonth, streak, savingsGoals, budgets, lang]);
 
   const weeklyTrend = useMemo(() => {
     const weeks = [];
@@ -2252,6 +2316,72 @@ export default function App() {
             </div>
 
             {/* End-of-month prediction card */}
+            {/* ── Financial Health Score card ── */}
+            <div className="card" style={{ padding:"14px 16px", marginBottom:14, ...CS }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:28, height:28, borderRadius:9, background:healthScore.color+"22", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <Zap size={14} color={healthScore.color} strokeWidth={2.5}/>
+                  </div>
+                  <p style={{ fontSize:12, fontWeight:800, color:T.textSub, letterSpacing:0.5 }}>{lang==="en"?"FINANCIAL HEALTH":"KESEHATAN FINANSIAL"}</p>
+                </div>
+                <div style={{ display:"flex", alignItems:"baseline", gap:4 }}>
+                  <span style={{ fontSize:26, fontWeight:900, color:healthScore.color, lineHeight:1 }}>{healthScore.score}</span>
+                  <span style={{ fontSize:11, color:T.textSub, fontWeight:600 }}>/100</span>
+                </div>
+              </div>
+              {/* Progress bar */}
+              <div style={{ background:dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.07)", borderRadius:99, height:8, overflow:"hidden", marginBottom:8 }}>
+                <div style={{ height:"100%", width:`${healthScore.score}%`, background:`linear-gradient(90deg,${healthScore.color}88,${healthScore.color})`, borderRadius:99, transition:"width 0.8s cubic-bezier(0.34,1.2,0.64,1)" }}/>
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <span style={{ fontSize:12, fontWeight:700, color:healthScore.color }}>{healthScore.label}</span>
+                {/* Mini breakdown */}
+                <div style={{ display:"flex", gap:6 }}>
+                  {[
+                    { key:"ratio", label:lang==="en"?"Budget":"Rasio", max:30 },
+                    { key:"consistency", label:lang==="en"?"Record":"Catat", max:25 },
+                    { key:"goals", label:lang==="en"?"Goals":"Target", max:15 },
+                  ].map(({key,label,max}) => (
+                    <div key={key} style={{ textAlign:"center" }}>
+                      <div style={{ width:28, height:28, borderRadius:50, background: healthScore.scores[key]>=max*0.7 ? healthScore.color+"22" : T.catBg, border:`1.5px solid ${healthScore.scores[key]>=max*0.7 ? healthScore.color : T.cardBorder}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontSize:9, fontWeight:800, color: healthScore.scores[key]>=max*0.7 ? healthScore.color : T.textSub }}>{healthScore.scores[key]}</span>
+                      </div>
+                      <p style={{ fontSize:8, color:T.textSub, marginTop:2, fontWeight:600 }}>{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Catatan Harian card ── */}
+            <div className="card" style={{ padding:"14px 16px", marginBottom:14, ...CS }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:28, height:28, borderRadius:9, background:`${themeAccent}22`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <Book size={14} color={themeAccent} strokeWidth={2}/>
+                  </div>
+                  <p style={{ fontSize:12, fontWeight:800, color:T.textSub, letterSpacing:0.5 }}>{lang==="en"?"TODAY'S NOTE":"CATATAN HARI INI"}</p>
+                </div>
+                <button onClick={() => { setDailyNoteInput(dailyNotes[todayStr] || ""); setShowDailyNote(true); }}
+                  style={{ fontSize:11, fontWeight:700, color:themeAccent, background:"none", border:"none", cursor:"pointer", padding:"4px 8px", borderRadius:8, background:`${themeAccent}15` }}>
+                  {dailyNotes[todayStr] ? (lang==="en"?"Edit":"Ubah") : (lang==="en"?"+ Add":"+ Tulis")}
+                </button>
+              </div>
+              {dailyNotes[todayStr] ? (
+                <p style={{ fontSize:13, color:T.text, lineHeight:1.5, fontStyle:"italic" }}>"{dailyNotes[todayStr]}"</p>
+              ) : (
+                <p style={{ fontSize:12, color:T.textSub, lineHeight:1.5 }}>{lang==="en"?"How was your spending today?":"Bagaimana pengeluaranmu hari ini?"}</p>
+              )}
+              {/* Recent notes */}
+              {Object.keys(dailyNotes).filter(d => d !== todayStr).sort((a,b) => b.localeCompare(a)).slice(0,2).map(date => (
+                <div key={date} style={{ marginTop:8, paddingTop:8, borderTop:`1px solid ${T.cardBorder}` }}>
+                  <p style={{ fontSize:10, color:T.textSub, fontWeight:600, marginBottom:2 }}>{new Date(date+"T00:00:00").toLocaleDateString(lang==="en"?"en-GB":"id-ID",{day:"numeric",month:"short"})}</p>
+                  <p style={{ fontSize:11, color:T.textSub, fontStyle:"italic" }}>"{dailyNotes[date]}"</p>
+                </div>
+              ))}
+            </div>
+
             {monthPrediction && income > 0 && (
               <div className="card" style={{ padding:"14px 16px", marginBottom:14, ...CS, display:"flex", alignItems:"center", gap:12 }}>
                 <div style={{ width:36, height:36, borderRadius:12, background: monthPrediction.predicted > income ? "#f87171" + "22" : themeAccent+"22", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -2275,6 +2405,13 @@ export default function App() {
             {/* Budget per Kategori — prominent dashboard card */}
             {(() => {
               const budgetEntries = Object.entries(budgets).filter(([,v]) => v > 0);
+              const getRolloverBonus = (catKey) => {
+                if (!budgetRollover) return 0;
+                const prevM = (() => { const d = new Date(currentMonth+"-01"); d.setMonth(d.getMonth()-1); return d.toISOString().slice(0,7); })();
+                const prevSpent = transactions.filter(t => t.category===catKey && getMonth(t.date)===prevM).reduce((s,t)=>s+t.amount,0);
+                const prevBudget = budgets[catKey] || 0;
+                return Math.max(0, prevBudget - prevSpent);
+              };
               const allCatKeys = Object.keys(categories);
               // Empty state CTA
               if (budgetEntries.length === 0 && !overallBudget) return (
@@ -2335,8 +2472,10 @@ export default function App() {
                       );
                     })()}
                     {budgetEntries.slice(0, 4).map(([key, bgt]) => {
+                      const rollBonus2 = budgetRollover ? getRolloverBonus(key) : 0;
+                      const effectiveBgt = bgt + rollBonus2;
                       const spent = transactions.filter(t => t.category === key && getMonth(t.date) === currentMonth).reduce((a,t) => a+t.amount, 0);
-                      const pct = Math.min(100, Math.round((spent / bgt) * 100));
+                      const pct = Math.min(100, Math.round((spent / effectiveBgt) * 100));
                       const over = pct >= 100; const warn = pct >= 80;
                       const cat = getCategory(key);
                       const barColor2 = over ? "#ef4444" : warn ? "#f59e0b" : themeAccent;
@@ -2613,7 +2752,14 @@ export default function App() {
             </div>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
               <p style={{ fontSize:12, color:T.textSub, fontWeight:600 }}>{filtered.length} {L.transactions_label}</p>
-              <p key={filteredTotal} style={{ fontSize:12, fontWeight:700, color:"#f87171", animation:"count-up 0.3s cubic-bezier(0.25,0.46,0.45,0.94) both" }}>-{formatRp(filteredTotal)}</p>
+              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                <p key={filteredTotal} style={{ fontSize:12, fontWeight:700, color:"#f87171", animation:"count-up 0.3s cubic-bezier(0.25,0.46,0.45,0.94) both" }}>-{formatRp(filteredTotal)}</p>
+                <button onClick={() => { haptic(); setSplitForm({ total:"", totalDisplay:"", people:2, desc:"", category:Object.keys(categories)[0]||"food", date:today() }); setSplitResult(null); setShowSplitBill(true); }}
+                  style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99, border:`1.5px solid ${T.cardBorder}`, background:T.catBg, cursor:"pointer", fontSize:11, fontWeight:700, color:T.textSub, fontFamily:"inherit" }}>
+                  <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Split
+                </button>
+              </div>
             </div>
 
             {filtered.length === 0 ? (
@@ -2765,6 +2911,14 @@ export default function App() {
                       <p style={{ fontSize:11, color:T.textSub }}>{L.autoApplyDesc}</p>
                     </div>
                   </div>
+                  {/* End date */}
+                  <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+                    <p style={{ fontSize:11, fontWeight:700, color:T.textSub }}>{lang==="en"?"End Date (optional)":"Tanggal Berakhir (opsional)"}</p>
+                    <input className="inp" type="date" value={recurForm.endDate||""}
+                      onChange={e => setRecurForm(f => ({ ...f, endDate: e.target.value }))}
+                      style={{ background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text, colorScheme:dark?"dark":"light" }}/>
+                    {recurForm.endDate && <p style={{ fontSize:10, color:T.textSub }}>{lang==="en"?"Will stop after this date":"Akan berhenti setelah tanggal ini"}</p>}
+                  </div>
                   <button className="btn-p" style={{ padding:"10px", fontSize:13 }} onClick={() => {
                     if (!recurForm.description || !recurForm.amount) return;
                     if (editRecurId) {
@@ -2775,7 +2929,7 @@ export default function App() {
                       setRecurring(prev => [...prev, { ...recurForm, id: Date.now() }]);
                       haptic("success"); showToast(lang==="en" ? "ok:Recurring transaction added" : L.toastRecurAdd);
                     }
-                    setRecurForm({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true });
+                    setRecurForm({ description:"", amount:"", amountDisplay:"", category:"food", day:1, autoApply:true, endDate:"" });
                   }}>{editRecurId ? <span style={{display:"flex",alignItems:"center",gap:6,justifyContent:"center"}}><Save size={14} strokeWidth={2}/>{L.done}</span> : "+ "+L.addRecurring}</button>
                 </div>
               </div>}
@@ -2801,7 +2955,7 @@ export default function App() {
                         </div>
                         <div style={{ flex:1, minWidth:0 }}>
                           <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{r.description}</p>
-                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}</p>
+                          <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)} · {L.recurDay} {r.day} {L.recurEach} {r.autoApply !== false ? <span style={{color:themeAccent,fontWeight:700}}>{lang==="en"?"· Auto":"· Otomatis"}</span> : <span style={{color:"#fbbf24",fontWeight:700}}>· Manual</span>}{r.endDate ? <span style={{color:T.textSub,fontWeight:600}}> · {lang==="en"?"ends":"berakhir"} {r.endDate}</span> : ""}</p>
                         </div>
                         <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5 }}>
                           <p style={{ fontSize:13, fontWeight:800, color:"#f87171" }}>-{formatRp(Number(r.amount))}</p>
@@ -3759,7 +3913,16 @@ export default function App() {
             onClick={e => { if (e.target===e.currentTarget) setShowBudgetLimit(false); }}>
             <div className="fi scroll-area modal-up" style={{ background:T.modalBg, borderRadius:"22px 22px 0 0", padding:22, paddingBottom:`22px + ${kbHeight > 0 ? kbHeight : 0}px`, width:"100%", maxHeight:"88vh", overflowY:"auto" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-                <p style={{ fontSize:16, fontWeight:800, color:T.text }}>{L.budgetLimit}</p>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                  <p style={{ fontSize:16, fontWeight:800, color:T.text }}>{L.budgetLimit}</p>
+                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"Rollover":"Rollover"}</p>
+                    <div onClick={() => setBudgetRollover(v=>!v)} style={{ width:40, height:24, borderRadius:50, background: budgetRollover ? themePrimary : T.catBorder, cursor:"pointer", position:"relative", flexShrink:0, transition:"background 0.2s" }}>
+                      <div style={{ position:"absolute", top:3, left: budgetRollover ? 19 : 3, width:18, height:18, borderRadius:50, background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.2)", transition:"left 0.2s" }}/>
+                    </div>
+                  </div>
+                </div>
+                {budgetRollover && <p style={{ fontSize:11, color:themeAccent, marginTop:4 }}>{lang==="en"?"Unspent budget carries over to next month":"Sisa budget bulan ini dibawa ke bulan depan"}</p>}
                 <button onClick={() => setShowBudgetLimit(false)}
                   style={{ background:T.btnG, border:"none", borderRadius:10, padding:"6px 14px", cursor:"pointer", fontSize:13, fontWeight:700, color:T.btnGText }}>{L.done}</button>
               </div>
@@ -3878,7 +4041,7 @@ export default function App() {
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 <button onClick={() => {
                     try {
-                      const b={version:1,exportedAt:new Date().toISOString(),transactions,income,goals:savingsGoals,budgets,categories};
+                      const b={version:1,exportedAt:new Date().toISOString(),transactions,income,goals:savingsGoals,budgets,categories,dailyNotes};
                       const blob=new Blob([JSON.stringify(b,null,2)],{type:"application/json"});
                       const url=URL.createObjectURL(blob);
                       const a=document.createElement("a");
@@ -3911,6 +4074,7 @@ export default function App() {
                           if(data.goals) setSavingsGoals(data.goals);
                           if(data.budgets) setBudgets(data.budgets);
                           if(data.categories) setCategories(data.categories);
+                          if(data.dailyNotes) setDailyNotes(data.dailyNotes);
                           setTimeout(() => { isRestoringRef.current = false; }, 500);
                           showToast(lang==="en"?"ok:Backup restored!":"ok:Backup berhasil dipulihkan!");
                           setShowDataModal(false);
@@ -4499,6 +4663,157 @@ export default function App() {
             </div>
           );
         })()}
+
+        {/* ── DAILY NOTE MODAL ── */}
+        {showDailyNote && (
+          <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", backdropFilter:"blur(6px)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center" }}
+            onClick={e => { if(e.target===e.currentTarget) setShowDailyNote(false); }}>
+            <div className="modal-up" style={{ background:T.card, borderRadius:"24px 24px 0 0", width:"100%", maxWidth:480, padding:"20px 20px 32px" }}>
+              <div style={{ width:36, height:4, background:T.cardBorder, borderRadius:99, margin:"0 auto 16px" }}/>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
+                <div style={{ width:36, height:36, borderRadius:12, background:`${themeAccent}22`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <Book size={18} color={themeAccent} strokeWidth={2}/>
+                </div>
+                <div>
+                  <p style={{ fontSize:16, fontWeight:900, color:T.text }}>{lang==="en"?"Daily Note":"Catatan Harian"}</p>
+                  <p style={{ fontSize:11, color:T.textSub }}>{new Date().toLocaleDateString(lang==="en"?"en-GB":"id-ID",{weekday:"long",day:"numeric",month:"long"})}</p>
+                </div>
+              </div>
+              <textarea
+                autoFocus
+                value={dailyNoteInput}
+                onChange={e => setDailyNoteInput(e.target.value)}
+                placeholder={lang==="en"?"How was your spending today? Any notes about your finances...":"Bagaimana pengeluaranmu hari ini? Catatan tentang keuanganmu..."}
+                style={{ width:"100%", minHeight:100, background:T.inp, border:`1.5px solid ${T.inpBorder}`, borderRadius:14, padding:"12px 14px", fontSize:14, color:T.text, outline:"none", fontFamily:"inherit", resize:"none", boxSizing:"border-box", lineHeight:1.6 }}
+              />
+              <div style={{ display:"flex", gap:10, marginTop:12 }}>
+                <button onClick={() => setShowDailyNote(false)}
+                  style={{ flex:1, padding:"12px", borderRadius:14, border:`1.5px solid ${T.cardBorder}`, background:T.catBg, color:T.text, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+                  {L.cancel}
+                </button>
+                {dailyNotes[todayStr] && (
+                  <button onClick={() => { setDailyNotes(p => { const n={...p}; delete n[todayStr]; return n; }); setShowDailyNote(false); haptic(); }}
+                    style={{ padding:"12px 16px", borderRadius:14, border:"1.5px solid #ef444435", background:"#ef444412", color:"#f87171", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+                    {L.delete}
+                  </button>
+                )}
+                <button onClick={() => {
+                  if (dailyNoteInput.trim()) {
+                    setDailyNotes(p => ({...p, [todayStr]: dailyNoteInput.trim()}));
+                    showToast("ok:"+(lang==="en"?"Note saved":"Catatan disimpan"));
+                  }
+                  setShowDailyNote(false);
+                  haptic("success");
+                }}
+                  style={{ flex:2, padding:"12px", borderRadius:14, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
+                  {L.save}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── SPLIT BILL MODAL ── */}
+        {showSplitBill && (
+          <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center" }}
+            onClick={e => { if(e.target===e.currentTarget) setShowSplitBill(false); }}>
+            <div className="modal-up" style={{ background:T.card, borderRadius:"28px 28px 0 0", width:"100%", maxWidth:400, maxHeight:"90dvh", overflowY:"auto", paddingBottom:32 }}>
+              <div style={{ width:36, height:4, background:T.cardBorder, borderRadius:99, margin:"12px auto 0" }}/>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px 12px" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:36, height:36, borderRadius:12, background:`${themeAccent}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={T.accentText} strokeWidth={2} strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  </div>
+                  <p style={{ fontSize:17, fontWeight:900, color:T.text }}>{lang==="en"?"Split Bill":"Split Bill"}</p>
+                </div>
+                <button onClick={() => setShowSplitBill(false)} style={{ background:T.catBg, border:"none", borderRadius:50, width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <X size={16} color={T.textSub} strokeWidth={2.5}/>
+                </button>
+              </div>
+              <div style={{ padding:"0 20px 20px", display:"flex", flexDirection:"column", gap:12 }}>
+                {/* Total amount */}
+                <div>
+                  <p style={{ fontSize:11, fontWeight:700, color:T.textSub, marginBottom:5 }}>{lang==="en"?"Total Bill":"Total Tagihan"}</p>
+                  <div style={{ position:"relative" }}>
+                    <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, fontWeight:800, color:T.textSub }}>Rp</span>
+                    <input type="text" inputMode="numeric" className="inp" placeholder="0"
+                      value={splitForm.totalDisplay||""}
+                      onChange={e => { const {display,raw}=parseRpInput(e.target.value); setSplitForm(f=>({...f,total:raw,totalDisplay:display})); setSplitResult(null); }}
+                      style={{ paddingLeft:44, fontSize:20, fontWeight:900, background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }}/>
+                  </div>
+                </div>
+                {/* People count */}
+                <div>
+                  <p style={{ fontSize:11, fontWeight:700, color:T.textSub, marginBottom:5 }}>{lang==="en"?"Split between":"Dibagi"}</p>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <button onClick={() => { setSplitForm(f=>({...f,people:Math.max(2,f.people-1)})); setSplitResult(null); }}
+                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>-</button>
+                    <div style={{ flex:1, textAlign:"center" }}>
+                      <p style={{ fontSize:28, fontWeight:900, color:T.text }}>{splitForm.people}</p>
+                      <p style={{ fontSize:11, color:T.textSub }}>{lang==="en"?"people":"orang"}</p>
+                    </div>
+                    <button onClick={() => { setSplitForm(f=>({...f,people:Math.min(20,f.people+1)})); setSplitResult(null); }}
+                      style={{ width:40, height:40, borderRadius:12, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, fontSize:20, fontWeight:800, cursor:"pointer", color:T.text }}>+</button>
+                  </div>
+                </div>
+                {/* Description + category */}
+                <input className="inp" placeholder={L.descPlaceholder} value={splitForm.desc}
+                  onChange={e => setSplitForm(f=>({...f,desc:e.target.value}))}
+                  style={{ background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }}/>
+                <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:2, scrollbarWidth:"none" }}>
+                  {Object.entries(categories).map(([k,v]) => {
+                    const isSel = splitForm.category===k;
+                    return <button key={k} onClick={()=>setSplitForm(f=>({...f,category:k}))}
+                      style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 11px", borderRadius:20, flexShrink:0,
+                        background:isSel?v.color+"22":T.catBg, border:isSel?`2px solid ${v.color}`:`1.5px solid ${T.cardBorder}`, cursor:"pointer" }}>
+                      <CatIcon iconKey={v.icon} size={11} color={isSel?v.color:T.textSub}/>
+                      <span style={{ fontSize:11, fontWeight:isSel?700:500, color:isSel?v.color:T.textSub, whiteSpace:"nowrap" }}>{getCatLabel(v,lang)}</span>
+                    </button>;
+                  })}
+                </div>
+                {/* Calculate button */}
+                <button onClick={() => {
+                  if (!splitForm.total || splitForm.people < 2) return;
+                  const perPerson = Math.ceil(Number(splitForm.total) / splitForm.people);
+                  setSplitResult(perPerson);
+                  haptic("success");
+                }}
+                  style={{ padding:"12px", borderRadius:14, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:14, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
+                  {lang==="en"?"Calculate Split":"Hitung Split"}
+                </button>
+                {/* Result */}
+                {splitResult && (
+                  <div style={{ background:`${themeAccent}12`, border:`1.5px solid ${themeAccent}33`, borderRadius:16, padding:16, textAlign:"center" }}>
+                    <p style={{ fontSize:12, color:T.textSub, marginBottom:4 }}>{lang==="en"?"Each person pays":"Setiap orang bayar"}</p>
+                    <p style={{ fontSize:32, fontWeight:900, color:themeAccent }}>{formatRp(splitResult)}</p>
+                    <p style={{ fontSize:11, color:T.textSub, marginTop:4 }}>{splitForm.people} {lang==="en"?"people × ":"orang × "}{formatRp(splitResult)} = {formatRp(splitResult * splitForm.people)}</p>
+                    <div style={{ display:"flex", gap:8, marginTop:14 }}>
+                      <button onClick={() => {
+                        const newTx = { id:Date.now(), date:splitForm.date||today(), amount:splitResult, category:splitForm.category, description:splitForm.desc||(lang==="en"?"Split bill":"Split bill"), location:"", note:`Split ${splitForm.people} ${lang==="en"?"people":"orang"}` };
+                        setTransactions(prev=>[newTx,...prev]);
+                        showToast("ok:"+(lang==="en"?"Your share recorded!":"Bagianmu dicatat!"));
+                        setShowSplitBill(false);
+                        haptic("success");
+                      }} style={{ flex:1, padding:"10px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${themeAccent},${themePrimary})`, color:"white", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>
+                        {lang==="en"?"Record My Share":"Catat Bagianku"}
+                      </button>
+                      <button onClick={() => {
+                        const text = lang==="en"
+                          ? `Split bill: ${formatRp(Number(splitForm.total))} ÷ ${splitForm.people} = ${formatRp(splitResult)}/person`
+                          : `Split bill: ${formatRp(Number(splitForm.total))} ÷ ${splitForm.people} orang = ${formatRp(splitResult)}/orang`;
+                        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                        window.open(url, "_blank");
+                      }} style={{ flex:1, padding:"10px", borderRadius:12, border:`1.5px solid ${themeAccent}`, background:"transparent", color:T.accentText, fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+                        <svg width={14} height={14} viewBox="0 0 24 24" fill={T.accentText}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        WA
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
 
