@@ -17,13 +17,13 @@ export const DEFAULT_CATEGORIES = {
 };
 
 export const THEME_PRESETS = [
-  { id: "green",  label: "Green",  primary: "#166534", accent: "#4ade80", icon: "Leaf"     },
-  { id: "blue",   label: "Blue",   primary: "#1e3a8a", accent: "#60a5fa", icon: "Droplets" },
-  { id: "purple", label: "Purple", primary: "#4c1d95", accent: "#c084fc", icon: "Sparkles" },
-  { id: "rose",   label: "Rose",   primary: "#881337", accent: "#fb7185", icon: "Heart"    },
-  { id: "orange", label: "Orange", primary: "#7c2d12", accent: "#fb923c", icon: "Flame"    },
-  { id: "teal",   label: "Teal",   primary: "#134e4a", accent: "#2dd4bf", icon: "Wind"     },
-  { id: "custom", label: "Custom", primary: "#166534", accent: "#4ade80", icon: "Palette"  },
+  { id: "green",  label: "Green",  labelId: "Hijau",   primary: "#166534", accent: "#4ade80", icon: "Leaf"     },
+  { id: "blue",   label: "Blue",   labelId: "Biru",    primary: "#1e3a8a", accent: "#60a5fa", icon: "Droplets" },
+  { id: "purple", label: "Purple", labelId: "Ungu",    primary: "#4c1d95", accent: "#c084fc", icon: "Sparkles" },
+  { id: "rose",   label: "Rose",   labelId: "Merah",   primary: "#881337", accent: "#fb7185", icon: "Heart"    },
+  { id: "orange", label: "Orange", labelId: "Oranye",  primary: "#7c2d12", accent: "#fb923c", icon: "Flame"    },
+  { id: "teal",   label: "Teal",   labelId: "Tosca",   primary: "#134e4a", accent: "#2dd4bf", icon: "Wind"     },
+  { id: "custom", label: "Custom", labelId: "Kustom",  primary: "#166534", accent: "#4ade80", icon: "Palette"  },
 ];
 
 export const GOAL_ICONS = {
