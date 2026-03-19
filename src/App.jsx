@@ -2790,8 +2790,15 @@ export default function App() {
               {(() => {
                 const pendingRecurs = recurring.filter(r => r.autoApply === false);
                 return (
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom: showRecurPanel ? 12 : 0 }}>
-                    <div onClick={() => setShowRecurPanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, flex:1, cursor:"pointer" }}>
+                  <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom: showRecurPanel ? 12 : 0 }}>
+                    {/* Sub-header Cicilan */}
+                    <div onClick={() => setShowCicilanModal(true)} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, cursor:"pointer", padding:"4px 0" }}>
+                      <CreditCard size={11} color={T.accentText} strokeWidth={2}/>
+                      <p style={{ fontSize:11, fontWeight:800, color:T.accentText, letterSpacing:1.5 }}>{L.cicilan.toUpperCase()}</p>
+                      {cicilan.length > 0 && <span style={{ background:themeAccent, borderRadius:99, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 3px", fontSize:9, fontWeight:900, color:"white" }}>{cicilan.length}</span>}
+                    </div>
+                    {/* Transaksi Rutin - center */}
+                    <div onClick={() => setShowRecurPanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
                       <div style={{ flex:1, height:1, background:T.cardBorder }}/>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                         <Repeat size={11} color={T.textSub} strokeWidth={2}/>
@@ -2805,12 +2812,6 @@ export default function App() {
                       </div>
                       <div style={{ flex:1, height:1, background:T.cardBorder }}/>
                     </div>
-                    <button onClick={e => { e.stopPropagation(); setShowCicilanModal(true); }}
-                      style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99, background:T.catBg, border:`1.5px solid ${T.cardBorder}`, cursor:"pointer", flexShrink:0, ...IBN, fontFamily:"inherit" }}>
-                      <CreditCard size={10} color={T.accentText} strokeWidth={2}/>
-                      <span style={{ fontSize:10, fontWeight:800, color:T.accentText, letterSpacing:0.3 }}>{L.cicilan}</span>
-                      {cicilan.length > 0 && <span style={{ background:themeAccent, borderRadius:99, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 3px", fontSize:9, fontWeight:900, color:"white" }}>{cicilan.length}</span>}
-                    </button>
                   </div>
                 );
               })()}
@@ -2926,7 +2927,7 @@ export default function App() {
                     <p style={{ fontSize:11, fontWeight:800, color:"#4ade80", letterSpacing:1.5, whiteSpace:"nowrap" }}>{lang==="en"?"RECURRING INCOME":"PEMASUKAN RUTIN"}</p>
                     <ChevronDown size={11} color="#4ade80" strokeWidth={2.5} style={{ transform: showRecurIncomePanel?"rotate(180deg)":"rotate(0)", transition:"transform 0.2s" }}/>
                   </div>
-                  <div style={{ width:40, height:1, background:"#4ade8033" }}/>
+                  <div style={{ flex:1, height:1, background:"#4ade8033" }}/>
                 </div>
               </div>
 
