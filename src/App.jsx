@@ -2918,9 +2918,9 @@ export default function App() {
 
             {/* ── RECURRING INCOME collapsible ── */}
             <div style={{ marginTop:4, marginBottom:12 }}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom: showRecurIncomePanel ? 12 : 0 }}>
-                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
-                  <div style={{ width:40, height:1, background:"#4ade8033" }}/>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"center", marginBottom: showRecurIncomePanel ? 12 : 0 }}>
+                <div onClick={() => setShowRecurIncomePanel(p=>!p)} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer", margin:"0 auto" }}>
+                  <div style={{ width:32, height:1, background:"#4ade8033" }}/>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <TrendingUp size={11} color="#4ade80" strokeWidth={2}/>
                     <p style={{ fontSize:11, fontWeight:800, color:"#4ade80", letterSpacing:1.5, whiteSpace:"nowrap" }}>{lang==="en"?"RECURRING INCOME":"PEMASUKAN RUTIN"}</p>
@@ -4506,7 +4506,7 @@ export default function App() {
         {(() => {
           const NI = ({ id, size=22, color }) => {
             const s = { fill:"none", stroke:color, strokeWidth:1.5, strokeLinecap:"round", strokeLinejoin:"round" };
-            if (id==="dashboard") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M4 12L12 5L20 12"/><path d="M6 10.5V19C6 19.55 6.45 20 7 20H10V16H14V20H17C17.55 20 18 19.55 18 19V10.5"/></svg>;
+            if (id==="dashboard") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M4 11L12 4L20 11V20C20 20.55 19.55 21 19 21H5C4.45 21 4 20.55 4 20Z"/></svg>;
             if (id==="transactions") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="17" y2="12"/><line x1="3" y1="18" x2="13" y2="18"/></svg>;
             if (id==="report") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
             if (id==="date") return <svg width={size} height={size} viewBox="0 0 24 24" {...s}><path d="M12 21C12 21 3 15 3 8.5C3 5.46 5.46 3 8.5 3C10.2 3 11.72 3.88 12 5C12.28 3.88 13.8 3 15.5 3C18.54 3 21 5.46 21 8.5C21 15 12 21 12 21Z"/></svg>;
