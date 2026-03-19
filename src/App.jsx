@@ -12,7 +12,7 @@ import {
   CircleDollarSign, AlertTriangle, CheckCircle, Search, Inbox,
   ArrowRight, Banknote, Download, Bell, BellOff, X, Camera, Settings,
   WifiOff, Repeat, AlertCircle, Sparkles, Flame, Wind, Zap, Smartphone, Laptop, ChevronDown, ChevronRight, Target, Save, Upload, Share2, Calculator2,
-  Tag, Hash, CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck
+  CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck
 } from "./icons.jsx";
 import { formatRp, today, getWeek, getMonth, fmtDate, groupByDate, dateLabel, getCatLabel, haptic, parseRpInput, rpInputProps } from "./utils/helpers.js";
 
@@ -454,116 +454,6 @@ function CicilanModal({ show, onClose, cicilan, setCicilan, lang, L, T, themeAcc
   );
 }
 
-// ── TAGS MODAL COMPONENT ─────────────────────────────────────────────────────
-const TAG_COLORS_LIST = ["#f87171","#fb923c","#fbbf24","#4ade80","#34d399","#60a5fa","#818cf8","#c084fc","#f472b6","#94a3b8"];
-function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions, lang, L, T, themeAccent, themePrimary, formatRp, haptic, showToast }) {
-  const [view, setView] = React.useState("list");
-  const [editId, setEditId] = React.useState(null);
-  const [form, setForm] = React.useState({name:"",color:"#60a5fa"});
-  const SUGG = lang==="en"?["holiday","wedding","lebaran","monthly","date","work"]:["liburan","kondangan","lebaran","bulanan","date","kerja"];
-  const tagCount = id => Object.values(txTags||{}).filter(tags=>(tags||[]).includes(id)).length;
-  const tagTotal = id => {const txIds=Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));return transactions.filter(t=>txIds.includes(t.id)).reduce((s,t)=>s+Number(t.amount||0),0);};
-  const saveTag = () => {
-    if(!form.name.trim()) return;
-    if(editId) setUserTags(p=>p.map(t=>t.id===editId?{...t,...form}:t));
-    else { setUserTags(p=>[...p,{id:Date.now(),...form}]); showToast(L.tagAdded); }
-    setView("list"); setEditId(null); haptic("success");
-  };
-  const [selectedTag, setSelectedTag] = React.useState(null);
-  const getTagTxs = id => {
-    const txIds = Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));
-    return transactions.filter(t=>txIds.includes(t.id)).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  };
-  if(!show) return null;
-  return (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
-          <div style={{display:"flex",alignItems:"center",gap:9}}>
-            {selectedTag && <button onClick={()=>setSelectedTag(null)} style={{width:28,height:28,borderRadius:50,background:T.catBg,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginRight:2}}><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={T.textSub} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>}
-            <Hash size={18} color={selectedTag ? selectedTag.color : themeAccent} strokeWidth={2}/>
-            <p style={{fontSize:16,fontWeight:900,color:T.text}}>{selectedTag ? `#${selectedTag.name}` : L.tags}</p>
-          </div>
-          <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {view==="list" && !selectedTag && <button onClick={()=>{setEditId(null);setForm({name:"",color:"#60a5fa"});setView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addTag}</button>}
-            <button onClick={()=>{if(selectedTag){setSelectedTag(null);}else{onClose();}}} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
-          </div>
-        </div>
-        {/* Tag detail view */}
-        {selectedTag && (() => {
-          const tagTxs = getTagTxs(selectedTag.id);
-          const total = tagTxs.reduce((s,t)=>s+Number(t.amount),0);
-          return (
-            <div style={{overflowY:"auto",flex:1}}>
-              {/* Summary header */}
-              <div style={{padding:"14px 16px",background:selectedTag.color+"12",borderBottom:`1px solid ${selectedTag.color}22`}}>
-                <p style={{fontSize:11,color:selectedTag.color,fontWeight:700,letterSpacing:1,marginBottom:4}}>{lang==="en"?"TOTAL SPENDING":"TOTAL PENGELUARAN"}</p>
-                <p style={{fontSize:26,fontWeight:900,color:selectedTag.color}}>{formatRp(total)}</p>
-                <p style={{fontSize:11,color:T.textSub,marginTop:2}}>{tagTxs.length} {lang==="en"?"transactions":"transaksi"}</p>
-              </div>
-              {tagTxs.length === 0 ? (
-                <div style={{padding:"32px 20px",textAlign:"center"}}>
-                  <p style={{fontSize:13,color:T.textSub}}>{lang==="en"?"No transactions with this tag yet":"Belum ada transaksi dengan tag ini"}</p>
-                </div>
-              ) : (
-                <div>
-                  {tagTxs.map((t,i) => (
-                    <div key={t.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderBottom:i<tagTxs.length-1?`1px solid ${T.cardBorder}`:"none"}}>
-                      <div style={{flex:1,minWidth:0}}>
-                        <p style={{fontSize:13,fontWeight:700,color:T.text}}>{t.description||"-"}</p>
-                        <p style={{fontSize:11,color:T.textSub,marginTop:1}}>{t.date}</p>
-                      </div>
-                      <p style={{fontSize:13,fontWeight:800,color:"#f87171"}}>-{formatRp(Number(t.amount))}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })()}
-        <div style={{overflowY:"auto",flex:1}}>
-          {view==="form" && (
-            <div style={{padding:16,display:"flex",flexDirection:"column",gap:12}}>
-              <p style={{fontSize:13,fontWeight:800,color:T.text}}>{editId?L.editTag:L.addTag}</p>
-              <input className="inp" placeholder={L.tagPlaceholder} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} style={{background:T.inp,border:`1.5px solid ${T.inpBorder}`,color:T.text}} autoFocus/>
-              <div><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8}}>{lang==="en"?"Color":"Warna"}</p><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{TAG_COLORS_LIST.map(col=>(<div key={col} onClick={()=>setForm(f=>({...f,color:col}))} style={{width:32,height:32,borderRadius:50,background:col,cursor:"pointer",border:form.color===col?"3px solid white":"3px solid transparent",boxShadow:form.color===col?`0 0 0 2px ${col}`:"none",transition:"all 0.15s"}}/>))}</div></div>
-              {form.name && <div style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:99,background:form.color+"18",border:`1.5px solid ${form.color}50`}}><Hash size={11} color={form.color} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:form.color}}>{form.name}</span></div>}
-              <div style={{display:"flex",gap:8}}><button onClick={saveTag} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button><button onClick={()=>{setView("list");setEditId(null);}} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button></div>
-            </div>
-          )}
-          {view==="list" && !selectedTag && (
-            <div>
-              {userTags.length===0 ? (
-                <div>
-                  <div style={{padding:"36px 20px",textAlign:"center"}}><div style={{width:64,height:64,borderRadius:20,background:themeAccent+"18",border:`1.5px solid ${themeAccent}30`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px"}}><Hash size={28} color={themeAccent} strokeWidth={1.5}/></div><p style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:6}}>{L.noTags}</p><p style={{fontSize:12,color:T.textSub}}>{lang==="en"?"Add tags to group transactions":"Tambah tag untuk kelompokkan transaksi"}</p></div>
-                  <div style={{padding:"0 16px 20px"}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10}}>{(L.tagSuggestions||"SARAN").toUpperCase()}</p><div style={{display:"flex",flexWrap:"wrap",gap:6}}>{SUGG.map((s,i)=>(<button key={s} onClick={()=>{setForm({name:s,color:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]});setView("form");}} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"7px 12px",borderRadius:99,background:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]+"15",border:`1.5px solid ${TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]}40`,cursor:"pointer",fontFamily:"inherit"}}><Hash size={10} color={TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]} strokeWidth={2.5}/><span style={{fontSize:12,fontWeight:700,color:TAG_COLORS_LIST[i%TAG_COLORS_LIST.length]}}>{s}</span></button>))}</div></div>
-                </div>
-              ) : (
-                <div>
-                  {userTags.map((tag,i)=>(
-                    <div key={tag.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<userTags.length-1?`1px solid ${T.cardBorder}`:"none"}}>
-                      <div style={{width:40,height:40,borderRadius:12,background:tag.color+"20",border:`1.5px solid ${tag.color}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Hash size={18} color={tag.color} strokeWidth={2}/></div>
-                      <div onClick={()=>setSelectedTag(tag)} style={{flex:1,minWidth:0,cursor:"pointer"}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>#{tag.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}{tagCount(tag.id)>0?` · ${formatRp(tagTotal(tag.id))}`:""}</p></div>
-                      <div style={{display:"flex",gap:6}}>
-                        <button onClick={()=>{setEditId(tag.id);setForm({name:tag.name,color:tag.color});setView("form");}} style={{width:34,height:34,borderRadius:10,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={13} color={T.text} strokeWidth={2}/></button>
-                        <button onClick={()=>{setUserTags(p=>p.filter(t=>t.id!==tag.id));showToast(L.tagDeleted||"del:Tag dihapus");haptic();}} style={{width:34,height:34,borderRadius:10,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={13} color="#f87171" strokeWidth={2}/></button>
-                      </div>
-                    </div>
-                  ))}
-                  {userTags.some(t=>tagCount(t.id)>0) && (
-                    <div style={{padding:"14px 16px",borderTop:`1px solid ${T.cardBorder}`}}><p style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:10}}>{(L.tagStats||"RINGKASAN").toUpperCase()}</p><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{userTags.filter(t=>tagCount(t.id)>0).map(tag=>(<div key={tag.id} style={{background:T.card2,border:`1px solid ${T.cardBorder}`,borderRadius:14,padding:12}}><p style={{fontSize:12,fontWeight:700,color:tag.color,marginBottom:4}}>#{tag.name}</p><p style={{fontSize:15,fontWeight:900,color:T.text}}>{formatRp(tagTotal(tag.id))}</p><p style={{fontSize:11,color:T.textSub,marginTop:2}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}</p></div>))}</div></div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
   const [tab, setTab] = useState("dashboard");
   const [showFabMenu, setShowFabMenu] = useState(false);
@@ -903,16 +793,6 @@ export default function App() {
   useEffect(() => { try { localStorage.setItem("gm_reminder_days", JSON.stringify(reminderDays)); } catch {} }, [reminderDays]);
   useEffect(() => { try { localStorage.setItem("gm_reminder_smart", reminderSmart ? "1" : "0"); } catch {} }, [reminderSmart]);
 
-  // Tags
-  const [userTags, setUserTags] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("gm_user_tags") || "[]"); } catch { return []; }
-  });
-  const [txTags, setTxTags] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("gm_tx_tags") || "{}"); } catch { return {}; }
-  });
-  const [showTagModal, setShowTagModal] = useState(false);
-  useEffect(() => { try { localStorage.setItem("gm_user_tags", JSON.stringify(userTags)); } catch {} }, [userTags]);
-  useEffect(() => { try { localStorage.setItem("gm_tx_tags", JSON.stringify(txTags)); } catch {} }, [txTags]);
 
   // Receipts (base64 stored per tx id)
   const [txReceipts, setTxReceipts] = useState(() => {
@@ -1255,7 +1135,7 @@ export default function App() {
     // Disable swipe when any modal/popup is open
     const anyModalOpen = showForm || showCalc || editIncome || showCatManager ||
       showBudgetLimit || showAppearanceModal || showNotifModal || showDataModal ||
-      showOverallBudgetModal || showCicilanModal || showTagModal || showReminderModal ||
+      showOverallBudgetModal || showCicilanModal || showReminderModal ||
       editingGoal !== null;
     if (anyModalOpen) return;
     // Higher threshold (120px) + stricter vertical check (50px max)
@@ -1266,7 +1146,7 @@ export default function App() {
     else if (dx > 0 && cur > 0) changeTab(TABS[cur-1]);
   }, [tab, changeTab, showForm, showCalc, editIncome, showCatManager,
     showBudgetLimit, showAppearanceModal, showNotifModal, showDataModal,
-    showOverallBudgetModal, showCicilanModal, showTagModal, showReminderModal, editingGoal]);
+    showOverallBudgetModal, showCicilanModal, showReminderModal, editingGoal]);
 
   // Apply recurring transactions
   useEffect(() => {
@@ -2788,14 +2668,9 @@ export default function App() {
                               <div style={{ flex:1, minWidth:0 }}>
                                 <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{t.description}</p>
                                 <p style={{ fontSize:11, color:T.textSub, marginTop:2 }}>{getCatLabel(cat, lang)}{t.location ? ` · ${t.location}` : ""}{t.note ? ` · ${t.note}` : ""}</p>
-                                {((txTags[String(t.id)]||[]).length > 0 || txReceipts[String(t.id)]) && (
+                                {txReceipts[String(t.id)] && (
                                   <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginTop:4 }}>
-                                    {(txTags[String(t.id)]||[]).map(tagId => {
-                                      const tag = userTags.find(tg=>tg.id===tagId);
-                                      if (!tag) return null;
-                                      return <span key={tagId} style={{ display:"inline-flex", alignItems:"center", gap:3, padding:"2px 7px", borderRadius:99, background:tag.color+"18", border:`1px solid ${tag.color}40`, fontSize:10, fontWeight:700, color:tag.color }}><Hash size={8} color={tag.color} strokeWidth={2.5}/>{tag.name}</span>;
-                                    })}
-                                    {txReceipts[String(t.id)] && <span style={{ display:"inline-flex", alignItems:"center", gap:3, padding:"2px 7px", borderRadius:99, background:T.catBg, border:`1px solid ${T.cardBorder}`, fontSize:10, fontWeight:700, color:T.textSub }}><ImagePlus size={8} color={T.textSub} strokeWidth={2}/>{L.receiptPhoto}</span>}
+                                    <span style={{ display:"inline-flex", alignItems:"center", gap:3, padding:"2px 7px", borderRadius:99, background:T.catBg, border:`1px solid ${T.cardBorder}`, fontSize:10, fontWeight:700, color:T.textSub }}><ImagePlus size={8} color={T.textSub} strokeWidth={2}/>{L.receiptPhoto}</span>
                                   </div>
                                 )}
                               </div>
@@ -3341,49 +3216,6 @@ export default function App() {
                 <Download size={14} strokeWidth={2}/> {L.exportReport}
               </button>
             </div>
-            {/* ── TAG REPORT SECTION ── */}
-            {userTags.length > 0 && (() => {
-              const tagCount = id => Object.values(txTags||{}).filter(tags=>(tags||[]).includes(id)).length;
-              const tagTotal = id => {
-                const txIds = Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));
-                return transactions.filter(t=>txIds.includes(t.id)).reduce((s,t)=>s+Number(t.amount||0),0);
-              };
-              const activeTags = userTags.filter(t => tagCount(t.id) > 0).sort((a,b)=>tagTotal(b.id)-tagTotal(a.id));
-              if (activeTags.length === 0) return null;
-              return (
-                <div className="card" style={{ padding:16, marginBottom:12, ...CS }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:14 }}>
-                    <div style={{ width:28, height:28, borderRadius:9, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <Hash size={13} strokeWidth={2} color={TP}/>
-                    </div>
-                    <p style={{ fontSize:13, fontWeight:800, color:T.text }}>{lang==="en"?"Spending by Tag":"Pengeluaran per Tag"}</p>
-                  </div>
-                  <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                    {activeTags.map(tag => {
-                      const total = tagTotal(tag.id);
-                      const count = tagCount(tag.id);
-                      const maxTotal = tagTotal(activeTags[0].id);
-                      return (
-                        <div key={tag.id} onClick={() => setShowTagModal(true)} style={{ cursor:"pointer" }}>
-                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
-                            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                              <Hash size={11} color={tag.color} strokeWidth={2.5}/>
-                              <span style={{ fontSize:12, fontWeight:700, color:T.text }}>{tag.name}</span>
-                              <span style={{ fontSize:10, color:T.textSub }}>({count} {lang==="en"?"tx":"transaksi"})</span>
-                            </div>
-                            <span style={{ fontSize:12, fontWeight:800, color:tag.color }}>{formatRp(total)}</span>
-                          </div>
-                          <div style={{ background:dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)", borderRadius:99, height:6, overflow:"hidden" }}>
-                            <div style={{ height:"100%", width:`${Math.round(total*100/maxTotal)}%`, background:tag.color, borderRadius:99, transition:"width 0.4s ease" }}/>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p style={{ fontSize:10, color:T.textSub, marginTop:10, textAlign:"center" }}>{lang==="en"?"Tap to see tag details":"Tap untuk lihat detail tag"}</p>
-                </div>
-              );
-            })()}
 
             {/* Share Summary button */}
             {(() => {
@@ -3915,19 +3747,7 @@ export default function App() {
                   </div>
                   <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
                 </button>
-                <button onClick={() => { setShowCategoryMenu(false); setTimeout(()=>setShowTagModal(true),200); }}
-                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0", width:"100%", ...IBN, fontFamily:"inherit" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                    <div style={{ width:36, height:36, borderRadius:10, background:`${themeAccent}18`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                      <Hash size={18} strokeWidth={2} color={T.accentText}/>
-                    </div>
-                    <div style={{ textAlign:"left" }}>
-                      <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{lang==="en"?"Tags":"Tag"}</p>
-                      <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : (lang==="en"?"No tags yet":"Belum ada tag")}</p>
-                    </div>
-                  </div>
-                  <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
-                </button>
+
               </div>
             </div>
           </div>
@@ -4041,20 +3861,6 @@ export default function App() {
                     </div>
                   </div>
                 ))}
-              </div>
-              {/* Tags sub-entry */}
-              <div onClick={() => { setShowCatManager(false); setTimeout(()=>setShowTagModal(true),200); }}
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", borderTop:`1px solid ${T.cardBorder}`, cursor:"pointer" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:34, height:34, borderRadius:10, background:T.catBg, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <Hash size={16} color={T.accentText} strokeWidth={2}/>
-                  </div>
-                  <div>
-                    <p style={{ fontSize:14, fontWeight:700, color:T.text }}>{L.tags}</p>
-                    <p style={{ fontSize:11, color:T.textSub }}>{userTags.length > 0 ? `${userTags.length} tag` : L.noTags}</p>
-                  </div>
-                </div>
-                <ChevronRight size={16} color={T.textSub} strokeWidth={2.5}/>
               </div>
             </div>
           </div>
@@ -4512,32 +4318,7 @@ export default function App() {
                     style={{ flex:1, background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }} />
                 </div>
 
-                {/* Tags */}
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center" }}>
-                  {userTags.map(tag => {
-                    const itemTags = (editItem ? (txTags[editItem.id]||[]) : (form._tags||[]));
-                    const active = itemTags.includes(tag.id);
-                    return (
-                      <button key={tag.id} onClick={() => {
-                        const cur = editItem ? (txTags[editItem.id]||[]) : (form._tags||[]);
-                        const next = active ? cur.filter(x=>x!==tag.id) : [...cur, tag.id];
-                        if (editItem) setTxTags(p=>({...p,[editItem.id]:next}));
-                        else setForm(f=>({...f,_tags:next}));
-                      }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99,
-                        border: active ? `1.5px solid ${tag.color}88` : `1.5px solid ${T.cardBorder}`,
-                        background: active ? tag.color+"18" : T.catBg, cursor:"pointer", transition:"all 0.15s" }}>
-                        <Hash size={10} color={active ? tag.color : T.textSub} strokeWidth={2.5}/>
-                        <span style={{ fontSize:11, fontWeight:700, color: active ? tag.color : T.textSub }}>{tag.name}</span>
-                      </button>
-                    );
-                  })}
-                  <button onClick={() => { setShowForm(false); setTimeout(()=>setShowTagModal(true), 200); }}
-                    style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:99,
-                      border:`1.5px solid ${T.cardBorder}`, background:T.catBg, cursor:"pointer" }}>
-                    <Hash size={10} color={themeAccent} strokeWidth={2.5}/>
-                    <span style={{ fontSize:11, fontWeight:700, color:themeAccent }}>{userTags.length === 0 ? (lang==="en"?"+ Add Tag":"+ Tambah Tag") : (lang==="en"?"Manage Tags":"Kelola Tag")}</span>
-                  </button>
-                </div>
+
 
                 {/* Foto Struk */}
                 {(() => {
@@ -4721,8 +4502,6 @@ export default function App() {
 
         {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
 
-        {/* Tags Modal */}
-        {showTagModal && <TagsModal show={showTagModal} onClose={()=>setShowTagModal(false)} userTags={userTags} setUserTags={setUserTags} txTags={txTags} transactions={transactions} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} haptic={haptic} showToast={showToast}/>}
 
         {showReminderModal && <ReminderModal
           show={showReminderModal} onClose={()=>setShowReminderModal(false)}
