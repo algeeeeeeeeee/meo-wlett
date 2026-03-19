@@ -86,13 +86,8 @@ export const LANG = {
     restoreConfirm:"Pulihkan cadangan ini? Data saat ini akan diganti.",
     backupInvalid:"File cadangan tidak valid",
 
-    save:"Simpan", cancel:"Batal", done:"Selesai", noTags:"Belum ada tag",
+    save:"Simpan", cancel:"Batal", done:"Selesai",
     notifications:"Notifikasi",
-
-    tags:"Tag", addTag:"+ Tambah Tag", editTag:"Edit Tag",
-    tagAdded:"Tag ditambahkan", tagDeleted:"Tag dihapus",
-    tagPlaceholder:"Nama tag...", tagStats:"Statistik Tag",
-    tagSuggestions:"Saran", tagTx:"transaksi",
 
     cicilan:"Cicilan", addCicilan:"+ Tambah Cicilan", editCicilan:"Edit Cicilan",
     noCicilan:"Belum ada cicilan",
@@ -220,13 +215,8 @@ export const LANG = {
     backupInvalid:"Invalid backup file",
     backupData:"Backup Data", backupDesc:"Download all data as JSON", restoreBackup:"Restore Backup", restoreDesc:"Import from backup file", resetDesc:"Delete all data permanently", dataSubtitle:"Backup, restore & reset", restoreConfirmMsg:"Restore this backup? Current data will be replaced.",
 
-    save:"Save", cancel:"Cancel", done:"Done", noTags:"No tags yet",
+    save:"Save", cancel:"Cancel", done:"Done",
     notifications:"Notifications",
-
-    tags:"Tags", addTag:"+ Add Tag", editTag:"Edit Tag",
-    tagAdded:"Tag added", tagDeleted:"Tag deleted",
-    tagPlaceholder:"Tag name...", tagStats:"Tag Stats",
-    tagSuggestions:"Suggestions", tagTx:"transactions",
 
     cicilan:"Instalments", addCicilan:"+ Add Instalment", editCicilan:"Edit Instalment",
     noCicilan:"No instalments yet",
