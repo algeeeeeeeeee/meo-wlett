@@ -12,7 +12,7 @@ import {
   CircleDollarSign, AlertTriangle, CheckCircle, Search, Inbox,
   ArrowRight, Banknote, Download, Bell, BellOff, X, Camera, Settings,
   WifiOff, Repeat, AlertCircle, Sparkles, Flame, Wind, Zap, Smartphone, Laptop, ChevronDown, ChevronRight, Target, Save, Upload, Share2, Calculator2,
-  Tag, Hash, CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck, ChevronLeft
+  Tag, Hash, CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck
 } from "./icons.jsx";
 import { formatRp, today, getWeek, getMonth, fmtDate, groupByDate, dateLabel, getCatLabel, haptic, parseRpInput, rpInputProps } from "./utils/helpers.js";
 
@@ -481,7 +481,7 @@ function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions,
         <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
           <div style={{display:"flex",alignItems:"center",gap:9}}>
-            {selectedTag && <button onClick={()=>setSelectedTag(null)} style={{width:28,height:28,borderRadius:50,background:T.catBg,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginRight:2}}><ChevronLeft size={14} color={T.textSub} strokeWidth={2.5}/></button>}
+            {selectedTag && <button onClick={()=>setSelectedTag(null)} style={{width:28,height:28,borderRadius:50,background:T.catBg,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginRight:2}}><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={T.textSub} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>}
             <Hash size={18} color={selectedTag ? selectedTag.color : themeAccent} strokeWidth={2}/>
             <p style={{fontSize:16,fontWeight:900,color:T.text}}>{selectedTag ? `#${selectedTag.name}` : L.tags}</p>
           </div>
