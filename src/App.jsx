@@ -12,7 +12,7 @@ import {
   CircleDollarSign, AlertTriangle, CheckCircle, Search, Inbox,
   ArrowRight, Banknote, Download, Bell, BellOff, X, Camera, Settings,
   WifiOff, Repeat, AlertCircle, Sparkles, Flame, Wind, Zap, Smartphone, Laptop, ChevronDown, ChevronRight, Target, Save, Upload, Share2, Calculator2,
-  Tag, Hash, CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck
+  Tag, Hash, CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck, ChevronLeft
 } from "./icons.jsx";
 import { formatRp, today, getWeek, getMonth, fmtDate, groupByDate, dateLabel, getCatLabel, haptic, parseRpInput, rpInputProps } from "./utils/helpers.js";
 
@@ -469,18 +469,59 @@ function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions,
     else { setUserTags(p=>[...p,{id:Date.now(),...form}]); showToast(L.tagAdded); }
     setView("list"); setEditId(null); haptic("success");
   };
+  const [selectedTag, setSelectedTag] = React.useState(null);
+  const getTagTxs = id => {
+    const txIds = Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));
+    return transactions.filter(t=>txIds.includes(t.id)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  };
   if(!show) return null;
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
       <div style={{background:T.modalBg,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:420,maxHeight:"90dvh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
         <div style={{width:36,height:4,background:T.cardBorder,borderRadius:99,margin:"12px auto 0",flexShrink:0}}/>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px 14px",borderBottom:`1px solid ${T.cardBorder}`,flexShrink:0}}>
-          <div style={{display:"flex",alignItems:"center",gap:9}}><Hash size={18} color={themeAccent} strokeWidth={2}/><p style={{fontSize:16,fontWeight:900,color:T.text}}>{L.tags}</p></div>
+          <div style={{display:"flex",alignItems:"center",gap:9}}>
+            {selectedTag && <button onClick={()=>setSelectedTag(null)} style={{width:28,height:28,borderRadius:50,background:T.catBg,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginRight:2}}><ChevronLeft size={14} color={T.textSub} strokeWidth={2.5}/></button>}
+            <Hash size={18} color={selectedTag ? selectedTag.color : themeAccent} strokeWidth={2}/>
+            <p style={{fontSize:16,fontWeight:900,color:T.text}}>{selectedTag ? `#${selectedTag.name}` : L.tags}</p>
+          </div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {view==="list" && <button onClick={()=>{setEditId(null);setForm({name:"",color:"#60a5fa"});setView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addTag}</button>}
-            <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
+            {view==="list" && !selectedTag && <button onClick={()=>{setEditId(null);setForm({name:"",color:"#60a5fa"});setView("form");}} style={{background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",borderRadius:10,padding:"6px 12px",color:"white",fontSize:12,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}}><Plus size={13} strokeWidth={2.5}/> {L.addTag}</button>}
+            <button onClick={()=>{if(selectedTag){setSelectedTag(null);}else{onClose();}}} style={{width:30,height:30,borderRadius:"50%",background:T.card2,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><X size={14} color={T.textSub} strokeWidth={2}/></button>
           </div>
         </div>
+        {/* Tag detail view */}
+        {selectedTag && (() => {
+          const tagTxs = getTagTxs(selectedTag.id);
+          const total = tagTxs.reduce((s,t)=>s+Number(t.amount),0);
+          return (
+            <div style={{overflowY:"auto",flex:1}}>
+              {/* Summary header */}
+              <div style={{padding:"14px 16px",background:selectedTag.color+"12",borderBottom:`1px solid ${selectedTag.color}22`}}>
+                <p style={{fontSize:11,color:selectedTag.color,fontWeight:700,letterSpacing:1,marginBottom:4}}>{lang==="en"?"TOTAL SPENDING":"TOTAL PENGELUARAN"}</p>
+                <p style={{fontSize:26,fontWeight:900,color:selectedTag.color}}>{formatRp(total)}</p>
+                <p style={{fontSize:11,color:T.textSub,marginTop:2}}>{tagTxs.length} {lang==="en"?"transactions":"transaksi"}</p>
+              </div>
+              {tagTxs.length === 0 ? (
+                <div style={{padding:"32px 20px",textAlign:"center"}}>
+                  <p style={{fontSize:13,color:T.textSub}}>{lang==="en"?"No transactions with this tag yet":"Belum ada transaksi dengan tag ini"}</p>
+                </div>
+              ) : (
+                <div>
+                  {tagTxs.map((t,i) => (
+                    <div key={t.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderBottom:i<tagTxs.length-1?`1px solid ${T.cardBorder}`:"none"}}>
+                      <div style={{flex:1,minWidth:0}}>
+                        <p style={{fontSize:13,fontWeight:700,color:T.text}}>{t.description||"-"}</p>
+                        <p style={{fontSize:11,color:T.textSub,marginTop:1}}>{t.date}</p>
+                      </div>
+                      <p style={{fontSize:13,fontWeight:800,color:"#f87171"}}>-{formatRp(Number(t.amount))}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })()}
         <div style={{overflowY:"auto",flex:1}}>
           {view==="form" && (
             <div style={{padding:16,display:"flex",flexDirection:"column",gap:12}}>
@@ -491,7 +532,7 @@ function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions,
               <div style={{display:"flex",gap:8}}><button onClick={saveTag} style={{flex:1,padding:"12px 0",borderRadius:14,background:`linear-gradient(135deg,${themeAccent},${themePrimary})`,border:"none",color:"white",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"inherit"}}>{L.save}</button><button onClick={()=>{setView("list");setEditId(null);}} style={{flex:0.5,padding:"12px 0",borderRadius:14,background:T.btnG,border:`1.5px solid ${T.btnGBorder}`,color:T.btnGText,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{L.cancel}</button></div>
             </div>
           )}
-          {view==="list" && (
+          {view==="list" && !selectedTag && (
             <div>
               {userTags.length===0 ? (
                 <div>
@@ -503,7 +544,7 @@ function TagsModal({ show, onClose, userTags, setUserTags, txTags, transactions,
                   {userTags.map((tag,i)=>(
                     <div key={tag.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<userTags.length-1?`1px solid ${T.cardBorder}`:"none"}}>
                       <div style={{width:40,height:40,borderRadius:12,background:tag.color+"20",border:`1.5px solid ${tag.color}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Hash size={18} color={tag.color} strokeWidth={2}/></div>
-                      <div style={{flex:1,minWidth:0}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>#{tag.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}{tagCount(tag.id)>0?` · ${formatRp(tagTotal(tag.id))}`:""}</p></div>
+                      <div onClick={()=>setSelectedTag(tag)} style={{flex:1,minWidth:0,cursor:"pointer"}}><p style={{fontSize:14,fontWeight:700,color:T.text}}>#{tag.name}</p><p style={{fontSize:11,color:T.textSub,marginTop:1}}>{tagCount(tag.id)} {L.tagTx||"transaksi"}{tagCount(tag.id)>0?` · ${formatRp(tagTotal(tag.id))}`:""}</p></div>
                       <div style={{display:"flex",gap:6}}>
                         <button onClick={()=>{setEditId(tag.id);setForm({name:tag.name,color:tag.color});setView("form");}} style={{width:34,height:34,borderRadius:10,background:T.catBg,border:`1.5px solid ${T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Pencil size={13} color={T.text} strokeWidth={2}/></button>
                         <button onClick={()=>{setUserTags(p=>p.filter(t=>t.id!==tag.id));showToast(L.tagDeleted||"del:Tag dihapus");haptic();}} style={{width:34,height:34,borderRadius:10,background:"#ef444418",border:"1.5px solid #ef444435",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><Trash2 size={13} color="#f87171" strokeWidth={2}/></button>
@@ -3300,6 +3341,50 @@ export default function App() {
                 <Download size={14} strokeWidth={2}/> {L.exportReport}
               </button>
             </div>
+            {/* ── TAG REPORT SECTION ── */}
+            {userTags.length > 0 && (() => {
+              const tagCount = id => Object.values(txTags||{}).filter(tags=>(tags||[]).includes(id)).length;
+              const tagTotal = id => {
+                const txIds = Object.entries(txTags||{}).filter(([,tags])=>(tags||[]).includes(id)).map(([tid])=>Number(tid));
+                return transactions.filter(t=>txIds.includes(t.id)).reduce((s,t)=>s+Number(t.amount||0),0);
+              };
+              const activeTags = userTags.filter(t => tagCount(t.id) > 0).sort((a,b)=>tagTotal(b.id)-tagTotal(a.id));
+              if (activeTags.length === 0) return null;
+              return (
+                <div className="card" style={{ padding:16, marginBottom:12, ...CS }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:14 }}>
+                    <div style={{ width:28, height:28, borderRadius:9, background:`${TP}18`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <Hash size={13} strokeWidth={2} color={TP}/>
+                    </div>
+                    <p style={{ fontSize:13, fontWeight:800, color:T.text }}>{lang==="en"?"Spending by Tag":"Pengeluaran per Tag"}</p>
+                  </div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                    {activeTags.map(tag => {
+                      const total = tagTotal(tag.id);
+                      const count = tagCount(tag.id);
+                      const maxTotal = tagTotal(activeTags[0].id);
+                      return (
+                        <div key={tag.id} onClick={() => setShowTagModal(true)} style={{ cursor:"pointer" }}>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
+                            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                              <Hash size={11} color={tag.color} strokeWidth={2.5}/>
+                              <span style={{ fontSize:12, fontWeight:700, color:T.text }}>{tag.name}</span>
+                              <span style={{ fontSize:10, color:T.textSub }}>({count} {lang==="en"?"tx":"transaksi"})</span>
+                            </div>
+                            <span style={{ fontSize:12, fontWeight:800, color:tag.color }}>{formatRp(total)}</span>
+                          </div>
+                          <div style={{ background:dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)", borderRadius:99, height:6, overflow:"hidden" }}>
+                            <div style={{ height:"100%", width:`${Math.round(total*100/maxTotal)}%`, background:tag.color, borderRadius:99, transition:"width 0.4s ease" }}/>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p style={{ fontSize:10, color:T.textSub, marginTop:10, textAlign:"center" }}>{lang==="en"?"Tap to see tag details":"Tap untuk lihat detail tag"}</p>
+                </div>
+              );
+            })()}
+
             {/* Share Summary button */}
             {(() => {
               const topCat = Object.entries(
