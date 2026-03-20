@@ -1,24 +1,12 @@
 {
   "name": "Meowlett",
   "short_name": "Meowlett",
-  "description": "Aplikasi manajemen keuangan pribadi",
+  "description": "Purr-fect finances 🐱",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#881337",
-  "theme_color": "#881337",
-  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#fb7185",
   "icons": [
-    {
-      "src": "/meow.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/meow.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "/vite.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
 }
