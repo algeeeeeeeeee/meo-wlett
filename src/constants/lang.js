@@ -82,7 +82,7 @@ export const LANG = {
     repWeekTotal:"Total minggu ini:", repMoreSpend:"Lebih boros", repLessSpend:"Lebih hemat",
     repVsLastWeek:"vs minggu lalu", repTopCat:"Kategori terbanyak:",
     showMore:"Lihat Lebih", backupData:"Cadangkan Data", backupDesc:"Unduh semua data sebagai JSON", restoreBackup:"Pulihkan Cadangan", restoreDesc:"Impor dari file cadangan", resetDesc:"Hapus semua data permanen", dataSubtitle:"Cadangkan, pulihkan & atur ulang", restoreConfirmMsg:"Pulihkan cadangan ini? Data saat ini akan diganti.",
-    backupOk:"Cadangan berhasil diunduh", restoreOk:"Cadangan berhasil dipulihkan!",
+    backupOk:"Cadangan berhasil diunduh", receiptPhoto:"Foto struk", receiptAdded:"ok:Foto struk ditambahkan", restoreOk:"Cadangan berhasil dipulihkan!",
     restoreConfirm:"Pulihkan cadangan ini? Data saat ini akan diganti.",
     backupInvalid:"File cadangan tidak valid",
 
@@ -210,7 +210,7 @@ export const LANG = {
     insightUp:"up", insightDown:"down",
     previewHeader:"Preview Header",
     deleteTxTitle:"Delete Transaction?", deleteTxDesc:"This transaction will be permanently deleted.",
-    backupOk:"Backup downloaded", restoreOk:"Backup restored!",
+    backupOk:"Backup downloaded", receiptPhoto:"Receipt", receiptAdded:"ok:Receipt added", restoreOk:"Backup restored!",
     restoreConfirm:"Restore this backup? Current data will be replaced.",
     backupInvalid:"Invalid backup file",
     backupData:"Backup Data", backupDesc:"Download all data as JSON", restoreBackup:"Restore Backup", restoreDesc:"Import from backup file", resetDesc:"Delete all data permanently", dataSubtitle:"Backup, restore & reset", restoreConfirmMsg:"Restore this backup? Current data will be replaced.",
