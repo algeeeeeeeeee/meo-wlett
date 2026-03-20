@@ -15,6 +15,13 @@ import {
   CreditCard, ImagePlus, Image, ZoomIn, AlarmClock, BellRing, CheckCheck
 } from "./icons.jsx";
 import { formatRp, today, getWeek, getMonth, fmtDate, groupByDate, dateLabel, getCatLabel, haptic, parseRpInput, rpInputProps } from "./utils/helpers.js";
+import { darken, lighten, getLuminance, getContrastText, buildTheme } from "./utils/theme.js";
+import { exportCSV, exportPDFReport } from "./utils/export.js";
+import { requestNotificationPermission, sendLocalNotification, scheduleSmartReminder } from "./utils/notifications.js";
+import { DEFAULT_CATEGORIES, THEME_PRESETS, GOAL_ICONS, ICON_OPTIONS, COLOR_OPTIONS, PRESET_ICONS } from "./constants/index.js";
+import { LANG } from "./constants/lang.js";
+import AnimatedNumber from "./components/AnimatedNumber.jsx";
+import DonutChart from "./components/DonutChart.jsx";
 
 // IndexedDB helpers for transaction persistence
 const IDB_NAME = "meowlett_db", IDB_STORE = "transactions", IDB_VER = 1;
@@ -44,13 +51,6 @@ const loadFromIDB = async () => {
     });
   } catch { return []; }
 };
-import { darken, lighten, getLuminance, getContrastText, buildTheme } from "./utils/theme.js";
-import { exportCSV, exportPDFReport } from "./utils/export.js";
-import { requestNotificationPermission, sendLocalNotification, scheduleSmartReminder } from "./utils/notifications.js";
-import { DEFAULT_CATEGORIES, THEME_PRESETS, GOAL_ICONS, ICON_OPTIONS, COLOR_OPTIONS, PRESET_ICONS } from "./constants/index.js";
-import { LANG } from "./constants/lang.js";
-import AnimatedNumber from "./components/AnimatedNumber.jsx";
-import DonutChart from "./components/DonutChart.jsx";
 
 function Ic({ icon, size = 18, color, style = {} }) {
   const Icon = icon;
@@ -143,7 +143,6 @@ const STYLES = `
   @keyframes nav-icon-in { 0%{transform:scale(0.8); opacity:0.4} 60%{transform:scale(1.15)} 100%{transform:scale(1); opacity:1} }
   @keyframes nav-label-in { 0%{opacity:1; -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0)} 100%{opacity:1; -webkit-clip-path:inset(0 0% 0 0); clip-path:inset(0 0% 0 0)} }
   .nav-icon-pop { animation: nav-icon-pop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-
 
   /* Skeleton */
   @keyframes skeleton-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.75} }
@@ -299,8 +298,6 @@ function Calculator({ onUse, onClose, T, themeAccent, themePrimary, dark }) {
     </div>
   );
 }
-
-
 
 // ── REMINDER MODAL COMPONENT ─────────────────────────────────────────────────
 function ReminderModal({ show, onClose, lang, L, T, themeAccent, themePrimary, notifEnabled, handleNotification, reminderHour, setReminderHour, reminderDays, setReminderDays, reminderSmart, setReminderSmart, scheduleSmartReminder, transactions, showToast }) {
@@ -793,7 +790,6 @@ export default function App() {
   useEffect(() => { try { localStorage.setItem("gm_reminder_days", JSON.stringify(reminderDays)); } catch {} }, [reminderDays]);
   useEffect(() => { try { localStorage.setItem("gm_reminder_smart", reminderSmart ? "1" : "0"); } catch {} }, [reminderSmart]);
 
-
   // Receipts (base64 stored per tx id)
   const [txReceipts, setTxReceipts] = useState(() => {
     try { return JSON.parse(localStorage.getItem("gm_tx_receipts") || "{}"); } catch { return {}; }
@@ -953,8 +949,6 @@ export default function App() {
       window.scrollTo(0, modalScrollY.current);
     }
   }, [anyModal]);
-
-
 
   const [quickAddGoalId, setQuickAddGoalId] = useState(null);
   const [quickAddAmt, setQuickAddAmt] = useState("");
@@ -2623,7 +2617,6 @@ export default function App() {
               )}
             </div>
 
-
             {/* Recent transactions */}
             <div className="card" style={{ padding:16, marginBottom:14, ...CS }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
@@ -3060,7 +3053,6 @@ export default function App() {
                 </div>
               ))}
             </div>
-
 
             </div>
           </div>
@@ -4439,8 +4431,6 @@ export default function App() {
                     style={{ flex:1, background:T.inp, border:`1.5px solid ${T.inpBorder}`, color:T.text }} />
                 </div>
 
-
-
                 {/* Foto Struk */}
                 {(() => {
                   const rKey = editItem ? String(editItem.id) : "_new";
@@ -4497,7 +4487,6 @@ export default function App() {
             </div>
           </div>
         )}
-
 
                 {/* Cicilan Modal */}
         {/* ── STORY CARD MODAL ── */}
@@ -4670,9 +4659,7 @@ export default function App() {
           </div>
         )}
 
-
         {showCicilanModal && <CicilanModal show={showCicilanModal} onClose={()=>setShowCicilanModal(false)} cicilan={cicilan} setCicilan={setCicilan} lang={lang} L={L} T={T} themeAccent={themeAccent} themePrimary={themePrimary} formatRp={formatRp} parseRpInput={parseRpInput} haptic={haptic} showToast={showToast}/>}
-
 
         {showReminderModal && <ReminderModal
           show={showReminderModal} onClose={()=>setShowReminderModal(false)}
